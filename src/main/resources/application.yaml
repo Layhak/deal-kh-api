@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: deal-kh-api
+  profiles:
+    active: dev # configuration dev file

@@ -1,0 +1,35 @@
+server:
+  port: 8888
+# our own configuration for the file storage
+file:
+  storage-dir: "filestorage/images/"
+  client-dir: "/images/**"
+spring:
+  servlet: # this is for file upload
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  datasource:
+    username: postgres
+    password: 12345678
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/deal-kh
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop # or update
+    generate-ddl: true
+springdoc:
+  swagger-ui:
+    path: /
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.orm.jpa: DEBUG
+    org.hibernate.SQL: DEBUG  # To log SQL statements
+    org.hibernate.type: TRACE  # To log bound parameters
+
+google:
+  maps:
+    api-key: AIzaSyAakh_98ZoiOIrtv6fiA3QtH1sWaMni36c
