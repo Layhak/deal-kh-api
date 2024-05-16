@@ -7,6 +7,7 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -33,4 +34,10 @@ public class Shop {
     @Convert(converter = JsonListConverter.class)
     @Column(name = "images", nullable = false)
     private List<Image> images;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "dk_user_shops",
+            joinColumns = @JoinColumn(name = "shop_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    private List<User> users;
 }
