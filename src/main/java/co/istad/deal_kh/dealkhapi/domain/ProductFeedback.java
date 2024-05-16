@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "dk_product_feedback")
+@Table(name = "dk_product_feedbacks")
 public class ProductFeedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

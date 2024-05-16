@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "dk_reset_password")
+@Table(name = "dk_reset_passwords")
 public class ResetPassword {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
