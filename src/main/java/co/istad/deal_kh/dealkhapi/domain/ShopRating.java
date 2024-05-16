@@ -19,7 +19,10 @@ public class ShopRating {
     private Long id;
 
     private double ratingValue;
+
+    @Column(length = 250)
     private String description;
+
     private LocalDate createdAt;
     private LocalDate updatedAt;
 

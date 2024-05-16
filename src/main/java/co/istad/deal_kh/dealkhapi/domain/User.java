@@ -2,14 +2,19 @@ package co.istad.deal_kh.dealkhapi.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 
-@Data
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "dk_users")
 public class User {
     @Id
@@ -19,24 +24,28 @@ public class User {
     private String firstName;
     private String lastName;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     private String gender;
+
+    @Column(nullable = false)
     private String password;
+
     private String profileImage;
     private String phoneNumber;
     private LocalDate dateOfBirth;
+
+    @Column(unique = true)
     private String location;
-    private Boolean isBlocked;
+
     private Boolean isDisabled;
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "social_id")
     private SocialMedia socialMedia;
-
-    private LocalDate createdAt;
-    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

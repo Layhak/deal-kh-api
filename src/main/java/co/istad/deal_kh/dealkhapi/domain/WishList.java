@@ -18,6 +18,7 @@ public class WishList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 250)
     private String description;
     private boolean isGranted;
     private LocalDate createdAt;
