@@ -1,13 +1,11 @@
 package co.istad.deal_kh.dealkhapi.domain;
 
-
-import co.istad.deal_kh.dealkhapi.utils.StringListConverter;
+import co.istad.deal_kh.dealkhapi.utils.JsonListConverter;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -16,18 +14,9 @@ import java.util.List;
 public class Shop {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String name;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @Convert(converter = StringListConverter.class)
-    @Column(name = "images", nullable = false)
-    private List<String> images = new ArrayList<>();
-
     private String location;
     private String description;
     private String phoneNumber;
@@ -41,8 +30,7 @@ public class Shop {
     private String createdBy;
     private String updatedBy;
 
-
-    @ManyToOne
-    @JoinColumn(name = "shop_type_id")
-    private ShopType shopType;
+    @Convert(converter = JsonListConverter.class)
+    @Column(name = "images", nullable = false)
+    private List<Image> images;
 }

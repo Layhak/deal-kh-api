@@ -3,19 +3,17 @@ package co.istad.deal_kh.dealkhapi.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.security.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Set;
+
 
 @Data
 @Entity
 @Table(name = "dk_users")
 public class User {
-     @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String firstName;
     private String lastName;

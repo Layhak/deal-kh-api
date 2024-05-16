@@ -1,7 +1,7 @@
 package co.istad.deal_kh.dealkhapi.init;
 
-
 import co.istad.deal_kh.dealkhapi.domain.Authority;
+import co.istad.deal_kh.dealkhapi.domain.Image;
 import co.istad.deal_kh.dealkhapi.domain.Role;
 import co.istad.deal_kh.dealkhapi.domain.Shop;
 import co.istad.deal_kh.dealkhapi.feature.Authorities.AuthorityRepository;
@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-// populate database ( role with some data )
 @Component
 @RequiredArgsConstructor
 public class DataInit {
@@ -26,7 +26,6 @@ public class DataInit {
     private final RoleRepository roleRepository;
     private final AuthorityRepository authorityRepository;
     private final ShopRepository shopRepository;
-//    private final UserRepository userRepository;
 
     @PostConstruct
     void initData() {
@@ -36,7 +35,7 @@ public class DataInit {
             initShops();
             logger.info("Data initialized successfully");
         } catch (Exception e) {
-            logger.info("error in data initialization");
+            logger.severe("Error in data initialization");
             throw new RuntimeException(e);
         }
     }
@@ -71,54 +70,36 @@ public class DataInit {
         }
     }
 
-    //init shop with array of image
     private void initShops() {
         if (shopRepository.findAll().isEmpty()) {
-            logger.info("Initializing shops...");
-            for (int i = 1; i <= 4; ++i) {
-                Shop shop = new Shop();
-                shop.setName("Shop" + i);
-                if (i % 2 == 0) {
-                    shop.setImages(List.of("image1", "image2", "image3"));
-                } else {
-                    shop.setImages(List.of("image1"));
-                }
-                shop.setLocation("Location" + i);
-                shop.setDescription("Description" + i);
-                shop.setPhoneNumber("0123456789");
-                shop.setEmail("shop" + i + "@gmail.com");
-                shop.setOpenAt(LocalDateTime.now());
-                shop.setCloseAt(LocalDateTime.now());
-                shop.setCreatedAt(LocalDate.now());
-                shop.setUpdatedAt(LocalDateTime.now());
-                shop.setCreatedBy("Admin");
-                shop.setUpdatedBy("Admin");
-//                shop.setShopType(shopTypeRepository.findAll().get(i));
-                shopRepository.save(shop);
-            }
+            List<Shop> shops = new ArrayList<>();
+
+            // Example shop with images
+            Shop shop1 = new Shop();
+            shop1.setName("Shop 1");
+            shop1.setLocation("Location 1");
+            shop1.setDescription("Description 1");
+            shop1.setPhoneNumber("123456789");
+            shop1.setEmail("shop1@example.com");
+            shop1.setIsDeleted(false);
+            shop1.setIsDisabled(false);
+            shop1.setOpenAt(LocalDateTime.of(2023, 1, 1, 9, 0));
+            shop1.setCloseAt(LocalDateTime.of(2023, 1, 1, 18, 0));
+            shop1.setCreatedAt(LocalDate.now());
+            shop1.setUpdatedAt(LocalDateTime.now());
+            shop1.setCreatedBy("Admin");
+            shop1.setUpdatedBy("Admin");
+
+            List<Image> images1 = new ArrayList<>();
+            images1.add(new Image("https://example.com/image1.jpg", "Image 1"));
+            images1.add(new Image("https://example.com/image2.jpg", "Image 2"));
+            shop1.setImages(images1);
+
+            shops.add(shop1);
+
+            // Add more shops as needed
+
+            shopRepository.saveAll(shops);
         }
     }
-
-//    private void initUsers() {
-//        List<Role> roles = roleRepository.findAll();
-//
-//
-//        if (userRepository.findAll().isEmpty()) {
-//            logger.info("Initializing users...");
-//            for (int i = 0; i < 4; ++i) {
-//                User user = new User();
-//                user.setFirstName("User" + i);
-//                user.setLastName("User" + i);
-//                user.setEmail("user" + i + "@gmail.com");
-//                user.setGender(User.Gender.MALE);
-//                user.setPassword("123");
-//                user.setRoles(new HashSet<>(List.of(roles.get(i))));
-//                userRepository.save(user);
-//                logger.info("Saved user: User{}"+ i);
-//            }
-//        }
-//    }
 }
-
-
-

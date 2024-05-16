@@ -17,9 +17,9 @@ public class Role {
 
     @ManyToMany
     @JoinTable(
-        name = "dk_role_authorities",
-        joinColumns = @JoinColumn(name = "role_id"),
-        inverseJoinColumns = @JoinColumn(name = "authority_id")
+            name = "dk_role_authorities",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
     private Set<Authority> authorities;
 }
