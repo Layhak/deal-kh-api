@@ -1,5 +1,6 @@
 package co.istad.deal_kh.dealkhapi.domain;
 
+import co.istad.deal_kh.dealkhapi.utils.JsonListConverter;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -34,7 +35,7 @@ public class User {
 
     private String profileImage;
     private String phoneNumber;
-    private LocalDate dateOfBirth;
+    private LocalDate dob;
 
     @Column(unique = true)
     private String location;
@@ -43,9 +44,9 @@ public class User {
     private LocalDate createdAt;
     private LocalDate updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "social_id")
-    private SocialMedia socialMedia;
+    @Convert(converter = JsonListConverter.class)
+    @Column(name = "socialMedia", nullable = false)
+    private List<SocialMedia> socialMedias;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
