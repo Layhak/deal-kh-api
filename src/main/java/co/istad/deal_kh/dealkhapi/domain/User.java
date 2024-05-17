@@ -42,7 +42,7 @@ public class User extends Auditable {
     private Boolean isDisabled;
 
     @Convert(converter = JsonListConverter.class)
-    @Column(name = "socialMedia", nullable = false)
+    @Column(name = "socialMedias", nullable = false)
     private List<SocialMedia> socialMedias;
 
     @ManyToOne

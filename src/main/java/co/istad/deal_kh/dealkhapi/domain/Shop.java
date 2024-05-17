@@ -42,6 +42,7 @@ public class Shop extends Auditable {
     @ManyToOne
     @JoinColumn(name = "shop_type_id", nullable = false)
     private ShopType shopType;
+
     @Convert(converter = JsonListConverter.class)
     @Column(name = "images", nullable = false)
     private List<Image> images;

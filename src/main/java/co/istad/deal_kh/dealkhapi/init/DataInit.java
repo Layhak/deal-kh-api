@@ -78,7 +78,8 @@ public class DataInit {
         if (userRepository.findAll().isEmpty()) {
             List<User> users = new ArrayList<>();
             List<Role> roles = roleRepository.findAll();
-            List<SocialMedia> socialMedia = new ArrayList<>();
+            List<SocialMedia> social = new ArrayList<>();
+
             // Example user
             User user1 = new User();
             user1.setFirstName("Heng");
@@ -87,7 +88,9 @@ public class DataInit {
             user1.setGender("Male");
             user1.setPassword("123456");
             user1.setProfileImage("https://example.com/profile.jpg");
-            user1.setSocialMedias(socialMedia);
+//            social.add(new SocialMedia("Facebook","www.facebook.com","facebook_icon.jpg"));
+//            social.add(new SocialMedia("Telegram","www.telegram.com","telegram_icon.jpg"));
+            user1.setSocialMedias(social);
             user1.setPhoneNumber("123456789");
             user1.setDob(LocalDate.of(2002, 11, 27));
             user1.setLocation("Phnom Penh");
