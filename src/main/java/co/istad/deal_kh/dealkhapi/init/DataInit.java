@@ -78,7 +78,7 @@ public class DataInit {
         if (userRepository.findAll().isEmpty()) {
             List<User> users = new ArrayList<>();
             List<Role> roles = roleRepository.findAll();
-
+            List<SocialMedia> socialMedia = new ArrayList<>();
             // Example user
             User user1 = new User();
             user1.setFirstName("Heng");
@@ -87,8 +87,9 @@ public class DataInit {
             user1.setGender("Male");
             user1.setPassword("123456");
             user1.setProfileImage("https://example.com/profile.jpg");
+            user1.setSocialMedias(socialMedia);
             user1.setPhoneNumber("123456789");
-            user1.setDateOfBirth(LocalDate.of(2002, 11, 27));
+            user1.setDob(LocalDate.of(2002, 11, 27));
             user1.setLocation("Phnom Penh");
             user1.setIsDisabled(false);
             user1.setCreatedAt(LocalDateTime.now());
