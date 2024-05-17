@@ -1,6 +1,5 @@
-package co.istad.deal_kh.dealkhapi.domain;
+package co.istad.deal_kh.dealkhapi.domain.json;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

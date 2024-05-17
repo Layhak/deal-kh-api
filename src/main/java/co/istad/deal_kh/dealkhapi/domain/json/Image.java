@@ -1,4 +1,4 @@
-package co.istad.deal_kh.dealkhapi.domain;
+package co.istad.deal_kh.dealkhapi.domain.json;
 
 
 import lombok.AllArgsConstructor;

@@ -1,8 +1,9 @@
 package co.istad.deal_kh.dealkhapi.domain;
 
 
+import co.istad.deal_kh.dealkhapi.converter.ImageListConverter;
+import co.istad.deal_kh.dealkhapi.domain.json.Image;
 import co.istad.deal_kh.dealkhapi.utils.Auditable;
-import co.istad.deal_kh.dealkhapi.utils.JsonListConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ public class ProductFeedback extends Auditable {
     @Column(length = 250)
     private String description;
 
-    @Convert(converter = JsonListConverter.class)
+    @Convert(converter = ImageListConverter.class)
     @Column(name = "images", nullable = false)
     private List<Image> images;
 

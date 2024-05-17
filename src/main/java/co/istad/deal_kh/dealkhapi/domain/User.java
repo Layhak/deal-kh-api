@@ -1,7 +1,8 @@
 package co.istad.deal_kh.dealkhapi.domain;
 
+import co.istad.deal_kh.dealkhapi.converter.SocialListConverter;
+import co.istad.deal_kh.dealkhapi.domain.json.SocialMedia;
 import co.istad.deal_kh.dealkhapi.utils.Auditable;
-import co.istad.deal_kh.dealkhapi.utils.JsonListConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +42,7 @@ public class User extends Auditable {
 
     private Boolean isDisabled;
 
-    @Convert(converter = JsonListConverter.class)
+    @Convert(converter = SocialListConverter.class)
     @Column(name = "socialMedias", nullable = false)
     private List<SocialMedia> socialMedias;
 

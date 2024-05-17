@@ -1,16 +1,16 @@
 package co.istad.deal_kh.dealkhapi.mapper;
+
 import co.istad.deal_kh.dealkhapi.domain.Role;
 import co.istad.deal_kh.dealkhapi.domain.Shop;
-import co.istad.deal_kh.dealkhapi.domain.SocialMedia;
 import co.istad.deal_kh.dealkhapi.domain.User;
-import co.istad.deal_kh.dealkhapi.feature.users.dto.UserRequest;
+import co.istad.deal_kh.dealkhapi.domain.json.SocialMedia;
 import co.istad.deal_kh.dealkhapi.feature.users.dto.UserResponse;
-import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")

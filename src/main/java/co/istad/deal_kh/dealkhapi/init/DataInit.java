@@ -1,6 +1,8 @@
 package co.istad.deal_kh.dealkhapi.init;
 
 import co.istad.deal_kh.dealkhapi.domain.*;
+import co.istad.deal_kh.dealkhapi.domain.json.Image;
+import co.istad.deal_kh.dealkhapi.domain.json.SocialMedia;
 import co.istad.deal_kh.dealkhapi.feature.Authorities.AuthorityRepository;
 import co.istad.deal_kh.dealkhapi.feature.roles.RoleRepository;
 import co.istad.deal_kh.dealkhapi.feature.shop.ShopRepository;
@@ -88,8 +90,8 @@ public class DataInit {
             user1.setGender("Male");
             user1.setPassword("123456");
             user1.setProfileImage("https://example.com/profile.jpg");
-//            social.add(new SocialMedia("Facebook","www.facebook.com","facebook_icon.jpg"));
-//            social.add(new SocialMedia("Telegram","www.telegram.com","telegram_icon.jpg"));
+            social.add(new SocialMedia("Facebook", "www.facebook.com", "facebook_icon.jpg"));
+            social.add(new SocialMedia("Telegram", "www.telegram.com", "telegram_icon.jpg"));
             user1.setSocialMedias(social);
             user1.setPhoneNumber("123456789");
             user1.setDob(LocalDate.of(2002, 11, 27));

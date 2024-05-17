@@ -1,9 +1,5 @@
 package co.istad.deal_kh.dealkhapi.feature.users.dto;
 
-import co.istad.deal_kh.dealkhapi.domain.Role;
-import co.istad.deal_kh.dealkhapi.domain.Shop;
-import co.istad.deal_kh.dealkhapi.domain.SocialMedia;
-
 import java.time.LocalDate;
 import java.util.List;
 
