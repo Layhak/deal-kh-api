@@ -1,19 +1,18 @@
 package co.istad.deal_kh.dealkhapi.domain;
 
 
+import co.istad.deal_kh.dealkhapi.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @Table(name = "dk_shop_ratings")
-public class ShopRating {
+public class ShopRating extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,9 +21,6 @@ public class ShopRating {
 
     @Column(length = 250)
     private String description;
-
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

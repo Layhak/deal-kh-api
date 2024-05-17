@@ -1,18 +1,17 @@
 package co.istad.deal_kh.dealkhapi.domain;
 
+import co.istad.deal_kh.dealkhapi.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @Table(name = "dk_categories")
-public class Category {
+public class Category extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +21,6 @@ public class Category {
     private String name;
 
     private String icon;
-    private String createdBy;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+
 
 }

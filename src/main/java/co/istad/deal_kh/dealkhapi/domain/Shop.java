@@ -1,22 +1,21 @@
 package co.istad.deal_kh.dealkhapi.domain;
 
+import co.istad.deal_kh.dealkhapi.utils.Auditable;
 import co.istad.deal_kh.dealkhapi.utils.JsonListConverter;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @Table(name = "dk_shops")
-public class Shop {
+public class Shop extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,15 +38,10 @@ public class Shop {
     private Boolean isDisabled;
     private LocalDateTime openAt;
     private LocalDateTime closeAt;
-    private LocalDate createdAt;
-    private LocalDateTime updatedAt;
 
-    @Column(nullable = false)
-    private String createdBy;
-
-    @Column(nullable = false)
-    private String updatedBy;
-
+    @ManyToOne
+    @JoinColumn(name = "shop_type_id", nullable = false)
+    private ShopType shopType;
     @Convert(converter = JsonListConverter.class)
     @Column(name = "images", nullable = false)
     private List<Image> images;

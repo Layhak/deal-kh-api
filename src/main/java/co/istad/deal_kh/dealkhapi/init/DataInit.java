@@ -1,12 +1,11 @@
 package co.istad.deal_kh.dealkhapi.init;
 
-import co.istad.deal_kh.dealkhapi.domain.Authority;
-import co.istad.deal_kh.dealkhapi.domain.Image;
-import co.istad.deal_kh.dealkhapi.domain.Role;
-import co.istad.deal_kh.dealkhapi.domain.Shop;
+import co.istad.deal_kh.dealkhapi.domain.*;
 import co.istad.deal_kh.dealkhapi.feature.Authorities.AuthorityRepository;
 import co.istad.deal_kh.dealkhapi.feature.roles.RoleRepository;
 import co.istad.deal_kh.dealkhapi.feature.shop.ShopRepository;
+import co.istad.deal_kh.dealkhapi.feature.shoptype.ShopTypeRepository;
+import co.istad.deal_kh.dealkhapi.feature.users.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -26,13 +25,18 @@ public class DataInit {
     private final RoleRepository roleRepository;
     private final AuthorityRepository authorityRepository;
     private final ShopRepository shopRepository;
+    private final ShopTypeRepository shopTypeRepository;
+    private final UserRepository userRepository;
+
 
     @PostConstruct
     void initData() {
         try {
             initAuthorities();
             initRoles();
+            initShopTypes();
             initShops();
+            initUsers();
             logger.info("Data initialized successfully");
         } catch (Exception e) {
             logger.severe("Error in data initialization");
@@ -70,9 +74,52 @@ public class DataInit {
         }
     }
 
+    private void initUsers() {
+        if (userRepository.findAll().isEmpty()) {
+            List<User> users = new ArrayList<>();
+            List<Role> roles = roleRepository.findAll();
+
+            // Example user
+            User user1 = new User();
+            user1.setFirstName("Heng");
+            user1.setLastName("Layhak");
+            user1.setEmail("layhak@gmail.com");
+            user1.setGender("Male");
+            user1.setPassword("123456");
+            user1.setProfileImage("https://example.com/profile.jpg");
+            user1.setPhoneNumber("123456789");
+            user1.setDateOfBirth(LocalDate.of(2002, 11, 27));
+            user1.setLocation("Phnom Penh");
+            user1.setIsDisabled(false);
+            user1.setCreatedAt(LocalDateTime.now());
+            user1.setCreatedAt(LocalDateTime.now());
+            user1.setCreatedBy("Admin");
+            user1.setUpdatedBy("Admin");
+            user1.setRole(roles.get(0));
+            users.add(user1);
+            userRepository.saveAll(users);
+        }
+    }
+
+    //
+    private void initShopTypes() {
+        List<String> shopTypes = List.of("Type 1", "Type 2", "Type 3");
+        if (shopTypeRepository.findAll().isEmpty()) {
+            shopTypes.forEach(type -> {
+                ShopType shopType = new ShopType();
+                shopType.setName(type);
+                shopTypeRepository.save(shopType);
+            });
+        }
+    }
+
+
     private void initShops() {
         if (shopRepository.findAll().isEmpty()) {
             List<Shop> shops = new ArrayList<>();
+
+            // Get an example shop type
+            ShopType shopType = shopTypeRepository.findAll().get(0);
 
             // Example shop with images
             Shop shop1 = new Shop();
@@ -85,7 +132,7 @@ public class DataInit {
             shop1.setIsDisabled(false);
             shop1.setOpenAt(LocalDateTime.of(2023, 1, 1, 9, 0));
             shop1.setCloseAt(LocalDateTime.of(2023, 1, 1, 18, 0));
-            shop1.setCreatedAt(LocalDate.now());
+            shop1.setCreatedAt(LocalDateTime.now());
             shop1.setUpdatedAt(LocalDateTime.now());
             shop1.setCreatedBy("Admin");
             shop1.setUpdatedBy("Admin");
@@ -94,6 +141,9 @@ public class DataInit {
             images1.add(new Image("https://example.com/image1.jpg", "Image 1"));
             images1.add(new Image("https://example.com/image2.jpg", "Image 2"));
             shop1.setImages(images1);
+
+            // Set the shop type
+            shop1.setShopType(shopType);
 
             shops.add(shop1);
 

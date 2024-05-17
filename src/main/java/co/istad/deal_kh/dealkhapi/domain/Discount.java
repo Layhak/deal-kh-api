@@ -1,19 +1,19 @@
 package co.istad.deal_kh.dealkhapi.domain;
 
+import co.istad.deal_kh.dealkhapi.utils.Auditable;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "dk_discounts")
-public class Discount {
+@Table(name = "dk_discount")
+public class Discount extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -27,8 +27,7 @@ public class Discount {
     @Column(nullable = false)
     private double discountPercentage;
 
-    private LocalDate expiredAt;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    private LocalDateTime expiredAt;
+
 
 }

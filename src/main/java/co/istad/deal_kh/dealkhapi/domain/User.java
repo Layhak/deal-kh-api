@@ -1,14 +1,13 @@
 package co.istad.deal_kh.dealkhapi.domain;
 
+import co.istad.deal_kh.dealkhapi.utils.Auditable;
 import co.istad.deal_kh.dealkhapi.utils.JsonListConverter;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -17,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "dk_users")
-public class User {
+public class User extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,8 +40,6 @@ public class User {
     private String location;
 
     private Boolean isDisabled;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
 
     @Convert(converter = JsonListConverter.class)
     @Column(name = "socialMedia", nullable = false)
