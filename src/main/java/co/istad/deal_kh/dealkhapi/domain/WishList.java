@@ -1,19 +1,18 @@
 package co.istad.deal_kh.dealkhapi.domain;
 
 
+import co.istad.deal_kh.dealkhapi.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @Table(name = "dk_wish_lists")
-public class WishList {
+public class WishList extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,8 +20,7 @@ public class WishList {
     @Column(length = 250)
     private String description;
     private boolean isGranted;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")

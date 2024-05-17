@@ -1,12 +1,12 @@
 package co.istad.deal_kh.dealkhapi.domain;
 
+import co.istad.deal_kh.dealkhapi.utils.Auditable;
 import co.istad.deal_kh.dealkhapi.utils.JsonListConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.List;
 
 
@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "dk_products")
-public class Product {
+public class Product extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +30,6 @@ public class Product {
     @Column(length = 250)
     private String description;
 
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
 
     @Convert(converter = JsonListConverter.class)
     @Column(name = "images", nullable = false)
