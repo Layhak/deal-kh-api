@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 public interface UserMapper {
 
     @Mapping(source = "role", target = "role", qualifiedByName = "roleToString")
-    @Mapping(source = "shops", target = "shops", qualifiedByName = "shopsToListOfStrings")
-    @org.mapstruct.Mapping(target = "socialMedias", expression = "java(mapSocialMedias(user.getSocialMedias()))")
+//    @Mapping(source = "shops", target = "shops", qualifiedByName = "shopsToListOfStrings")
+//    @org.mapstruct.Mapping(target = "socialMedias", expression = "java(mapSocialMedias(user.getSocialMedias()))")
     UserResponse mapToUserResponse(User user);
 
     @Named("roleToString")
@@ -26,16 +26,16 @@ public interface UserMapper {
         return role.getName();
     }
 
-    default List<String> mapSocialMedias(List<SocialMedia> socialMedias) {
-        return socialMedias.stream().map(SocialMedia::getSocialName).collect(Collectors.toList());
-    }
-
-    @Named("shopsToListOfStrings")
-    default List<String> shopsToListOfStrings(List<Shop> shops) {
-        if (shops == null) {
-            return Collections.emptyList();
-        }
-        return shops.stream().map(Shop::getName).collect(Collectors.toList());
-    }
+//    default List<String> mapSocialMedias(List<SocialMedia> socialMedias) {
+//        return socialMedias.stream().map(SocialMedia::getSocialLink).collect(Collectors.toList());
+//    }
+//
+//    @Named("shopsToListOfStrings")
+//    default List<String> shopsToListOfStrings(List<Shop> shops) {
+//        if (shops == null) {
+//            return Collections.emptyList();
+//        }
+//        return shops.stream().map(Shop::getName).collect(Collectors.toList());
+//    }
 
 }

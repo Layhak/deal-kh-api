@@ -1,5 +1,8 @@
 package co.istad.deal_kh.dealkhapi.feature.users.dto;
 
+import co.istad.deal_kh.dealkhapi.domain.Shop;
+import co.istad.deal_kh.dealkhapi.domain.json.SocialMedia;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,8 +19,8 @@ public record UserResponse(
         Boolean isDisabled,
         LocalDate createdAt,
         LocalDate updatedAt,
-        List<String> socialMedias,
+        List<SocialMedia> socialMedias,
         String role,
-        List<String> shops
+        List<Shop> shops
 ) {
 }
