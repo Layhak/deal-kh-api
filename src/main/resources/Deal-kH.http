@@ -1,0 +1,53 @@
+GET http://localhost:80/api/item?id=99
+Accept: application/json
+
+###
+POST http://localhost:80/api/item
+Content-Type: application/json
+
+{}
+
+###
+GET http://localhost:8080/api/v1/users?page=2&size=2
+
+###
+
+###
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "firstName": "Hom",
+  "lastName": "Phokakvotey",
+  "username": "Votey",
+  "email": "votey@gmail.com",
+  "password": "votey",
+  "gender": "Female",
+  "profileImage": "votey.jpg",
+  "phoneNumber": "0123456789",
+  "dob": "1999-01-01",
+  "location": "Phnom Penh",
+  "socialMedias": [
+    {
+      "socialName": "Facebook",
+      "socialLink": "www.facebook.com",
+      "socialIcon": "facebook_icon.jpg"
+    },
+    {
+      "socialName": "Telegram",
+      "socialLink": "www.telegram.com",
+      "socialIcon": "telegram_icon.jpg"
+    }
+  ],
+  "role": "SUPER_ADMIN"
+}
+
+###
+GET http://localhost:8080/api/v1/users/4
+
+
+
+GET
+
+
+

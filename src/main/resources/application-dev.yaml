@@ -11,13 +11,13 @@ spring:
       max-request-size: 5MB
   datasource:
     username: postgres
-    password: postgres
+    password: 12345678
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/db_dealkh
+    url: jdbc:postgresql://localhost:5432/deal-kh
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop # or update
+      ddl-auto: update # or update
     generate-ddl: true
 springdoc:
   swagger-ui:
