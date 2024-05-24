@@ -1,7 +1,9 @@
-package co.istad.dealkh.domain;
+package co.istad.dealkh.entity;
 
+import co.istad.dealkh.converter.ImageListConverter;
 import co.istad.dealkh.converter.SocialListConverter;
-import co.istad.dealkh.domain.json.SocialMedia;
+import co.istad.dealkh.entity.json.Image;
+import co.istad.dealkh.entity.json.SocialMedia;
 import co.istad.dealkh.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -34,7 +36,9 @@ public class User extends Auditable {
     @Column(nullable = false)
     private String password;
 
-    private String profileImage;
+    @Convert(converter = ImageListConverter.class)
+    @Column(name = "images", nullable = false)
+    private List<Image> image;
     private String phoneNumber;
     private LocalDate dob;
 

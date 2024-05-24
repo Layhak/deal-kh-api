@@ -1,4 +1,4 @@
-package co.istad.dealkh.domain;
+package co.istad.dealkh.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

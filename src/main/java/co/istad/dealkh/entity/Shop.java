@@ -1,7 +1,7 @@
-package co.istad.dealkh.domain;
+package co.istad.dealkh.entity;
 
 import co.istad.dealkh.converter.ImageListConverter;
-import co.istad.dealkh.domain.json.Image;
+import co.istad.dealkh.entity.json.Image;
 import co.istad.dealkh.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,9 +27,13 @@ public class Shop extends Auditable {
     @Column(unique = true)
     private String location;
 
+    @Column(unique = true)
+    private String address;
+
     @Column(length = 250)
     private String description;
 
+    @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
     @Column(nullable = false, unique = true)

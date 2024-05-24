@@ -1,24 +1,22 @@
-package co.istad.dealkh.domain;
+package co.istad.dealkh.entity;
 
+import co.istad.dealkh.utils.Auditable;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "dk_shop_types")
-public class ShopType {
+@Table(name = "dk_reset_passwords")
+public class ResetPassword extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
-
-    private String icon;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

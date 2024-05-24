@@ -1,4 +1,4 @@
-package co.istad.dealkh.domain.json;
+package co.istad.dealkh.entity.json;
 
 
 import lombok.AllArgsConstructor;

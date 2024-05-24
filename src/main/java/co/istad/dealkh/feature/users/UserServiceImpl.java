@@ -1,7 +1,7 @@
 package co.istad.dealkh.feature.users;
 
-import co.istad.dealkh.domain.Role;
-import co.istad.dealkh.domain.User;
+import co.istad.dealkh.entity.Role;
+import co.istad.dealkh.entity.User;
 import co.istad.dealkh.feature.roles.RoleRepository;
 import co.istad.dealkh.feature.users.dto.UserProfileResponse;
 import co.istad.dealkh.feature.users.dto.UserRequest;

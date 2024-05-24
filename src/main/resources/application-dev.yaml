@@ -19,6 +19,9 @@ spring:
     hibernate:
       ddl-auto: update # or update
     generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
 springdoc:
   swagger-ui:
     path: /

@@ -1,4 +1,4 @@
-package co.istad.dealkh.domain;
+package co.istad.dealkh.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,7 +27,7 @@ public class Order {
     private User user;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "dk_product_orders",
+    @JoinTable(name = "dk_ordered_products",
             joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id"))
     private List<Product> products;

@@ -1,4 +1,4 @@
-package co.istad.dealkh.domain;
+package co.istad.dealkh.entity;
 
 import co.istad.dealkh.utils.Auditable;
 import jakarta.persistence.*;

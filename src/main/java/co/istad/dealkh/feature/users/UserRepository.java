@@ -1,6 +1,6 @@
 package co.istad.dealkh.feature.users;
 
-import co.istad.dealkh.domain.User;
+import co.istad.dealkh.entity.User;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

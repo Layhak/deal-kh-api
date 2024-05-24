@@ -1,4 +1,4 @@
-package co.istad.dealkh.domain;
+package co.istad.dealkh.entity;
 
 
 import jakarta.persistence.*;
@@ -12,8 +12,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "dk_grant_wish_lists")
-public class GrantWishList {
+@Table(name = "dk_granted_wish_lists")
+public class GrantedWishList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

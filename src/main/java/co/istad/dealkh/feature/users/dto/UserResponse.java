@@ -1,6 +1,6 @@
 package co.istad.dealkh.feature.users.dto;
 
-import co.istad.dealkh.domain.json.SocialMedia;
+import co.istad.dealkh.entity.json.SocialMedia;
 
 import java.time.LocalDate;
 import java.util.List;

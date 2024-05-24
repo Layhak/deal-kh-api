@@ -1,6 +1,6 @@
 package co.istad.dealkh.mapper;
 
-import co.istad.dealkh.domain.User;
+import co.istad.dealkh.entity.User;
 import co.istad.dealkh.feature.users.dto.UserRequest;
 import co.istad.dealkh.feature.users.dto.UserResponse;
 import org.mapstruct.Mapper;

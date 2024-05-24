@@ -1,6 +1,6 @@
 package co.istad.dealkh.feature.roles;
 
-import co.istad.dealkh.domain.Role;
+import co.istad.dealkh.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
