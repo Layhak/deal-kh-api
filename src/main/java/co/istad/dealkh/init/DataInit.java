@@ -90,7 +90,9 @@ public class DataInit {
             user1.setEmail("layhak@gmail.com");
             user1.setGender("Male");
             user1.setPassword("123456");
-            user1.setProfileImage("https://example.com/profile.jpg");
+            List<Image> images = new ArrayList<>();
+            images.add(new Image("https://example.com/image1.jpg", "Image 1"));
+            user1.setImage(images);
             social.add(new SocialMedia("Facebook", "www.facebook.com", "facebook_icon.jpg"));
             social.add(new SocialMedia("Telegram", "www.telegram.com", "telegram_icon.jpg"));
             user1.setSocialMedias(social);
