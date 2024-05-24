@@ -88,4 +88,34 @@ public class UserController {
         return BaseResponse.<UserResponse>createSuccess("Successfully create new user!").setPayload(userService.createUser(userRequest));
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete user")
+    BaseResponse<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return BaseResponse.<Void>ok();
+    }
+
+    @PatchMapping("/{id}")
+    @Operation(summary = "Update user")
+    BaseResponse<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest userRequest) {
+        return BaseResponse.<UserResponse>ok().setPayload(userService.updateUser(id, userRequest));
+    }
+
+    @PatchMapping("/{id}/disable")
+    @Operation(summary = "Disable user")
+    BaseResponse<UserResponse> disableUser(@PathVariable Long id) {
+        return BaseResponse.<UserResponse>ok().setPayload(userService.disableUser(id));
+    }
+
+    @PatchMapping("/{id}/enable")
+    @Operation(summary = "Enable user")
+    BaseResponse<UserResponse> enableUser(@PathVariable Long id) {
+        return BaseResponse.<UserResponse>ok().setPayload(userService.enableUser(id));
+    }
+
+    @GetMapping("/status/{status}")
+    @Operation(summary = "Get all users by status")
+    BaseResponse<List<UserResponse>> getAllUsersByStatus(@PathVariable Boolean status) {
+        return BaseResponse.<List<UserResponse>>ok().setPayload(userService.getAllUsersByStatus(status));
+    }
 }

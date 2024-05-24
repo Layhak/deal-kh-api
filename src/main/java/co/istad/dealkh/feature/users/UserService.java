@@ -6,6 +6,9 @@ import co.istad.dealkh.feature.users.dto.UserResponse;
 import co.istad.dealkh.paging.PageResponse;
 import org.springframework.data.domain.Sort;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface UserService {
 
     UserResponse getById(Long id);
@@ -16,7 +19,14 @@ public interface UserService {
 
     UserResponse createUser(UserRequest userRequest);
 
-    UserResponse updateUser(UserRequest userRequest);
+    UserResponse updateUser( Long id,UserRequest userRequest);
 
     void deleteUser(Long id);
+    UserResponse disableUser(Long id);
+
+    UserResponse enableUser(Long id);
+
+    //getAllEnabledUsers
+    List<UserResponse> getAllUsersByStatus(boolean status);
+
 }

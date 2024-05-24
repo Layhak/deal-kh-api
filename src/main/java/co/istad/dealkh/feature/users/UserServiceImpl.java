@@ -10,6 +10,7 @@ import co.istad.dealkh.mapper.UserMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,6 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,12 +79,57 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(UserRequest userRequest) {
-        return null;
+    public UserResponse updateUser(Long id, UserRequest userRequest) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+        if (userRepository.existsByUsername(userRequest.username()) && !user.getUsername().equals(userRequest.username())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Username already exist ! Try another one ");
+        }
+        if (userRepository.existsByEmail(userRequest.email()) && !user.getEmail().equals(userRequest.email())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Email already token ! Try another one ");
+        }
+        Role role = roleRepository.findByName(userRequest.role())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role has not been found!"));
+        user.setRole(role);
+        userRepository.save(user);
+        return userMapper.mapToUserResponse(user);
     }
 
     @Override
     public void deleteUser(Long id) {
+        // Check if user exists and delete
+        userRepository.findById(id)
+                .ifPresentOrElse(userRepository::delete,
+                        () -> {
+                            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!");
+                        });
+    }
 
+    @Override
+    public UserResponse disableUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+        user.setIsDisabled(true);
+        userRepository.save(user);
+        return userMapper.mapToUserResponse(user);
+    }
+
+    @Override
+    public UserResponse enableUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+        user.setIsDisabled(false);
+        userRepository.save(user);
+        return userMapper.mapToUserResponse(user);
+    }
+
+    @Override
+    public List<UserResponse> getAllUsersByStatus(boolean status) {
+        List<User> users = userRepository.findAllByStatus(status);
+        return users.stream().map(userMapper::mapToUserResponse).collect(Collectors.toList());
     }
 }

@@ -3,8 +3,7 @@ package co.istad.dealkh.mapper;
 import co.istad.dealkh.entity.User;
 import co.istad.dealkh.feature.users.dto.UserRequest;
 import co.istad.dealkh.feature.users.dto.UserResponse;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", uses = {RoleMapper.class})
 public interface UserMapper {
@@ -16,4 +15,7 @@ public interface UserMapper {
     @Mapping(source = "role", target = "role", qualifiedByName = "stringToRole")
     @Mapping(source = "images", target = "image")
     User mapRequestToUser(UserRequest userRequest);
+
+
+
 }
