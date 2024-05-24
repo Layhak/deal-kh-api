@@ -20,8 +20,7 @@ public class GlobalRestControllerAdviser {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public BaseResponse<?> handleNoSuchElementException(NoSuchElementException ex) {
         return BaseResponse
-                .notFound()
-                .setMetadata(ex.getMessage());
+                .notFound();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -33,7 +32,7 @@ public class GlobalRestControllerAdviser {
                     errors.put(fieldError.getField(), fieldError.getDefaultMessage());
                 }
         );
-        return BaseResponse.badRequest().setMetadata(errors);
+        return BaseResponse.badRequest();
     }
 
 
@@ -60,7 +59,7 @@ public class GlobalRestControllerAdviser {
         System.out.println("ex = " + ex);
         return BaseResponse
                 .badRequest()
-                .setMetadata("Email and username must be unique!");
+                .setMessage("Duplicate entries");
     }
 //
 }

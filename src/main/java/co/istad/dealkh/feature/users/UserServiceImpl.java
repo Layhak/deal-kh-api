@@ -7,9 +7,12 @@ import co.istad.dealkh.feature.users.dto.UserProfileResponse;
 import co.istad.dealkh.feature.users.dto.UserRequest;
 import co.istad.dealkh.feature.users.dto.UserResponse;
 import co.istad.dealkh.mapper.UserMapper;
+import co.istad.dealkh.paging.PageResponse;
+import co.istad.dealkh.paging.Pagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,9 +35,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserResponse> getAllUsers(Pageable pageable) {
-        Page<User> users = userRepository.findAll(pageable);
-        return users.map(userMapper::mapToUserResponse);
+    public PageResponse<UserResponse> getAllUsers(int page, int size, Sort sort) {
+        if (page < 0 || size <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page and size must be greater than 0");
+        }
+        Pageable pageable = Pagination.getPageable(page, size, sort);
+        Page<UserResponse> users = userRepository.findAll(pageable).map(userMapper::mapToUserResponse);
+        return new PageResponse<>(users);
     }
 
     @Override
