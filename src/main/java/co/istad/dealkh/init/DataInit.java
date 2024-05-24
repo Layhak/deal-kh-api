@@ -81,7 +81,7 @@ public class DataInit {
             List<User> users = new ArrayList<>();
             List<Role> roles = roleRepository.findAll();
             List<SocialMedia> social = new ArrayList<>();
-
+            List<Image> images = new ArrayList<>();
             // Example user
             User user1 = new User();
             user1.setFirstName("Heng");
@@ -90,8 +90,8 @@ public class DataInit {
             user1.setEmail("layhak@gmail.com");
             user1.setGender("Male");
             user1.setPassword("123456");
-            List<Image> images = new ArrayList<>();
             images.add(new Image("https://example.com/image1.jpg", "Image 1"));
+            images.add(new Image("https://example.com/image2.jpg", "Image 2"));
             user1.setImage(images);
             social.add(new SocialMedia("Facebook", "www.facebook.com", "facebook_icon.jpg"));
             social.add(new SocialMedia("Telegram", "www.telegram.com", "telegram_icon.jpg"));

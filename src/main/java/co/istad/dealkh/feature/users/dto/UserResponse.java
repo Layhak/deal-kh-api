@@ -1,5 +1,6 @@
 package co.istad.dealkh.feature.users.dto;
 
+import co.istad.dealkh.entity.json.Image;
 import co.istad.dealkh.entity.json.SocialMedia;
 
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ public record UserResponse(
         String lastName,
         String email,
         String gender,
-        String profileImage,
+        List<Image> images,
         String phoneNumber,
         LocalDate dob,
         String location,

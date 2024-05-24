@@ -1,5 +1,6 @@
 package co.istad.dealkh.feature.users.dto;
 
+import co.istad.dealkh.entity.json.Image;
 import co.istad.dealkh.entity.json.SocialMedia;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -28,7 +29,7 @@ public record UserRequest(
         @Size(max = 6)
         String gender,
 
-        String profileImage,
+        List<Image> images,
 
         @NotBlank(message = "Phone number is required")
         @Size(max = 20, message = "Phone number must less than 20 characters")
