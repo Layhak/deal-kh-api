@@ -1,13 +1,13 @@
 package co.istad.dealkh.init;
 
-import co.istad.dealkh.entity.*;
-import co.istad.dealkh.entity.json.Image;
-import co.istad.dealkh.entity.json.SocialMedia;
-import co.istad.dealkh.feature.Authorities.AuthorityRepository;
-import co.istad.dealkh.feature.roles.RoleRepository;
-import co.istad.dealkh.feature.shop.ShopRepository;
-import co.istad.dealkh.feature.shoptype.ShopTypeRepository;
-import co.istad.dealkh.feature.users.UserRepository;
+import co.istad.dealkh.domain.*;
+import co.istad.dealkh.domain.json.Image;
+import co.istad.dealkh.domain.json.SocialMedia;
+import co.istad.dealkh.features.Authorities.AuthorityRepository;
+import co.istad.dealkh.features.roles.RoleRepository;
+import co.istad.dealkh.features.shop.ShopRepository;
+import co.istad.dealkh.features.shoptype.ShopTypeRepository;
+import co.istad.dealkh.features.users.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

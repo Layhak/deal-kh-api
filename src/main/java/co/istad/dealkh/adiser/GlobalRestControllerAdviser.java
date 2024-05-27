@@ -1,7 +1,7 @@
 package co.istad.dealkh.adiser;
 
 
-import co.istad.dealkh.utils.BaseResponse;
+import co.istad.dealkh.base.BaseResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
