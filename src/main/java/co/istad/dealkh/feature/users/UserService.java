@@ -27,6 +27,6 @@ public interface UserService {
     UserResponse enableUser(Long id);
 
     //getAllEnabledUsers
-    List<UserResponse> getAllUsersByStatus(boolean status);
+    List<UserResponse> getAllUsersByStatus(String status);
 
 }

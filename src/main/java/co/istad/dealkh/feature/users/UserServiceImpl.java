@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -128,8 +129,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> getAllUsersByStatus(boolean status) {
-        List<User> users = userRepository.findAllByStatus(status);
+    public List<UserResponse> getAllUsersByStatus(String status) {
+        List<User> users =new ArrayList<>();
+        if (status.equalsIgnoreCase("enabled") || status.equalsIgnoreCase("enable")) {
+            users = userRepository.findAllByIsDisabledFalse();
+        } else if (status.equalsIgnoreCase("disabled") || status.equalsIgnoreCase("disable")) {
+            users = userRepository.findAllByIsDisabledTrue();
+        }
         return users.stream().map(userMapper::mapToUserResponse).collect(Collectors.toList());
     }
 }

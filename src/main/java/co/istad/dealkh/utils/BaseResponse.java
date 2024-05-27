@@ -32,8 +32,8 @@ public class BaseResponse<T> {
         return new BaseResponse<T>().setStatus(HttpStatus.OK.value()).setMessage("Successfully update the entry!");
     }
 
-    public static <T> BaseResponse<T> deleteSuccess() {
-        return new BaseResponse<T>().setStatus(HttpStatus.OK.value()).setMessage("Successfully Delete the data!");
+    public static <T> BaseResponse<T> deleteSuccess(String message) {
+        return new BaseResponse<T>().setStatus(HttpStatus.OK.value()).setMessage( message);
     }
 
     public static BaseResponse error(String message) {

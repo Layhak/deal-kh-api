@@ -52,7 +52,7 @@ public class UserController {
     }
 
     @PostMapping
-    @Operation(summary = "Create a new category", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = User.class), examples = @ExampleObject(value = """
+    @Operation(summary = "Create a new user", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = User.class), examples = @ExampleObject(value = """
             {
               "firstName": "Art",
               "lastName": "Vanndeth",
@@ -92,30 +92,32 @@ public class UserController {
     @Operation(summary = "Delete user")
     BaseResponse<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return BaseResponse.<Void>ok();
+        return BaseResponse.<Void>deleteSuccess("Delete user success");
     }
 
     @PatchMapping("/{id}")
     @Operation(summary = "Update user")
     BaseResponse<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest userRequest) {
-        return BaseResponse.<UserResponse>ok().setPayload(userService.updateUser(id, userRequest));
+        return BaseResponse.<UserResponse>ok("update success").setPayload(userService.updateUser(id, userRequest));
     }
 
     @PatchMapping("/{id}/disable")
     @Operation(summary = "Disable user")
     BaseResponse<UserResponse> disableUser(@PathVariable Long id) {
-        return BaseResponse.<UserResponse>ok().setPayload(userService.disableUser(id));
+        return BaseResponse.<UserResponse>ok("Success").setPayload(userService.disableUser(id));
     }
 
     @PatchMapping("/{id}/enable")
     @Operation(summary = "Enable user")
     BaseResponse<UserResponse> enableUser(@PathVariable Long id) {
-        return BaseResponse.<UserResponse>ok().setPayload(userService.enableUser(id));
+        return BaseResponse.<UserResponse>ok("Success").setPayload(userService.enableUser(id));
     }
 
     @GetMapping("/status/{status}")
     @Operation(summary = "Get all users by status")
-    BaseResponse<List<UserResponse>> getAllUsersByStatus(@PathVariable Boolean status) {
-        return BaseResponse.<List<UserResponse>>ok().setPayload(userService.getAllUsersByStatus(status));
+    BaseResponse<List<UserResponse>> getAllUsersByStatus(@PathVariable String status) {
+        return BaseResponse.<List<UserResponse>>ok("Success").setPayload(userService.getAllUsersByStatus(status));
     }
+
+
 }

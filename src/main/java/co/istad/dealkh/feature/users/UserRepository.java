@@ -19,9 +19,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @NotNull
     Page<User> findAll(@NotNull Pageable pageable);
 
-   //get user by status(disable or enable)
+//get all disable users
+    List<User> findAllByIsDisabledFalse();
+    List<User> findAllByIsDisabledTrue();
 
-    @Query("SELECT u FROM User u WHERE u.isDisabled = ?1")
-    List<User> findAllByStatus(boolean status);
 
 }

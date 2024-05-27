@@ -133,7 +133,6 @@ public class DataInit {
             // Example shop with images
             Shop shop1 = new Shop();
             shop1.setName("Shop 1");
-            shop1.setLocation("Location 1");
             shop1.setDescription("Description 1");
             shop1.setPhoneNumber("123456789");
             shop1.setEmail("shop1@example.com");
