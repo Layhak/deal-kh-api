@@ -1,4 +1,4 @@
-package co.istad.dealkh.adiser;
+package co.istad.dealkh.exception;
 
 
 import co.istad.dealkh.base.BaseResponse;

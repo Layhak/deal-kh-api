@@ -1,4 +1,4 @@
-package co.istad.dealkh.features.users;
+package co.istad.dealkh.features.user;
 
 import co.istad.dealkh.domain.User;
 import org.jetbrains.annotations.NotNull;

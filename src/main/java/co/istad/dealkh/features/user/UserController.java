@@ -1,8 +1,8 @@
-package co.istad.dealkh.features.users;
+package co.istad.dealkh.features.user;
 
 import co.istad.dealkh.domain.User;
-import co.istad.dealkh.features.users.dto.UserRequest;
-import co.istad.dealkh.features.users.dto.UserResponse;
+import co.istad.dealkh.features.user.dto.UserRequest;
+import co.istad.dealkh.features.user.dto.UserResponse;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.base.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;

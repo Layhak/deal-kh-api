@@ -1,11 +1,11 @@
-package co.istad.dealkh.features.users;
+package co.istad.dealkh.features.user;
 
 import co.istad.dealkh.domain.Role;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.roles.RoleRepository;
-import co.istad.dealkh.features.users.dto.UserProfileResponse;
-import co.istad.dealkh.features.users.dto.UserRequest;
-import co.istad.dealkh.features.users.dto.UserResponse;
+import co.istad.dealkh.features.user.dto.UserProfileResponse;
+import co.istad.dealkh.features.user.dto.UserRequest;
+import co.istad.dealkh.features.user.dto.UserResponse;
 import co.istad.dealkh.mapper.UserMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;

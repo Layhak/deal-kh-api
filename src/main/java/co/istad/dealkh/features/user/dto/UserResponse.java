@@ -1,4 +1,4 @@
-package co.istad.dealkh.features.users.dto;
+package co.istad.dealkh.features.user.dto;
 
 import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.domain.json.SocialMedia;

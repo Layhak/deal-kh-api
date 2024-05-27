@@ -1,8 +1,8 @@
-package co.istad.dealkh.features.users;
+package co.istad.dealkh.features.user;
 
-import co.istad.dealkh.features.users.dto.UserProfileResponse;
-import co.istad.dealkh.features.users.dto.UserRequest;
-import co.istad.dealkh.features.users.dto.UserResponse;
+import co.istad.dealkh.features.user.dto.UserProfileResponse;
+import co.istad.dealkh.features.user.dto.UserRequest;
+import co.istad.dealkh.features.user.dto.UserResponse;
 import co.istad.dealkh.paging.PageResponse;
 import org.springframework.data.domain.Sort;
 

@@ -1,4 +1,4 @@
-package co.istad.dealkh.features.users.dto;
+package co.istad.dealkh.features.user.dto;
 
 public record UserShopResponse(
         String name,
