@@ -20,7 +20,7 @@ public class GlobalRestControllerAdviser {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public BaseResponse<?> handleNoSuchElementException(NoSuchElementException ex) {
         return BaseResponse
-                .notFound();
+                .notFound("Resource not found");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -32,7 +32,7 @@ public class GlobalRestControllerAdviser {
                     errors.put(fieldError.getField(), fieldError.getDefaultMessage());
                 }
         );
-        return BaseResponse.badRequest();
+        return BaseResponse.badRequest("Validation error");
     }
 
 
@@ -58,8 +58,7 @@ public class GlobalRestControllerAdviser {
     public BaseResponse<?> handlePSQLException(DataIntegrityViolationException ex) {
         System.out.println("ex = " + ex);
         return BaseResponse
-                .badRequest()
-                .setMessage("Duplicate entries");
+                .badRequest("Duplicate entries");
     }
 //
 }

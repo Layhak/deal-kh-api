@@ -2,6 +2,7 @@ package co.istad.dealkh.feature.users;
 
 import co.istad.dealkh.entity.Role;
 import co.istad.dealkh.entity.User;
+import co.istad.dealkh.entity.json.Image;
 import co.istad.dealkh.feature.roles.RoleRepository;
 import co.istad.dealkh.feature.users.dto.UserProfileResponse;
 import co.istad.dealkh.feature.users.dto.UserRequest;
@@ -23,6 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -40,11 +44,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageResponse<UserResponse> getAllUsers(int page, int size, Sort sort) {
+    public PageResponse<UserResponse> getAllUsers(int page, int size, String field, String order) {
         if (page < 0 || size <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page and size must be greater than 0");
         }
-        Pageable pageable = Pagination.getPageable(page, size, sort);
+        List<String> validFields = Arrays.asList("username", "email", "dob", "createdAt", "updatedAt");
+        if (field == null || field.isEmpty() || !validFields.contains(field)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, username, email, or dob");
+        }
+        if (order != null && !order.equals("asc") && !order.equals("desc")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
+        }
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
         Page<UserResponse> users = userRepository.findAll(pageable).map(userMapper::mapToUserResponse);
         return new PageResponse<>(users);
     }
@@ -137,5 +148,30 @@ public class UserServiceImpl implements UserService {
             users = userRepository.findAllByIsDisabledTrue();
         }
         return users.stream().map(userMapper::mapToUserResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public UserResponse updateUserImage(Long id, String imageUrl, String description) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Image imageInfo = new Image();
+        imageInfo.setUrl(imageUrl);
+        imageInfo.setDescription(description);
+
+        List<Image> images = user.getImage();
+        if (images == null) {
+            images = new ArrayList<>();
+        }
+        images.add(imageInfo);
+        user.setImage(images);
+
+        userRepository.save(user);
+        return userMapper.mapToUserResponse(user);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
     }
 }

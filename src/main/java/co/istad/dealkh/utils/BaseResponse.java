@@ -20,13 +20,10 @@ public class BaseResponse<T> {
         return new BaseResponse<T>().setStatus(HttpStatus.OK.value()).setMessage(message);
     }
 
-    public static <T> BaseResponse<T> notFound() {
-        return new BaseResponse<T>().setStatus(HttpStatus.NOT_FOUND.value()).setMessage("Items could not be found!! ");
+    public static <T> BaseResponse<T> notFound(String message) {
+        return new BaseResponse<T>().setStatus(HttpStatus.NOT_FOUND.value()).setMessage(message);
     }
 
-    public static <T> BaseResponse<T> badRequest() {
-        return new BaseResponse<T>().setStatus(HttpStatus.BAD_REQUEST.value()).setMessage("Bad request provided !");
-    }
 
     public static <T> BaseResponse<T> updateSuccess() {
         return new BaseResponse<T>().setStatus(HttpStatus.OK.value()).setMessage("Successfully update the entry!");
@@ -36,7 +33,7 @@ public class BaseResponse<T> {
         return new BaseResponse<T>().setStatus(HttpStatus.OK.value()).setMessage( message);
     }
 
-    public static BaseResponse error(String message) {
+    public static BaseResponse badRequest(String message) {
         return new BaseResponse().setStatus(HttpStatus.BAD_REQUEST.value()).setMessage(message);
     }
 }

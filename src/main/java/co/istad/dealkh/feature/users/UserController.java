@@ -1,6 +1,8 @@
 package co.istad.dealkh.feature.users;
 
 import co.istad.dealkh.entity.User;
+import co.istad.dealkh.feature.files.FileService;
+import co.istad.dealkh.feature.files.dto.FileResponse;
 import co.istad.dealkh.feature.users.dto.UserRequest;
 import co.istad.dealkh.feature.users.dto.UserResponse;
 import co.istad.dealkh.paging.PageResponse;
@@ -9,41 +11,25 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserController {
-
     private final UserService userService;
+    private final FileService fileService;
 
     @GetMapping()
-    public BaseResponse getAllUsers(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "2") int size, @RequestParam(defaultValue = "id") String field, @RequestParam(defaultValue = "asc") String order) {
-        // Validate page and size
-        if (page < 0 || size <= 0) {
-            return BaseResponse.error("Page and size must be greater than 0");
-        }
-
-        // Validate field
-        List<String> validFields = Arrays.asList("id", "username", "email", "dob");
-        if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            return BaseResponse.error("Field must be id, username, email, or dob");
-        }
-
-        // Validate order
-        if (order != null && !order.equals("asc") && !order.equals("desc")) {
-            return BaseResponse.error("Order must be asc or desc");
-        }
-
-        // Create sort object
-        Sort sort = Sort.by(Sort.Direction.fromString(order), field);
-        return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieve data!!").setPayload(userService.getAllUsers(page, size, sort));
+    public BaseResponse getAllUsers(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "2") int size, @RequestParam(defaultValue = "username") String field, @RequestParam(defaultValue = "asc") String order) {
+        return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieve data!!").setPayload(userService.getAllUsers(page, size, field, order));
     }
 
     @GetMapping("/{id}")
@@ -119,5 +105,33 @@ public class UserController {
         return BaseResponse.<List<UserResponse>>ok("Success").setPayload(userService.getAllUsersByStatus(status));
     }
 
+
+    @PostMapping(value = "/{id}/profile/upload", consumes = "multipart/form-data")
+    @Operation(summary = "Upload profile picture and update user")
+    @ResponseStatus(HttpStatus.CREATED)
+    public BaseResponse<UserResponse> uploadProfileImage(
+            @PathVariable Long id,
+            @RequestPart("file") MultipartFile file,
+            @RequestParam("description") String description,
+            HttpServletRequest request
+    ) {
+        // Check if user exists before uploading the file
+        if (!userService.existsById(id)) {
+            return BaseResponse.<UserResponse>notFound("User not found");
+        }
+
+        // Upload the file
+        FileResponse fileResponse = fileService.uploadSingleFile(file, request);
+
+        // Update user image information
+        UserResponse userResponse = userService.updateUserImage(id, fileResponse.fullUrl(), description);
+        return BaseResponse.<UserResponse>createSuccess("Successfully uploaded profile image and updated user!")
+                .setPayload(userResponse);
+    }
+
+    @GetMapping("/profile/download/{fileName}")
+    public ResponseEntity<?> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+        return fileService.serveFile(fileName, request);
+    }
 
 }
