@@ -1,6 +1,6 @@
 package co.istad.dealkh.converter;
 
-import co.istad.dealkh.entity.json.Image;
+import co.istad.dealkh.domain.json.Image;
 import jakarta.persistence.Converter;
 
 @Converter

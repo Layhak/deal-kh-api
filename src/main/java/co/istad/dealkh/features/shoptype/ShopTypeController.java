@@ -1,48 +1,51 @@
 package co.istad.dealkh.features.shoptype;
 
 import co.istad.dealkh.base.BaseResponse;
-import co.istad.dealkh.features.shoptype.dto.ShopTypeRequest;
+import co.istad.dealkh.features.shoptype.dto.ShopTypeCreateRequest;
 import co.istad.dealkh.features.shoptype.dto.ShopTypeResponse;
+import co.istad.dealkh.features.shoptype.dto.ShopTypeUpdateRequest;
+import co.istad.dealkh.paging.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/shoptype")
+@RequestMapping("/api/v1/shoptypes")
 public class ShopTypeController {
+
     private final ShopTypeService shopTypeService;
 
-    @GetMapping
-    BaseResponse<List<ShopTypeResponse>> getShopType() {
-        return BaseResponse.<List<ShopTypeResponse>>ok("Success ").setPayload(shopTypeService.getAllShopTypes());
+    @PostMapping("/")
+    BaseResponse<ShopTypeResponse> createShopType(@RequestBody ShopTypeCreateRequest shopTypeCreateRequest) {
+        return BaseResponse.<ShopTypeResponse>createSuccess("Successfully created shop type!")
+                .setPayload(shopTypeService.createShopType(shopTypeCreateRequest));
     }
 
-    @PostMapping
-    public BaseResponse<ShopTypeResponse> createShopType(@RequestBody ShopTypeRequest shopTypeRequest) {
-        return BaseResponse.<ShopTypeResponse>createSuccess("Created new shop type").setPayload(shopTypeService.createShopType(shopTypeRequest));
+    @GetMapping("/{name}")
+    BaseResponse<Optional<ShopTypeResponse>> getShopTypeByName(@PathVariable String name) {
+        return BaseResponse.<Optional<ShopTypeResponse>>ok("Successfully retrieved shop type!")
+                .setPayload(shopTypeService.getShopTypeByName(name));
     }
 
-    @PatchMapping("/{id}")
-    public BaseResponse<ShopTypeResponse> updateShopType(@PathVariable Long id, @RequestBody ShopTypeRequest shopTypeRequest) {
-        return BaseResponse.<ShopTypeResponse>createSuccess("Updated shop type").setPayload(shopTypeService.updateShopType(id, shopTypeRequest));
+    @GetMapping("/")
+    BaseResponse<PageResponse<ShopTypeResponse>> filterShopType(@RequestParam Map<String, String> params) {
+        return BaseResponse.<PageResponse<ShopTypeResponse>>ok("Successfully retrieved shop type!")
+                .setPayload(shopTypeService.filterShopTypes(params));
     }
 
-    @DeleteMapping("/{id}")
-    public BaseResponse<String> deleteShopType(@PathVariable Long id) {
-        shopTypeService.deleteShopType(id);
-        return BaseResponse.<String>createSuccess("Deleted shop type");
+    @PutMapping("/{name}")
+    BaseResponse<ShopTypeResponse> updateShopTypeByName(@PathVariable String name, @RequestBody ShopTypeUpdateRequest shopTypeUpdateRequest) {
+        return BaseResponse.<ShopTypeResponse>updateSuccess()
+                .setPayload(shopTypeService.updateShopTypeByName(name, shopTypeUpdateRequest));
     }
 
-    @GetMapping("/{id}")
-    public BaseResponse<ShopTypeResponse> getShopTypeById(@PathVariable Long id) {
-        return BaseResponse.<ShopTypeResponse>ok("Success").setPayload(shopTypeService.getShopTypeById(id));
-    }
-
-    @GetMapping("/name/{name}")
-    public BaseResponse<ShopTypeResponse> getShopTypeByName(@PathVariable String name) {
-        return BaseResponse.<ShopTypeResponse>ok("Success").setPayload(shopTypeService.getShopTypeByName(name));
+    @DeleteMapping("/{name}")
+    BaseResponse<?> deleteShopTypeByName(@PathVariable String name) {
+        shopTypeService.deleteShopTypeByName(name);
+        return BaseResponse.deleteSuccess("Delete shop type successfully!");
     }
 
 }

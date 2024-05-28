@@ -1,8 +1,8 @@
 package co.istad.dealkh.features.user;
 
-import co.istad.dealkh.entity.Role;
-import co.istad.dealkh.entity.User;
-import co.istad.dealkh.entity.json.Image;
+import co.istad.dealkh.domain.Role;
+import co.istad.dealkh.domain.User;
+import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.user.dto.UserProfileResponse;
 import co.istad.dealkh.features.user.dto.UserRequest;

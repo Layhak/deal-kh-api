@@ -1,12 +1,14 @@
 package co.istad.dealkh.features.shoptype;
 
-import co.istad.dealkh.entity.ShopType;
+import co.istad.dealkh.domain.ShopType;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Optional;
 
-@Repository
-public interface ShopTypeRepository extends JpaRepository<ShopType, Long> {
+public interface ShopTypeRepository extends JpaRepository<ShopType, Long>, JpaSpecificationExecutor<ShopType> {
+
     Optional<ShopType> findByName(String name);
+
+    boolean existsByName(String name);
 }

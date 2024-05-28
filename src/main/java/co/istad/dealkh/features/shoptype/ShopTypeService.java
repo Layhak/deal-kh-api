@@ -1,20 +1,22 @@
 package co.istad.dealkh.features.shoptype;
 
-import co.istad.dealkh.features.shoptype.dto.ShopTypeRequest;
+import co.istad.dealkh.features.shoptype.dto.ShopTypeCreateRequest;
 import co.istad.dealkh.features.shoptype.dto.ShopTypeResponse;
+import co.istad.dealkh.features.shoptype.dto.ShopTypeUpdateRequest;
+import co.istad.dealkh.paging.PageResponse;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public interface ShopTypeService {
-    List<ShopTypeResponse> getAllShopTypes();
 
-    ShopTypeResponse createShopType(ShopTypeRequest shopTypeRequest);
+    ShopTypeResponse createShopType(ShopTypeCreateRequest shopTypeCreateRequest);
 
-    ShopTypeResponse updateShopType(Long id, ShopTypeRequest shopTypeRequest);
+    Optional<ShopTypeResponse> getShopTypeByName(String name);
 
-    void deleteShopType(Long id);
+    PageResponse<ShopTypeResponse> filterShopTypes(Map<String, String> params);
 
-    ShopTypeResponse getShopTypeById(Long id);
+    ShopTypeResponse updateShopTypeByName(String name, ShopTypeUpdateRequest shopTypeUpdateRequest);
 
-    ShopTypeResponse getShopTypeByName(String name);
+    void deleteShopTypeByName(String name);
 }

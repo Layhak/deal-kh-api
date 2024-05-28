@@ -1,6 +1,6 @@
 package co.istad.dealkh.mapper;
 
-import co.istad.dealkh.entity.User;
+import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.user.dto.UserRequest;
 import co.istad.dealkh.features.user.dto.UserResponse;
 import org.mapstruct.Mapper;
@@ -16,6 +16,4 @@ public interface UserMapper {
     @Mapping(source = "role", target = "role", qualifiedByName = "stringToRole")
     @Mapping(source = "images", target = "image")
     User mapRequestToUser(UserRequest userRequest);
-
-
 }

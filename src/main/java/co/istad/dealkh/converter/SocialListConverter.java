@@ -1,6 +1,6 @@
 package co.istad.dealkh.converter;
 
-import co.istad.dealkh.entity.json.SocialMedia;
+import co.istad.dealkh.domain.json.SocialMedia;
 import jakarta.persistence.Converter;
 
 @Converter

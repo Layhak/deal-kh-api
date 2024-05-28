@@ -1,7 +1,7 @@
 package co.istad.dealkh.features.user.dto;
 
-import co.istad.dealkh.entity.json.Image;
-import co.istad.dealkh.entity.json.SocialMedia;
+import co.istad.dealkh.domain.json.Image;
+import co.istad.dealkh.domain.json.SocialMedia;
 
 import java.time.LocalDate;
 import java.util.List;

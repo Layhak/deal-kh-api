@@ -1,64 +1,98 @@
 package co.istad.dealkh.features.shoptype;
 
-import co.istad.dealkh.entity.ShopType;
-import co.istad.dealkh.features.shoptype.dto.ShopTypeRequest;
+import co.istad.dealkh.domain.ShopType;
+import co.istad.dealkh.features.shoptype.dto.ShopTypeCreateRequest;
 import co.istad.dealkh.features.shoptype.dto.ShopTypeResponse;
+import co.istad.dealkh.features.shoptype.dto.ShopTypeUpdateRequest;
 import co.istad.dealkh.mapper.ShopTypeMapper;
+import co.istad.dealkh.specification.filter.PageFilter;
+import co.istad.dealkh.specification.filter.ShopTypeFilter;
+import co.istad.dealkh.specification.filter.ShopTypeSpecification;
+import co.istad.dealkh.paging.PageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-
 public class ShopTypeServiceImpl implements ShopTypeService {
+
     private final ShopTypeRepository shopTypeRepository;
     private final ShopTypeMapper shopTypeMapper;
 
     @Override
-    public List<ShopTypeResponse> getAllShopTypes() {
-        List<ShopType> shopTypes = shopTypeRepository.findAll();
-        return shopTypes.stream().map(shopTypeMapper::toShopTypeResponse).collect(Collectors.toList());
+    public ShopTypeResponse createShopType(ShopTypeCreateRequest shopTypeCreateRequest) {
+
+        if (shopTypeRepository.existsByName(shopTypeCreateRequest.name())){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Shop type name already exists");
+        }
+
+        ShopType newShopType = shopTypeMapper.mapShopTypeRequestToShopType(shopTypeCreateRequest);
+
+        return shopTypeMapper.mapShopTypeToShopTypeResponse(shopTypeRepository.save(newShopType));
     }
 
     @Override
-    public ShopTypeResponse createShopType(ShopTypeRequest shopTypeRequest) {
-        ShopType shopType = shopTypeMapper.toShopType(shopTypeRequest);
-        ShopType savedShopType = shopTypeRepository.save(shopType);
-        return shopTypeMapper.toShopTypeResponse(savedShopType);
+    public Optional<ShopTypeResponse> getShopTypeByName(String name) {
+        ShopType shopType = shopTypeRepository.findByName(name)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop type with name %s not found! ", name)));
+
+        return Optional.of(shopTypeMapper.mapShopTypeToShopTypeResponse(shopType));
     }
 
-
     @Override
-    public ShopTypeResponse updateShopType(Long id, ShopTypeRequest shopTypeRequest) {
-        ShopType shopType = shopTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shop Type not found"));
-        shopType.setName(shopTypeRequest.name());
-        shopType.setIcon(shopTypeRequest.icon());
-        ShopType updatedShopType = shopTypeRepository.save(shopType);
-        return shopTypeMapper.toShopTypeResponse(updatedShopType);
+    public PageResponse<ShopTypeResponse> filterShopTypes(Map<String, String> params) {
+        ShopTypeFilter shopTypeFilter = new ShopTypeFilter();
+        int pageLimit = PageFilter.DEFAULT_PAGE_LIMIT;
+        int pageNumber = PageFilter.DEFAULT_PAGE_NUMBER;
+
+        if (params.containsKey("name")) {
+            String name = params.get("name");
+            shopTypeFilter.setName(name);
+        }
+
+        if(params.containsKey(PageFilter.PAGE_LIMIT)) {
+            pageLimit = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
+        }
+
+        if(params.containsKey(PageFilter.PAGE_NUMBER)) {
+            pageNumber = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
+        }
+
+        ShopTypeSpecification specification = new ShopTypeSpecification(shopTypeFilter);
+
+        Pageable pageable = PageFilter.getPageable(pageNumber, pageLimit);
+
+        Page<ShopTypeResponse> page = shopTypeRepository.findAll(specification, pageable)
+                .map(shopTypeMapper::mapShopTypeToShopTypeResponse);
+
+        return new PageResponse<>(page);
     }
 
+    @Override
+    public ShopTypeResponse updateShopTypeByName(String name, ShopTypeUpdateRequest shopTypeUpdateRequest) {
+        ShopType shopType = shopTypeRepository.findByName(name)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop type with name %s not found! ", name)));
+
+        shopTypeMapper.mapShopTypeUpdateRequest(shopType, shopTypeUpdateRequest);
+
+        shopType = shopTypeRepository.save(shopType);
+
+        return shopTypeMapper.mapShopTypeToShopTypeResponse(shopType);
+    }
 
     @Override
-    public void deleteShopType(Long id) {
-        ShopType shopType = shopTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shop Type not found"));
+    public void deleteShopTypeByName(String name) {
+
+        ShopType shopType = shopTypeRepository.findByName(name)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop type with name %s not found! ", name)));
+
         shopTypeRepository.delete(shopType);
-    }
-
-    @Override
-    public ShopTypeResponse getShopTypeById(Long id) {
-        ShopType shopType = shopTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shop Type not found"));
-        return shopTypeMapper.toShopTypeResponse(shopType);
-    }
-
-    @Override
-    public ShopTypeResponse getShopTypeByName(String name) {
-        ShopType shopType = shopTypeRepository.findByName(name).orElseThrow(() -> new RuntimeException("Shop Type not found"));
-        return shopTypeMapper.toShopTypeResponse(shopType);
     }
 }

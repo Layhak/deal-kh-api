@@ -1,6 +1,6 @@
 package co.istad.dealkh.features.user.dto;
 
-import co.istad.dealkh.entity.Authority;
+import co.istad.dealkh.domain.Authority;
 
 import java.util.Set;
 

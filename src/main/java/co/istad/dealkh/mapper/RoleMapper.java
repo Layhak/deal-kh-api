@@ -1,6 +1,6 @@
 package co.istad.dealkh.mapper;
 
-import co.istad.dealkh.entity.Role;
+import co.istad.dealkh.domain.Role;
 import co.istad.dealkh.features.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
