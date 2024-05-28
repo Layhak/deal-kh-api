@@ -6,7 +6,7 @@ import co.istad.dealkh.features.user.dto.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {RoleMapper.class})
+@Mapper(componentModel = "spring", uses = {CustomMapper.class})
 public interface UserMapper {
     @Mapping(source = "role.name", target = "role")
     @Mapping(source = "image", target = "images")

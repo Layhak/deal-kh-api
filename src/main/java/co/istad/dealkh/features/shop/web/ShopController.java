@@ -3,9 +3,9 @@ package co.istad.dealkh.features.shop.web;
 
 import co.istad.dealkh.base.BaseResponse;
 import co.istad.dealkh.features.shop.ShopService;
-
 import co.istad.dealkh.features.shop.dto.ShopRequest;
 import co.istad.dealkh.features.shop.dto.ShopResponse;
+import co.istad.dealkh.paging.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +20,13 @@ public class ShopController {
 
     @GetMapping
     @Operation(summary = "Get all shops")
-    public BaseResponse<List<ShopResponse>> getAllShop() {
-        return BaseResponse.<List<ShopResponse>>ok("Success ").setPayload(shopService.getAllShop());
+    public BaseResponse<PageResponse<ShopResponse>> getAllShop(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(defaultValue = "name") String field,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        return BaseResponse.<PageResponse<ShopResponse>>ok("Success").setPayload(shopService.getAllShop(page, size, field, order));
     }
 
     @PostMapping
@@ -43,7 +48,7 @@ public class ShopController {
     }
 
     @DeleteMapping("/{id}")
-@Operation(summary = "Delete shop")
+    @Operation(summary = "Delete shop")
     public BaseResponse<Void> deleteShop(@PathVariable Long id) {
         shopService.deleteShop(id);
         return BaseResponse.<Void>deleteSuccess("Deleted shop");
