@@ -1,9 +1,10 @@
 package co.istad.dealkh.mapper;
 
 import co.istad.dealkh.entity.User;
-import co.istad.dealkh.features.users.dto.UserRequest;
-import co.istad.dealkh.features.users.dto.UserResponse;
-import org.mapstruct.*;
+import co.istad.dealkh.features.user.dto.UserRequest;
+import co.istad.dealkh.features.user.dto.UserResponse;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {RoleMapper.class})
 public interface UserMapper {

@@ -1,8 +1,8 @@
 package co.istad.dealkh.entity;
 
+import co.istad.dealkh.audit.Auditable;
 import co.istad.dealkh.converter.ImageListConverter;
 import co.istad.dealkh.entity.json.Image;
-import co.istad.dealkh.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

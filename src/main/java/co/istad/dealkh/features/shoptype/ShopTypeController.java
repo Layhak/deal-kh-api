@@ -1,8 +1,8 @@
 package co.istad.dealkh.features.shoptype;
 
+import co.istad.dealkh.base.BaseResponse;
 import co.istad.dealkh.features.shoptype.dto.ShopTypeRequest;
 import co.istad.dealkh.features.shoptype.dto.ShopTypeResponse;
-import co.istad.dealkh.utils.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

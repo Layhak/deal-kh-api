@@ -1,7 +1,7 @@
 package co.istad.dealkh.entity;
 
 
-import co.istad.dealkh.utils.Auditable;
+import co.istad.dealkh.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
