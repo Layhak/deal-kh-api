@@ -25,8 +25,8 @@ public class BaseResponse<T> {
     }
 
 
-    public static <T> BaseResponse<T> updateSuccess() {
-        return new BaseResponse<T>().setStatus(HttpStatus.OK.value()).setMessage("Successfully update the entry!");
+    public static <T> BaseResponse<T> updateSuccess(String message) {
+        return new BaseResponse<T>().setStatus(HttpStatus.OK.value()).setMessage(message);
     }
 
     public static <T> BaseResponse<T> deleteSuccess(String message) {

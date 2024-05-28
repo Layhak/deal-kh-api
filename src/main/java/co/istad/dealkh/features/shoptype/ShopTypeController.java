@@ -38,7 +38,7 @@ public class ShopTypeController {
 
     @PutMapping("/{name}")
     BaseResponse<ShopTypeResponse> updateShopTypeByName(@PathVariable String name, @RequestBody ShopTypeUpdateRequest shopTypeUpdateRequest) {
-        return BaseResponse.<ShopTypeResponse>updateSuccess()
+        return BaseResponse.<ShopTypeResponse>updateSuccess("Update shop type successfully!")
                 .setPayload(shopTypeService.updateShopTypeByName(name, shopTypeUpdateRequest));
     }
 
