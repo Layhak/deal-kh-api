@@ -1,4 +1,4 @@
-package co.istad.dealkh.features.Authority;
+package co.istad.dealkh.features.authority;
 
 import co.istad.dealkh.domain.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;

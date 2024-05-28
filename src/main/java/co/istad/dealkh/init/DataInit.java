@@ -3,7 +3,7 @@ package co.istad.dealkh.init;
 import co.istad.dealkh.domain.*;
 import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.domain.json.SocialMedia;
-import co.istad.dealkh.features.Authority.AuthorityRepository;
+import co.istad.dealkh.features.authority.AuthorityRepository;
 import co.istad.dealkh.features.discount.DiscountRepository;
 import co.istad.dealkh.features.roles.RoleRepository;
 import co.istad.dealkh.features.shop.ShopRepository;
