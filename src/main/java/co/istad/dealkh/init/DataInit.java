@@ -4,6 +4,7 @@ import co.istad.dealkh.domain.*;
 import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.domain.json.SocialMedia;
 import co.istad.dealkh.features.Authority.AuthorityRepository;
+import co.istad.dealkh.features.discount.DiscountRepository;
 import co.istad.dealkh.features.roles.RoleRepository;
 import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
@@ -29,6 +30,7 @@ public class DataInit {
     private final ShopRepository shopRepository;
     private final ShopTypeRepository shopTypeRepository;
     private final UserRepository userRepository;
+    private final DiscountRepository discountRepository;
 
 
     @PostConstruct
@@ -39,6 +41,7 @@ public class DataInit {
             initShopTypes();
             initShops();
             initUsers();
+            initDiscount();
             logger.info("Data initialized successfully");
         } catch (Exception e) {
             logger.severe("Error in data initialization");
@@ -160,5 +163,15 @@ public class DataInit {
 
             shopRepository.saveAll(shops);
         }
+    }
+
+    private void initDiscount() {
+        List<Discount> discounts = new ArrayList<>();
+        Discount discount = new Discount();
+        discount.setName("No discount");
+        discount.setDescription("No discount");
+        discount.setDiscountPercentage(0);
+        discounts.add(discount);
+        discountRepository.saveAll(discounts);
     }
 }
