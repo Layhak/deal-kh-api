@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -80,6 +81,8 @@ public class ProductServiceImpl implements ProductService{
                         HttpStatus.NOT_FOUND,
                         String.format("Product with id %d not found! ", id)
                 ));
+
+        product.setUpdatedAt(LocalDateTime.now());
 
         productMapper.mapProductToUpdateRequest(product, productUpdateRequest);
 

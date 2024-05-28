@@ -1,10 +1,12 @@
-package co.istad.dealkh.features.discount;
+package co.istad.dealkh.features.discount.web;
 
 import co.istad.dealkh.base.BaseResponse;
+import co.istad.dealkh.features.discount.DiscountService;
 import co.istad.dealkh.features.discount.dto.DiscountCreateRequest;
 import co.istad.dealkh.features.discount.dto.DiscountResponseDetail;
 import co.istad.dealkh.features.discount.dto.DiscountUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +22,7 @@ public class DiscountController {
     private final DiscountService discountService;
 
     @PostMapping("/")
-    BaseResponse<DiscountResponseDetail> createDiscount(@RequestBody DiscountCreateRequest discountCreateRequest) {
+    BaseResponse<DiscountResponseDetail> createDiscount(@RequestBody @Valid DiscountCreateRequest discountCreateRequest) {
         return BaseResponse.<DiscountResponseDetail>createSuccess("Successfully created discount!")
                 .setPayload(discountService.createDiscount(discountCreateRequest));
     }

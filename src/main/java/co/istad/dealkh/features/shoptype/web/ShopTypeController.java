@@ -1,10 +1,12 @@
-package co.istad.dealkh.features.shoptype;
+package co.istad.dealkh.features.shoptype.web;
 
 import co.istad.dealkh.base.BaseResponse;
+import co.istad.dealkh.features.shoptype.ShopTypeService;
 import co.istad.dealkh.features.shoptype.dto.ShopTypeCreateRequest;
 import co.istad.dealkh.features.shoptype.dto.ShopTypeResponse;
 import co.istad.dealkh.features.shoptype.dto.ShopTypeUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +21,7 @@ public class ShopTypeController {
     private final ShopTypeService shopTypeService;
 
     @PostMapping("/")
-    BaseResponse<ShopTypeResponse> createShopType(@RequestBody ShopTypeCreateRequest shopTypeCreateRequest) {
+    BaseResponse<ShopTypeResponse> createShopType(@RequestBody @Valid ShopTypeCreateRequest shopTypeCreateRequest) {
         return BaseResponse.<ShopTypeResponse>createSuccess("Successfully created shop type!")
                 .setPayload(shopTypeService.createShopType(shopTypeCreateRequest));
     }

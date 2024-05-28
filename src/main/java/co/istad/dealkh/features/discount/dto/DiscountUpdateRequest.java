@@ -7,9 +7,7 @@ public record DiscountUpdateRequest(
         String name,
         String description,
         double discountPercentage,
-        LocalDate expiredAt,
-        LocalDate createdAt,
-        LocalDate updatedAt
+        LocalDate expiredAt
 
 ) {
 }

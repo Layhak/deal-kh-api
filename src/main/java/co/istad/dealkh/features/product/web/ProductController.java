@@ -5,6 +5,7 @@ import co.istad.dealkh.features.product.ProductService;
 import co.istad.dealkh.features.product.dto.ProductCreateRequest;
 import co.istad.dealkh.features.product.dto.ProductResponseDetail;
 import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/")
-    BaseResponse<ProductResponseDetail> createProduct(@RequestBody ProductCreateRequest productCreateRequest) {
+    BaseResponse<ProductResponseDetail> createProduct(@RequestBody @Valid ProductCreateRequest productCreateRequest) {
         return BaseResponse.<ProductResponseDetail>createSuccess("Successfully created product!")
                 .setPayload(productService.createProduct(productCreateRequest));
     }

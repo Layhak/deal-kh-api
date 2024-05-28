@@ -15,8 +15,6 @@ public record DiscountCreateRequest(
         @NotNull(message = "Discount percentage is required")
          double discountPercentage,
 
-         LocalDate expiredAt,
-         LocalDate createdAt,
-         LocalDate updatedAt
+         LocalDate expiredAt
 ) {
 }

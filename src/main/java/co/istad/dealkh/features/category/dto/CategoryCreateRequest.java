@@ -9,10 +9,6 @@ public record CategoryCreateRequest(
         @NotBlank(message = "Name is required")
         String name,
 
-        String icon,
-        String createdBy,
-        LocalDate createdAt,
-        LocalDate updateBy,
-        LocalDate updatedAt
+        String icon
 ) {
 }

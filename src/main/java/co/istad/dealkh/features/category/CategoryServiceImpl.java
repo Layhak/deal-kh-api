@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,6 +64,8 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = categoryRepository.findByName(name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found!"));
+
+        category.setUpdatedAt(LocalDateTime.now());
 
         categoryMapper.mapCategoryUpdateRequest(category, categoryUpdateRequest);
 

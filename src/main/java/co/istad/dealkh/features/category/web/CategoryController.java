@@ -1,9 +1,11 @@
-package co.istad.dealkh.features.category;
+package co.istad.dealkh.features.category.web;
 
 import co.istad.dealkh.base.BaseResponse;
+import co.istad.dealkh.features.category.CategoryService;
 import co.istad.dealkh.features.category.dto.CategoryCreateRequest;
 import co.istad.dealkh.features.category.dto.CategoryResponse;
 import co.istad.dealkh.features.category.dto.CategoryUpdateRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +20,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("/")
-    BaseResponse<CategoryResponse> createCategory(@RequestBody CategoryCreateRequest categoryCreateRequest) {
+    BaseResponse<CategoryResponse> createCategory(@RequestBody @Valid CategoryCreateRequest categoryCreateRequest) {
         return BaseResponse.<CategoryResponse>createSuccess("Successfully created category!")
                 .setPayload(categoryService.createCategory(categoryCreateRequest));
     }
