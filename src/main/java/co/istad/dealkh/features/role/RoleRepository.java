@@ -1,4 +1,4 @@
-package co.istad.dealkh.features.roles;
+package co.istad.dealkh.features.role;
 
 import co.istad.dealkh.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

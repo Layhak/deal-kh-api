@@ -1,7 +1,7 @@
 package co.istad.dealkh.mapper;
 
 import co.istad.dealkh.domain.Role;
-import co.istad.dealkh.features.roles.RoleRepository;
+import co.istad.dealkh.features.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;

@@ -5,7 +5,7 @@ import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.domain.json.SocialMedia;
 import co.istad.dealkh.features.authority.AuthorityRepository;
 import co.istad.dealkh.features.discount.DiscountRepository;
-import co.istad.dealkh.features.roles.RoleRepository;
+import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
 import co.istad.dealkh.features.user.UserRepository;
