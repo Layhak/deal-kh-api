@@ -6,11 +6,21 @@ import co.istad.dealkh.features.shop.dto.ShopResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "Spring")
-
+@Mapper(componentModel = "spring", uses = {CustomMapper.class})
 public interface ShopMapper {
 
+    @Mapping(target = "users", source = "users", qualifiedByName = "userToString")
+    @Mapping(target = "shopType", source = "shopType", qualifiedByName = "shopTypeToString")
     ShopResponse toShopResponse(Shop shop);
-    Shop toShop(ShopRequest shopRequest);
 
+    @Mapping(target = "users", ignore = true)
+    @Mapping(target = "shopType", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "isDeleted", ignore = true)
+    @Mapping(target = "isDisabled", ignore = true)
+    Shop toShop(ShopRequest shopRequest);
 }

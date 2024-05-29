@@ -6,7 +6,7 @@ import co.istad.dealkh.domain.json.SocialMedia;
 import co.istad.dealkh.features.authority.AuthorityRepository;
 import co.istad.dealkh.features.discount.DiscountRepository;
 import co.istad.dealkh.features.role.RoleRepository;
-import co.istad.dealkh.features.shop.ShopRepository;
+
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
 import co.istad.dealkh.features.user.UserRepository;
 import jakarta.annotation.PostConstruct;
@@ -27,7 +27,7 @@ public class DataInit {
     private static final Logger logger = Logger.getLogger(DataInit.class.getName());
     private final RoleRepository roleRepository;
     private final AuthorityRepository authorityRepository;
-    private final ShopRepository shopRepository;
+    private final ShopTypeRepository shopRepository;
     private final ShopTypeRepository shopTypeRepository;
     private final UserRepository userRepository;
     private final DiscountRepository discountRepository;
@@ -39,7 +39,7 @@ public class DataInit {
             initAuthorities();
             initRoles();
             initShopTypes();
-            initShops();
+//            initShops();
             initUsers();
             initDiscount();
             logger.info("Data initialized successfully");
@@ -126,43 +126,43 @@ public class DataInit {
     }
 
 
-    private void initShops() {
-        if (shopRepository.findAll().isEmpty()) {
-            List<Shop> shops = new ArrayList<>();
-
-            // Get an example shop type
-            ShopType shopType = shopTypeRepository.findAll().get(0);
-
-            // Example shop with images
-            Shop shop1 = new Shop();
-            shop1.setName("Shop 1");
-            shop1.setDescription("Description 1");
-            shop1.setPhoneNumber("123456789");
-            shop1.setEmail("shop1@example.com");
-            shop1.setIsDeleted(false);
-            shop1.setIsDisabled(false);
-            shop1.setOpenAt(LocalDateTime.of(2023, 1, 1, 9, 0));
-            shop1.setCloseAt(LocalDateTime.of(2023, 1, 1, 18, 0));
-            shop1.setCreatedAt(LocalDateTime.now());
-            shop1.setUpdatedAt(LocalDateTime.now());
-            shop1.setCreatedBy("Admin");
-            shop1.setUpdatedBy("Admin");
-
-            List<Image> images1 = new ArrayList<>();
-            images1.add(new Image("https://example.com/image1.jpg", "Image 1"));
-            images1.add(new Image("https://example.com/image2.jpg", "Image 2"));
-            shop1.setImages(images1);
-
-            // Set the shop type
-            shop1.setShopType(shopType);
-
-            shops.add(shop1);
-
-            // Add more shops as needed
-
-            shopRepository.saveAll(shops);
-        }
-    }
+//    private void initShops() {
+//        if (shopRepository.findAll().isEmpty()) {
+//            List<Shop> shops = new ArrayList<>();
+//
+//            // Get an example shop type
+//            ShopType shopType = shopTypeRepository.findAll().get(0);
+//
+//            // Example shop with images
+//            Shop shop1 = new Shop();
+//            shop1.setName("Shop 1");
+//            shop1.setDescription("Description 1");
+//            shop1.setPhoneNumber("123456789");
+//            shop1.setEmail("shop1@example.com");
+//            shop1.setIsDeleted(false);
+//            shop1.setIsDisabled(false);
+//            shop1.setOpenAt(LocalDateTime.of(2023, 1, 1, 9, 0));
+//            shop1.setCloseAt(LocalDateTime.of(2023, 1, 1, 18, 0));
+//            shop1.setCreatedAt(LocalDateTime.now());
+//            shop1.setUpdatedAt(LocalDateTime.now());
+//            shop1.setCreatedBy("Admin");
+//            shop1.setUpdatedBy("Admin");
+//
+//            List<Image> images1 = new ArrayList<>();
+//            images1.add(new Image("https://example.com/image1.jpg", "Image 1"));
+//            images1.add(new Image("https://example.com/image2.jpg", "Image 2"));
+//            shop1.setImages(images1);
+//
+//            // Set the shop type
+//            shop1.setShopType(shopType);
+//
+//            shops.add(shop1);
+//
+//            // Add more shops as needed
+//
+//            shopRepository.saveAll(shops);
+//        }
+//    }
 
     private void initDiscount() {
         List<Discount> discounts = new ArrayList<>();

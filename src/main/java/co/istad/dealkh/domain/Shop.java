@@ -8,7 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
 import java.util.List;
 
 @Entity
@@ -41,8 +42,8 @@ public class Shop extends Auditable {
 
     private Boolean isDeleted;
     private Boolean isDisabled;
-    private LocalDateTime openAt;
-    private LocalDateTime closeAt;
+    private LocalDate openAt;
+    private LocalDate closeAt;
     @ManyToOne
     @JoinColumn(name = "shop_type_id", nullable = false)
     private ShopType shopType;

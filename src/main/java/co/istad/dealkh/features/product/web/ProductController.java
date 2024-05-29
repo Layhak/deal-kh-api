@@ -32,7 +32,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     BaseResponse<ProductResponseDetail> updateProductById(@PathVariable Long id, @RequestBody ProductUpdateRequest productUpdateRequest) {
-        return BaseResponse.<ProductResponseDetail>updateSuccess()
+        return BaseResponse.<ProductResponseDetail>updateSuccess("Update product successfully!")
                 .setPayload(productService.updateProductById(id, productUpdateRequest));
     }
 

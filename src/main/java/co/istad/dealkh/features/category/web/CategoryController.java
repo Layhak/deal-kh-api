@@ -45,7 +45,7 @@ public class CategoryController {
 
     @PutMapping("/{name}")
     BaseResponse<CategoryResponse> updateCategory(@PathVariable String name, @RequestBody CategoryUpdateRequest categoryUpdateRequest) {
-        return BaseResponse.<CategoryResponse>updateSuccess()
+        return BaseResponse.<CategoryResponse>updateSuccess("Update category successfully!")
                 .setPayload(categoryService.updateCategoryByName(name, categoryUpdateRequest));
     }
 

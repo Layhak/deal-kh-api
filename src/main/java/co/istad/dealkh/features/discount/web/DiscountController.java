@@ -52,7 +52,7 @@ public class DiscountController {
 
     @PutMapping("/{id}")
     BaseResponse<DiscountResponseDetail> updateDiscountById(@PathVariable Long id, @RequestBody DiscountUpdateRequest discountUpdateRequest) {
-        return BaseResponse.<DiscountResponseDetail>updateSuccess()
+        return BaseResponse.<DiscountResponseDetail>updateSuccess("Update discount successfully!")
                 .setPayload(discountService.updateDiscountById(id, discountUpdateRequest));
     }
 
