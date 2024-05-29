@@ -167,10 +167,12 @@ public class DataInit {
     private void initDiscount() {
         List<Discount> discounts = new ArrayList<>();
         Discount discount = new Discount();
-        discount.setName("No discount");
-        discount.setDescription("No discount");
-        discount.setDiscountPercentage(0);
-        discounts.add(discount);
-        discountRepository.saveAll(discounts);
+        if(discountRepository.findAll().isEmpty()){
+            discount.setName("No discount");
+            discount.setDescription("No discount");
+            discount.setDiscountPercentage(0);
+            discounts.add(discount);
+            discountRepository.saveAll(discounts);
+        }
     }
 }

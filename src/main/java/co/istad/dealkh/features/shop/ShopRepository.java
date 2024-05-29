@@ -1,4 +1,4 @@
-package co.istad.dealkh.feature.shop;
+package co.istad.dealkh.features.shop;
 
 import co.istad.dealkh.domain.Shop;
 

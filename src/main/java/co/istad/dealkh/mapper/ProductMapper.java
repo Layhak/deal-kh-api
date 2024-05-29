@@ -1,9 +1,7 @@
 package co.istad.dealkh.mapper;
 
 import co.istad.dealkh.converter.ImageListConverter;
-import co.istad.dealkh.domain.Discount;
-import co.istad.dealkh.domain.Order;
-import co.istad.dealkh.domain.Product;
+import co.istad.dealkh.domain.*;
 import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.features.category.CategoryService;
 import co.istad.dealkh.features.discount.DiscountService;
@@ -20,6 +18,9 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
+    @Mapping(target = "category", source = "category", qualifiedByName = "categoryToString")
+    @Mapping(target = "shop", source = "shop", qualifiedByName = "shopToString")
+    @Mapping(target = "discountPercentage", source = "discount", qualifiedByName = "discountToDouble")
     ProductResponseDetail mapProductToProductResponseDetail(Product product);
 
     Product mapProductRequestToProduct(ProductCreateRequest productCreateRequest);
@@ -28,14 +29,21 @@ public interface ProductMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void mapProductToUpdateRequest(@MappingTarget Product product, ProductUpdateRequest productUpdateRequest);
 
+    @Named("categoryToString")
+    default String mapCategory(Category category) {
+        return category.getName();
+    }
 
-//    @Mapping(source = "images", target = "images", qualifiedByName = "convertImagesToListOfString")
-//    @Mapping(target = "images", expression = "java(mapImages(product.getImages()))")
-//    @Mapping(source = "images", target = "images", qualifiedByName = "convertImagesToListOfString")
+    @Named("shopToString")
+    default String mapShop(Shop shop) {
+        return shop.getName();
+    }
 
-//    @Named("convertImagesToListOfString")
-//    default List<String> convertImagesToListOfString(List<Image> images) {
-//        return images.stream().map(Image::getUrl).collect(Collectors.toList());
-//    }
+    @Named("discountToDouble")
+    default Double mapDiscount(Discount discount) {
+        return discount.getDiscountPercentage();
+    }
+
+
 
 }

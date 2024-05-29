@@ -5,10 +5,12 @@ import co.istad.dealkh.features.product.ProductService;
 import co.istad.dealkh.features.product.dto.ProductCreateRequest;
 import co.istad.dealkh.features.product.dto.ProductResponseDetail;
 import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
+import co.istad.dealkh.paging.PageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -28,6 +30,12 @@ public class ProductController {
     BaseResponse<Optional<ProductResponseDetail>> getProductById(@PathVariable Long id) {
         return BaseResponse.<Optional<ProductResponseDetail>>ok("Successfully retrieved product!")
                 .setPayload(productService.getProductById(id));
+    }
+
+    @GetMapping("/")
+    PageResponse<ProductResponseDetail> filterProduct(@RequestParam Map<String, String> params) {
+        return productService.filterProduct(params);
+
     }
 
     @PutMapping("/{id}")

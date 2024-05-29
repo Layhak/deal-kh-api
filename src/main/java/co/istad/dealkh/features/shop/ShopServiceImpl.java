@@ -1,10 +1,7 @@
 package co.istad.dealkh.features.shop;
-
-
 import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.domain.ShopType;
 import co.istad.dealkh.domain.User;
-import co.istad.dealkh.feature.shop.ShopRepository;
 import co.istad.dealkh.features.shop.dto.ShopRequest;
 import co.istad.dealkh.features.shop.dto.ShopResponse;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;

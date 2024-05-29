@@ -7,7 +7,7 @@ import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",uses = {CustomMapper.class})
 public interface ProductFeedbackMapper {
     @Mapping(target = "productId", source = "product.id")
     @Mapping(target = "userId", source = "user.id")

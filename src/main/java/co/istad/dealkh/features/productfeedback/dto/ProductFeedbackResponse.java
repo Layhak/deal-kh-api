@@ -8,9 +8,7 @@ public record ProductFeedbackResponse(
         Long id,
         String description,
         Long productId,
-
         Long userId,
         List<Image> images
-
 ) {
 }

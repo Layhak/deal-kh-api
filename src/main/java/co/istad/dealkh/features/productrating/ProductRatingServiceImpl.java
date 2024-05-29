@@ -41,6 +41,25 @@ public class ProductRatingServiceImpl implements ProductRatingService{
                         HttpStatus.NOT_FOUND, "Product not found!"
                 ));
 
+        if (productRatingRequest.ratingValue() < 0 || productRatingRequest.ratingValue() > 5) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Rating must be between 0 and 5!"
+            );
+        }
+
+        if (productRatingRequest.userId() <= 0 || productRatingRequest.productId() <= 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "User id and product id are required!"
+            );
+        }
+
+        //if id already rate once then throw error
+        if (productRatingRepository.findByUserIdAndProductId(productRatingRequest.userId(), productRatingRequest.productId()).isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "You have already rated this product!"
+            );
+        }
+
         newProductRating.setUser(user);
         newProductRating.setProduct(product);
         productRatingRepository.save(newProductRating);

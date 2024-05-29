@@ -1,10 +1,7 @@
 package co.istad.dealkh.features.product.dto;
 
-import co.istad.dealkh.domain.Category;
-import co.istad.dealkh.domain.Discount;
-import co.istad.dealkh.domain.Order;
-import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.domain.json.Image;
+import co.istad.dealkh.features.discount.dto.DiscountResponse;
 
 import java.net.CacheRequest;
 import java.time.LocalDate;
@@ -17,9 +14,9 @@ public record ProductResponseDetail(
         double price,
         String description,
         List<Image> images,
-        Shop shop,
-        Discount discount,
-        Category category,
+        String shop,
+        Double discountPercentage,
+        String category,
         LocalDate createdAt,
         LocalDate updatedAt,
         String createdBy,
