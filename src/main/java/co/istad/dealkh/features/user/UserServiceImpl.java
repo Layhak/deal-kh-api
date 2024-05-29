@@ -10,6 +10,8 @@ import co.istad.dealkh.features.user.dto.UserResponse;
 import co.istad.dealkh.mapper.UserMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
+import co.istad.dealkh.specification.filter.UserFilter;
+import co.istad.dealkh.specification.filter.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,10 +43,37 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageResponse<UserResponse> getAllUsers(int page, int size, String field, String order) {
-        if (page < 0 || size <= 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page and size must be greater than 0");
+    public PageResponse<UserResponse> getAllUsers(int page, int size, String field, String order, Map<String, String> params) {
+        UserFilter userFilter = new UserFilter();
+        int pageSize = Pagination.page_limit;
+        page = Pagination.page_number;
+        size = pageSize;
+
+        if (params.containsKey("username")) {
+            String username = params.get("username");
+            userFilter.setUsername(username);
         }
+        if (params.containsKey("email")) {
+            String email = params.get("email");
+            userFilter.setEmail(email);
+        }
+        if (params.containsKey("phone")) {
+            String phone = params.get("phone");
+            userFilter.setPhone(phone);
+        }
+        if (params.containsKey("role")) {
+            String role = params.get("role");
+            userFilter.setRole(role);
+        }
+        if (params.containsKey("status")) {
+            String status = params.get("status");
+            userFilter.setStatus(status);
+        }
+        if (params.containsKey("gender")) {
+            String gender = params.get("gender");
+            userFilter.setGender(gender);
+        }
+
         List<String> validFields = Arrays.asList("username", "email", "dob", "createdAt", "updatedAt");
         if (field == null || field.isEmpty() || !validFields.contains(field)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, username, email, or dob");
@@ -51,8 +81,11 @@ public class UserServiceImpl implements UserService {
         if (order != null && !order.equals("asc") && !order.equals("desc")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
         }
+        UserSpecification specification = new UserSpecification(userFilter);
+
         Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
-        Page<UserResponse> users = userRepository.findAll(pageable).map(userMapper::mapToUserResponse);
+
+        Page<UserResponse> users = userRepository.findAll(specification, pageable).map(userMapper::mapToUserResponse);
         return new PageResponse<>(users);
     }
 

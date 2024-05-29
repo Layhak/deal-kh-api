@@ -6,12 +6,13 @@ import co.istad.dealkh.features.user.dto.UserResponse;
 import co.istad.dealkh.paging.PageResponse;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 
     UserResponse getById(Long id);
 
-    PageResponse getAllUsers(int page, int size, String field, String order);
+    PageResponse<UserResponse> getAllUsers(int page, int size, String field, String order, Map<String, String> params);
 
     UserProfileResponse getUserProfile(Long id);
 
