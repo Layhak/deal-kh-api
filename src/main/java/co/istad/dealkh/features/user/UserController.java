@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,8 +29,14 @@ public class UserController {
     private final FileService fileService;
 
     @GetMapping
-    public BaseResponse<PageResponse<UserResponse>> getAllUsers(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "2") int size, @RequestParam(defaultValue = "username") String field, @RequestParam(defaultValue = "asc") String order) {
-        return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieve data!!").setPayload(userService.getAllUsers(page, size, field, order));
+    public BaseResponse<PageResponse<UserResponse>> getAllUsers(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(defaultValue = "username") String field,
+            @RequestParam(defaultValue = "asc") String order,
+            @RequestParam Map<String, String> params
+    ) {
+        return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieve data!!").setPayload(userService.getAllUsers(page, size, field, order, params));
     }
 
     @GetMapping("/{id}")

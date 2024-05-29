@@ -5,10 +5,10 @@ import co.istad.dealkh.features.shoptype.dto.ShopTypeCreateRequest;
 import co.istad.dealkh.features.shoptype.dto.ShopTypeResponse;
 import co.istad.dealkh.features.shoptype.dto.ShopTypeUpdateRequest;
 import co.istad.dealkh.mapper.ShopTypeMapper;
+import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.specification.filter.PageFilter;
 import co.istad.dealkh.specification.filter.ShopTypeFilter;
 import co.istad.dealkh.specification.filter.ShopTypeSpecification;
-import co.istad.dealkh.paging.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +29,7 @@ public class ShopTypeServiceImpl implements ShopTypeService {
     @Override
     public ShopTypeResponse createShopType(ShopTypeCreateRequest shopTypeCreateRequest) {
 
-        if (shopTypeRepository.existsByName(shopTypeCreateRequest.name())){
+        if (shopTypeRepository.existsByName(shopTypeCreateRequest.name())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Shop type name already exists");
         }
 
@@ -57,11 +57,11 @@ public class ShopTypeServiceImpl implements ShopTypeService {
             shopTypeFilter.setName(name);
         }
 
-        if(params.containsKey(PageFilter.PAGE_LIMIT)) {
+        if (params.containsKey(PageFilter.PAGE_LIMIT)) {
             pageLimit = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
         }
 
-        if(params.containsKey(PageFilter.PAGE_NUMBER)) {
+        if (params.containsKey(PageFilter.PAGE_NUMBER)) {
             pageNumber = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
         }
 
