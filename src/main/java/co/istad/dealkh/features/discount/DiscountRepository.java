@@ -4,13 +4,12 @@ import co.istad.dealkh.domain.Discount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import java.util.Optional;
-
 public interface DiscountRepository extends JpaRepository<Discount, Long>, JpaSpecificationExecutor<Discount> {
+    boolean existsByDiscountPercentage(double v);
 
-    Optional<Discount> findByName(String discountName);
+//    Optional<Discount> findByName(String discountName);
 
-    boolean existsByName(String name);
+//    boolean existsByName(String name);
 
-    boolean existsByDiscountPercentage(Double DiscountPercentage);
+//    boolean existsByDiscountPercentage(Double DiscountPercentage);
 }

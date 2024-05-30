@@ -7,14 +7,14 @@ import java.time.LocalDate;
 
 public record DiscountCreateRequest(
 
-        @NotBlank(message = "Name is required")
-         String name,
+        @NotBlank(message = "Discount type is required")
+        Long discountTypeId,
 
-         String description,
+        String description,
 
         @NotNull(message = "Discount percentage is required")
-         double discountPercentage,
+        double discountPercentage,
 
-         LocalDate expiredAt
+        LocalDate expiredAt
 ) {
 }

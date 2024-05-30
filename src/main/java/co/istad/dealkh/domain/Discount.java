@@ -12,14 +12,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "dk_discount")
+@Table(name = "dk_discounts")
 public class Discount extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private String name;
 
     @Column(length = 250)
     private String description;
@@ -29,5 +27,7 @@ public class Discount extends Auditable {
 
     private LocalDateTime expiredAt;
 
-
+    @ManyToOne
+    @JoinColumn(name = "discount_type_id", nullable = false)
+    private DiscountType discountType;
 }

@@ -5,7 +5,6 @@ import co.istad.dealkh.features.discount.dto.DiscountResponseDetail;
 import co.istad.dealkh.features.discount.dto.DiscountUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,9 +16,8 @@ public interface DiscountService {
 
     Optional<DiscountResponseDetail> getDiscountByName(String name);
 
-    List<DiscountResponseDetail> getAllDiscounts();
 
-    PageResponse<DiscountResponseDetail> filterDiscount(Map<String, String> params);
+    PageResponse<DiscountResponseDetail> getAllDiscounts(int page, int size, String field, String order, Map<String, String> params);
 
     DiscountResponseDetail updateDiscountById(Long id, DiscountUpdateRequest discountUpdateRequest);
 

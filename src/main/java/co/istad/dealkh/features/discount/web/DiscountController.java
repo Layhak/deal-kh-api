@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -39,15 +38,9 @@ public class DiscountController {
                 .setPayload(discountService.getDiscountByName(name));
     }
 
-    //    @GetMapping("/")
-    BaseResponse<List<DiscountResponseDetail>> getAllDiscount() {
-        return BaseResponse.<List<DiscountResponseDetail>>ok("Successfully retrieved discounts!")
-                .setPayload(discountService.getAllDiscounts());
-    }
-
     @GetMapping("/")
     PageResponse<DiscountResponseDetail> filterDiscount(@RequestParam Map<String, String> params) {
-        return discountService.filterDiscount(params);
+        return discountService.getAllDiscounts(params);
     }
 
     @PutMapping("/{id}")

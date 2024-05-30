@@ -4,15 +4,20 @@ import co.istad.dealkh.domain.*;
 import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.domain.json.SocialMedia;
 import co.istad.dealkh.features.authority.AuthorityRepository;
+import co.istad.dealkh.features.category.CategoryRepository;
 import co.istad.dealkh.features.discount.DiscountRepository;
+import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
+import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.role.RoleRepository;
-
+import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
 import co.istad.dealkh.features.user.UserRepository;
+import co.istad.dealkh.features.wishlist.WishListRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,11 +32,14 @@ public class DataInit {
     private static final Logger logger = Logger.getLogger(DataInit.class.getName());
     private final RoleRepository roleRepository;
     private final AuthorityRepository authorityRepository;
-    private final ShopTypeRepository shopRepository;
+    private final ShopRepository shopRepository;
     private final ShopTypeRepository shopTypeRepository;
     private final UserRepository userRepository;
     private final DiscountRepository discountRepository;
-
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final DiscountTypeRepository discountTypeRepository;
+    private final WishListRepository wishListRepository;
 
     @PostConstruct
     void initData() {
@@ -39,9 +47,12 @@ public class DataInit {
             initAuthorities();
             initRoles();
             initShopTypes();
-//            initShops();
             initUsers();
-            initDiscount();
+            initShops();
+            initDiscountTypes();
+            initDiscounts();
+            initCategories();
+//            initProducts();
             logger.info("Data initialized successfully");
         } catch (Exception e) {
             logger.severe("Error in data initialization");
@@ -104,7 +115,6 @@ public class DataInit {
             user1.setLocation("Phnom Penh");
             user1.setIsDisabled(false);
             user1.setCreatedAt(LocalDateTime.now());
-            user1.setCreatedAt(LocalDateTime.now());
             user1.setCreatedBy("Admin");
             user1.setUpdatedBy("Admin");
             user1.setRole(roles.get(1));
@@ -113,9 +123,8 @@ public class DataInit {
         }
     }
 
-    //
     private void initShopTypes() {
-        List<String> shopTypes = List.of("Type 1", "Type 2", "Type 3");
+        List<String> shopTypes = List.of("Technology", "Electronic", "Restaurant", "Clothing", "Bookstore", "Pharmacy");
         if (shopTypeRepository.findAll().isEmpty()) {
             shopTypes.forEach(type -> {
                 ShopType shopType = new ShopType();
@@ -125,54 +134,109 @@ public class DataInit {
         }
     }
 
+    private void initShops() {
+        List<Shop> shops = new ArrayList<>();
+        if (shopRepository.findAll().isEmpty()) {
+            Shop shop = new Shop();
+            shop.setName("Layhak Shop");
+            shop.setAddress("Phnom Penh");
+            shop.setDescription("Shop description");
+            shop.setPhoneNumber("0123456789");
+            shop.setEmail("layhakshop@gmail.com");
+            shop.setOpenAt(Time.valueOf("08:00:00"));
+            shop.setCloseAt(Time.valueOf("17:00:00"));
+            shop.setIsDeleted(false);
+            shop.setIsDisabled(false);
+            shop.setShopType(shopTypeRepository.findAll().get(0));
+            List<Image> images = new ArrayList<>();
+            images.add(new Image("https://example.com/image1.jpg", "Image 1"));
+            images.add(new Image("https://example.com/image2.jpg", "Image 2"));
+            shop.setImages(images);
+            shops.add(shop);
+            shopRepository.save(shop);
+        }
+    }
 
-//    private void initShops() {
-//        if (shopRepository.findAll().isEmpty()) {
-//            List<Shop> shops = new ArrayList<>();
-//
-//            // Get an example shop type
-//            ShopType shopType = shopTypeRepository.findAll().get(0);
-//
-//            // Example shop with images
-//            Shop shop1 = new Shop();
-//            shop1.setName("Shop 1");
-//            shop1.setDescription("Description 1");
-//            shop1.setPhoneNumber("123456789");
-//            shop1.setEmail("shop1@example.com");
-//            shop1.setIsDeleted(false);
-//            shop1.setIsDisabled(false);
-//            shop1.setOpenAt(LocalDateTime.of(2023, 1, 1, 9, 0));
-//            shop1.setCloseAt(LocalDateTime.of(2023, 1, 1, 18, 0));
-//            shop1.setCreatedAt(LocalDateTime.now());
-//            shop1.setUpdatedAt(LocalDateTime.now());
-//            shop1.setCreatedBy("Admin");
-//            shop1.setUpdatedBy("Admin");
-//
-//            List<Image> images1 = new ArrayList<>();
-//            images1.add(new Image("https://example.com/image1.jpg", "Image 1"));
-//            images1.add(new Image("https://example.com/image2.jpg", "Image 2"));
-//            shop1.setImages(images1);
-//
-//            // Set the shop type
-//            shop1.setShopType(shopType);
-//
-//            shops.add(shop1);
-//
-//            // Add more shops as needed
-//
-//            shopRepository.saveAll(shops);
-//        }
-//    }
+    private void initProducts() {
+        List<String> products = List.of("Laptop", "Computer", "Phone", "Tablet", "Headphone");
+        if (productRepository.findAll().isEmpty()) {
+            products.forEach(product -> {
+                Product product1 = new Product();
+                product1.setName(product);
+                product1.setPrice(800.0);
+                product1.setDescription("Product Description");
+                List<Image> images = new ArrayList<>();
+                images.add(new Image("https://example.com/image1.jpg", "Image 1"));
+                images.add(new Image("https://example.com/image2.jpg", "Image 2"));
+                product1.setImages(images);
+                product1.setShop(shopRepository.findAll().get(0));
+                product1.setCategory(categoryRepository.findAll().get(0));
+                product1.setDiscount(discountRepository.findAll().get(0));
+                product1.setOrders(new ArrayList<>());
+                product1.setCreatedAt(LocalDateTime.now());
+//                product1.setCreatedBy("Admin");
+                productRepository.save(product1);
+            });
+        }
+    }
 
-    private void initDiscount() {
-        List<Discount> discounts = new ArrayList<>();
-        Discount discount = new Discount();
-        if(discountRepository.findAll().isEmpty()){
-            discount.setName("No discount");
-            discount.setDescription("No discount");
-            discount.setDiscountPercentage(0);
-            discounts.add(discount);
-            discountRepository.saveAll(discounts);
+    private void initCategories() {
+        List<String> categories = List.of("Electronics", "Fashion", "Health", "Books", "Food");
+        if (categoryRepository.findAll().isEmpty()) {
+            categories.forEach(category -> {
+                Category category1 = new Category();
+                category1.setName(category);
+                category1.setIcon("icon.jpg");
+                category1.setCreatedAt(LocalDateTime.now());
+                category1.setUpdatedAt(LocalDateTime.now());
+                category1.setCreatedBy("Admin");
+                category1.setUpdatedBy("Admin");
+                categoryRepository.save(category1);
+            });
+        }
+    }
+
+    private void initDiscountTypes() {
+        List<String> discountTypes = List.of("No Discount", "Coupon", "Promotion", "Sale");
+        if (discountTypeRepository.findAll().isEmpty()) {
+            discountTypes.forEach(type -> {
+                DiscountType discountType = new DiscountType();
+                discountType.setName(type);
+                discountTypeRepository.save(discountType);
+            });
+        }
+    }
+
+    private void initDiscounts() {
+        if (discountRepository.findAll().isEmpty()) {
+            List<DiscountType> discountTypes = discountTypeRepository.findAll();
+
+            discountTypes.forEach(discountType -> {
+                Discount discount = new Discount();
+                discount.setDescription("Discount Description");
+                // Random 0-100 except for No Discount
+                if (!discountType.getName().equals("No Discount")) {
+                    discount.setDiscountPercentage((int) (Math.random() * 100));
+                } else {
+                    discount.setDiscountPercentage(0);
+                }
+                discount.setExpiredAt(LocalDateTime.now().plusDays(30));
+                discount.setDiscountType(discountType);
+                discountRepository.save(discount);
+            });
+        }
+    }
+
+    private void initWishLists() {
+        if (wishListRepository.findAll().isEmpty()) {
+            WishList wishList = new WishList();
+            wishList.setUser(userRepository.findAll().get(0));
+            wishList.setProduct(productRepository.findAll().get(0));
+            wishList.setDiscount(discountRepository.findAll().get(0));
+            wishList.setCreatedAt(LocalDateTime.now());
+            wishList.setCreatedBy("Admin");
+            wishList.setIsGranted(false); // initially not granted
+            wishListRepository.save(wishList);
         }
     }
 }

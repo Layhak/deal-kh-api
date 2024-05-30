@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public record DiscountResponseDetail(
         Long id,
-        String name,
+        String discountType,
         String description,
         double discountPercentage,
         LocalDate expiredAt,

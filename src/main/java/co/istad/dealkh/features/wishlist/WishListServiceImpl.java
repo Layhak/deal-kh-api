@@ -48,7 +48,7 @@ public class WishListServiceImpl implements WishListService {
 
         newWishList.setUser(user);
         newWishList.setProduct(product);
-        newWishList.setGranted(false);
+        newWishList.setIsGranted(false);
         wishListRepository.save(newWishList);
 
         return wishListMapper.mapToWishListResponse(newWishList);
@@ -58,12 +58,12 @@ public class WishListServiceImpl implements WishListService {
     public PageResponse<WishListResponse> getAllWishList(Map<String, String> params) {
 
         int pageNumber = PageFilter.DEFAULT_PAGE_NUMBER;
-        if(params.containsKey(PageFilter.PAGE_NUMBER)) {
+        if (params.containsKey(PageFilter.PAGE_NUMBER)) {
             pageNumber = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
         }
 
         int pageLimit = PageFilter.DEFAULT_PAGE_LIMIT;
-        if(params.containsKey(PageFilter.PAGE_LIMIT)) {
+        if (params.containsKey(PageFilter.PAGE_LIMIT)) {
             pageLimit = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
         }
 

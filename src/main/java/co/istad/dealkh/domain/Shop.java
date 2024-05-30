@@ -1,15 +1,14 @@
 package co.istad.dealkh.domain;
 
+import co.istad.dealkh.audit.Auditable;
 import co.istad.dealkh.converter.ImageListConverter;
 import co.istad.dealkh.domain.json.Image;
-import co.istad.dealkh.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
+import java.sql.Time;
 import java.util.List;
 
 @Entity
@@ -42,8 +41,8 @@ public class Shop extends Auditable {
 
     private Boolean isDeleted;
     private Boolean isDisabled;
-    private LocalDate openAt;
-    private LocalDate closeAt;
+    private Time openAt;
+    private Time closeAt;
     @ManyToOne
     @JoinColumn(name = "shop_type_id", nullable = false)
     private ShopType shopType;

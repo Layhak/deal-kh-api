@@ -9,6 +9,7 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface DiscountMapper {
 
+    @Mapping(source = "discountType.name", target = "discountType")
     DiscountResponseDetail mapDiscountToResponseDetail(Discount discount);
 
     Discount mapDiscountRequestToDiscount(DiscountCreateRequest discountCreateRequest);
