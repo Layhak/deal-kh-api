@@ -46,8 +46,9 @@ public class DiscountController {
     }
 
     @GetMapping("")
+    @GetMapping("/")
     PageResponse<DiscountResponseDetail> filterDiscount(@RequestParam Map<String, String> params) {
-        return discountService.filterDiscount(params);
+        return discountService.getAllDiscounts(params);
     }
 
     @PutMapping("/{id}")
