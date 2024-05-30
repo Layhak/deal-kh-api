@@ -1,8 +1,10 @@
 package co.istad.dealkh.mapper;
 
+import co.istad.dealkh.domain.DiscountType;
 import co.istad.dealkh.domain.Role;
 import co.istad.dealkh.domain.ShopType;
 import co.istad.dealkh.domain.User;
+import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CustomMapper {
     private final RoleRepository roleRepository;
+    private final DiscountTypeRepository discountTypeRepository;
 
     @Named("stringToRole")
     public Role mapRole(String roleName) {
@@ -32,5 +35,10 @@ public class CustomMapper {
     @Named("shopTypeToString")
     public String mapShopType(ShopType shopType) {
         return shopType.getName();
+    }
+
+    @Named("discountTypeToLong")
+    public DiscountType map(Long id) {
+        return discountTypeRepository.findById(id).orElse(null);
     }
 }

@@ -1,19 +1,13 @@
 package co.istad.dealkh.mapper;
 
-import co.istad.dealkh.converter.ImageListConverter;
-import co.istad.dealkh.domain.*;
-import co.istad.dealkh.domain.json.Image;
-import co.istad.dealkh.features.category.CategoryService;
-import co.istad.dealkh.features.discount.DiscountService;
-import co.istad.dealkh.features.discount.dto.DiscountUpdateRequest;
+import co.istad.dealkh.domain.Category;
+import co.istad.dealkh.domain.Discount;
+import co.istad.dealkh.domain.Product;
+import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.features.product.dto.ProductCreateRequest;
 import co.istad.dealkh.features.product.dto.ProductResponseDetail;
 import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
-import co.istad.dealkh.features.shop.ShopService;
 import org.mapstruct.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
@@ -40,10 +34,9 @@ public interface ProductMapper {
     }
 
     @Named("discountToDouble")
-    default Double mapDiscount(Discount discount) {
+    default Integer mapDiscount(Discount discount) {
         return discount.getDiscountPercentage();
     }
-
 
 
 }

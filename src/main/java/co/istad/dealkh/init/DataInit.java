@@ -216,7 +216,8 @@ public class DataInit {
                 discount.setDescription("Discount Description");
                 // Random 0-100 except for No Discount
                 if (!discountType.getName().equals("No Discount")) {
-                    discount.setDiscountPercentage((int) (Math.random() * 100));
+                    List<Integer> discountPercentages = List.of(50, 80, 90);
+                    discountPercentages.forEach(discount::setDiscountPercentage);
                 } else {
                     discount.setDiscountPercentage(0);
                 }

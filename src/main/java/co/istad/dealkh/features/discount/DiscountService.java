@@ -1,7 +1,7 @@
 package co.istad.dealkh.features.discount;
 
 import co.istad.dealkh.features.discount.dto.DiscountCreateRequest;
-import co.istad.dealkh.features.discount.dto.DiscountResponseDetail;
+import co.istad.dealkh.features.discount.dto.DiscountResponse;
 import co.istad.dealkh.features.discount.dto.DiscountUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
 
@@ -10,16 +10,16 @@ import java.util.Optional;
 
 public interface DiscountService {
 
-    DiscountResponseDetail createDiscount(DiscountCreateRequest discountCreateRequest);
+    DiscountResponse createDiscount(DiscountCreateRequest discountCreateRequest);
 
-    Optional<DiscountResponseDetail> getDiscountById(Long id);
+    Optional<DiscountResponse> getDiscountById(Long id);
 
-    Optional<DiscountResponseDetail> getDiscountByName(String name);
+    Optional<DiscountResponse> getDiscountByName(String name);
 
 
-    PageResponse<DiscountResponseDetail> getAllDiscounts(int page, int size, String field, String order, Map<String, String> params);
+    PageResponse<DiscountResponse> getAllDiscounts(int page, int size, String field, String order, Map<String, String> params);
 
-    DiscountResponseDetail updateDiscountById(Long id, DiscountUpdateRequest discountUpdateRequest);
+    DiscountResponse updateDiscountById(Long id, DiscountUpdateRequest discountUpdateRequest);
 
     void deleteDiscountById(Long id);
 }

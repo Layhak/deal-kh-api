@@ -3,7 +3,7 @@ package co.istad.dealkh.features.discount;
 
 import co.istad.dealkh.domain.Discount;
 import co.istad.dealkh.features.discount.dto.DiscountCreateRequest;
-import co.istad.dealkh.features.discount.dto.DiscountResponseDetail;
+import co.istad.dealkh.features.discount.dto.DiscountResponse;
 import co.istad.dealkh.features.discount.dto.DiscountUpdateRequest;
 import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
 import co.istad.dealkh.mapper.DiscountMapper;
@@ -34,10 +34,10 @@ public class DiscountServiceImpl implements DiscountService {
     private final DiscountTypeRepository discountTypeRepository;
 
     @Override
-    public DiscountResponseDetail createDiscount(DiscountCreateRequest discountCreateRequest) {
+    public DiscountResponse createDiscount(DiscountCreateRequest discountCreateRequest) {
 
-        if (discountRepository.existsByDiscountPercentage(discountCreateRequest.discountPercentage()) && discountTypeRepository.existsById(discountCreateRequest.discountTypeId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Discount percentage already exists");
+        if (discountRepository.existsByDiscountPercentageAndDiscountTypeId(discountCreateRequest.discountPercentage(), discountCreateRequest.discountTypeId())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Discount percentage already exists for this discount type");
         }
 
         Discount newDiscount = discountMapper.mapDiscountRequestToDiscount(discountCreateRequest);
@@ -45,18 +45,17 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public Optional<DiscountResponseDetail> getDiscountById(Long id) {
+    public Optional<DiscountResponse> getDiscountById(Long id) {
 
         Discount discount = discountRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount id not found!"));
 
-        DiscountResponseDetail discountResponseDetail = discountMapper.mapDiscountToResponseDetail(discount);
-
-        return Optional.of(discountResponseDetail);
+        DiscountResponse discountResponse = discountMapper.mapDiscountToResponseDetail(discount);
+        return Optional.of(discountResponse);
     }
 
     @Override
-    public Optional<DiscountResponseDetail> getDiscountByName(String name) {
+    public Optional<DiscountResponse> getDiscountByName(String name) {
 
 //        Discount discount = discountRepository.findByName(name)
 //                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount name not found!"));
@@ -67,7 +66,7 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public PageResponse<DiscountResponseDetail> getAllDiscounts(int pageNumber, int size, String field, String order, Map<String, String> params) {
+    public PageResponse<DiscountResponse> getAllDiscounts(int pageNumber, int size, String field, String order, Map<String, String> params) {
 
         DiscountFilter discountFilter = new DiscountFilter();
         pageNumber = Pagination.page_number;
@@ -82,9 +81,9 @@ public class DiscountServiceImpl implements DiscountService {
             String discountPercentage = params.get("discountPercentage");
             discountFilter.setDiscountPercentage(Double.parseDouble(discountPercentage));
         }
-        List<String> validFields = Arrays.asList("name", "discountPercentage", "createdAt", "updatedAt");
+        List<String> validFields = Arrays.asList("id", "discountPercentage", "createdAt", "updatedAt");
         if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, name, discountPercentage, or createdAt");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, discountPercentage, or createdAt");
         }
         if (order != null && !order.equals("asc") && !order.equals("desc")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
@@ -92,7 +91,7 @@ public class DiscountServiceImpl implements DiscountService {
         DiscountSpecification specification = new DiscountSpecification(discountFilter);
         Pageable pageable = Pagination.getPageable(pageNumber, size, Sort.by(Sort.Direction.fromString(order), field));
 
-        Page<DiscountResponseDetail> page = discountRepository.findAll(specification, pageable)
+        Page<DiscountResponse> page = discountRepository.findAll(specification, pageable)
                 .map(discountMapper::mapDiscountToResponseDetail);
 
         return new PageResponse<>(page);
@@ -100,7 +99,7 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public DiscountResponseDetail updateDiscountById(Long id, DiscountUpdateRequest discountUpdateRequest) {
+    public DiscountResponse updateDiscountById(Long id, DiscountUpdateRequest discountUpdateRequest) {
         Discount discount = discountRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount id not found!"));
 

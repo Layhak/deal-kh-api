@@ -23,7 +23,7 @@ public class Discount extends Auditable {
     private String description;
 
     @Column(nullable = false)
-    private double discountPercentage;
+    private Integer discountPercentage;
 
     private LocalDateTime expiredAt;
 

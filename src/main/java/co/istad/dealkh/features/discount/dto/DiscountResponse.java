@@ -1,7 +1,14 @@
 package co.istad.dealkh.features.discount.dto;
 
+import java.time.LocalDate;
+
 public record DiscountResponse(
-        String name,
-        Double discountPercentage
+        Long id,
+        String discountType,
+        String description,
+        Integer discountPercentage,
+        LocalDate expiredAt,
+        LocalDate createdAt,
+        LocalDate updatedAt
 ) {
 }

@@ -1,9 +1,7 @@
 package co.istad.dealkh.features.product.dto;
 
 import co.istad.dealkh.domain.json.Image;
-import co.istad.dealkh.features.discount.dto.DiscountResponse;
 
-import java.net.CacheRequest;
 import java.time.LocalDate;
 import java.util.List;
 
