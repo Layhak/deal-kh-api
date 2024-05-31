@@ -32,20 +32,19 @@ public class Product extends Auditable {
     @Column(length = 250)
     private String description;
 
-
     @Convert(converter = ImageListConverter.class)
     @Column(name = "images", nullable = false)
     private List<Image> images;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "discount_id")
     private Discount discount;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 

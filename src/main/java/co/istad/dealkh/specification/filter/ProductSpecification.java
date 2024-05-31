@@ -31,7 +31,7 @@ public class ProductSpecification implements Specification<Product> {
             predicates.add(category);
         }
 
-        if (productFilter.getDiscountPercentage() >= 0) {
+        if (productFilter.getDiscountPercentage() > 0) {
             Predicate discountPercentage = product.join("discount").get("discountPercentage").in(productFilter.getDiscountPercentage());
             predicates.add(discountPercentage);
         }

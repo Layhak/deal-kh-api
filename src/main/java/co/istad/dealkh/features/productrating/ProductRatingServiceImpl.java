@@ -13,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -47,13 +49,7 @@ public class ProductRatingServiceImpl implements ProductRatingService{
             );
         }
 
-        if (productRatingRequest.userId() <= 0 || productRatingRequest.productId() <= 0) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "User id and product id are required!"
-            );
-        }
 
-        //if id already rate once then throw error
         if (productRatingRepository.findByUserIdAndProductId(productRatingRequest.userId(), productRatingRequest.productId()).isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "You have already rated this product!"
@@ -62,6 +58,7 @@ public class ProductRatingServiceImpl implements ProductRatingService{
 
         newProductRating.setUser(user);
         newProductRating.setProduct(product);
+        newProductRating.setCreatedAt(LocalDateTime.now());
         productRatingRepository.save(newProductRating);
 
         return productRatingMapper.mapProductRatingToProductRatingResponse(newProductRating);
