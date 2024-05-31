@@ -20,7 +20,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @PostMapping("/")
+    @PostMapping("")
     BaseResponse<ProductResponseDetail> createProduct(@RequestBody @Valid ProductCreateRequest productCreateRequest) {
         return BaseResponse.<ProductResponseDetail>createSuccess("Successfully created product!")
                 .setPayload(productService.createProduct(productCreateRequest));
@@ -32,7 +32,7 @@ public class ProductController {
                 .setPayload(productService.getProductById(id));
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     PageResponse<ProductResponseDetail> filterProduct(@RequestParam Map<String, String> params) {
         return productService.filterProduct(params);
 

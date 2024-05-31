@@ -16,12 +16,12 @@ public class ProductRatingController {
 
     private final ProductRatingService productRatingService;
 
-    @PostMapping("/")
+    @PostMapping("")
     ProductRatingResponse rateProduct(@RequestBody @Valid ProductRatingRequest productRatingRequest) {
         return productRatingService.rateProduct(productRatingRequest);
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     List<ProductRatingResponse> getAllProductRatings() {
         return productRatingService.getAllProductRating();
     }

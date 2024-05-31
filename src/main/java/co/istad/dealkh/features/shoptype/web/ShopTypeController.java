@@ -20,7 +20,7 @@ public class ShopTypeController {
 
     private final ShopTypeService shopTypeService;
 
-    @PostMapping("/")
+    @PostMapping("")
     BaseResponse<ShopTypeResponse> createShopType(@RequestBody @Valid ShopTypeCreateRequest shopTypeCreateRequest) {
         return BaseResponse.<ShopTypeResponse>createSuccess("Successfully created shop type!")
                 .setPayload(shopTypeService.createShopType(shopTypeCreateRequest));
@@ -32,7 +32,7 @@ public class ShopTypeController {
                 .setPayload(shopTypeService.getShopTypeByName(name));
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     BaseResponse<PageResponse<ShopTypeResponse>> filterShopType(@RequestParam Map<String, String> params) {
         return BaseResponse.<PageResponse<ShopTypeResponse>>ok("Successfully retrieved shop type!")
                 .setPayload(shopTypeService.filterShopTypes(params));

@@ -19,7 +19,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @PostMapping("/")
+    @PostMapping("")
     BaseResponse<CategoryResponse> createCategory(@RequestBody @Valid CategoryCreateRequest categoryCreateRequest) {
         return BaseResponse.<CategoryResponse>createSuccess("Successfully created category!")
                 .setPayload(categoryService.createCategory(categoryCreateRequest));
@@ -37,7 +37,7 @@ public class CategoryController {
                 .setPayload(categoryService.getCategoryByName(name));
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     BaseResponse<List<CategoryResponse>> getAllCategory() {
         return BaseResponse.<List<CategoryResponse>>ok("Successfully retrieved category!")
                 .setPayload(categoryService.getAllCategory());

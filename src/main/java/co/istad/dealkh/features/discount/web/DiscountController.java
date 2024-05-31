@@ -3,13 +3,14 @@ package co.istad.dealkh.features.discount.web;
 import co.istad.dealkh.base.BaseResponse;
 import co.istad.dealkh.features.discount.DiscountService;
 import co.istad.dealkh.features.discount.dto.DiscountCreateRequest;
-import co.istad.dealkh.features.discount.dto.DiscountResponse;
+import co.istad.dealkh.features.discount.dto.DiscountResponseDetail;
 import co.istad.dealkh.features.discount.dto.DiscountUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -20,37 +21,38 @@ public class DiscountController {
 
     private final DiscountService discountService;
 
-    @PostMapping("/")
-    BaseResponse<DiscountResponse> createDiscount(@Valid @RequestBody DiscountCreateRequest discountCreateRequest) {
-        return BaseResponse.<DiscountResponse>createSuccess("Successfully created discount!")
+    @PostMapping("")
+    BaseResponse<DiscountResponseDetail> createDiscount(@RequestBody @Valid DiscountCreateRequest discountCreateRequest) {
+        return BaseResponse.<DiscountResponseDetail>createSuccess("Successfully created discount!")
                 .setPayload(discountService.createDiscount(discountCreateRequest));
     }
 
-    @GetMapping("/{id}")
-    BaseResponse<Optional<DiscountResponse>> getDiscountById(@PathVariable Long id) {
-        return BaseResponse.<Optional<DiscountResponse>>ok("Successfully retrieved discount details!")
+    //    @GetMapping("/{id}")
+    BaseResponse<Optional<DiscountResponseDetail>> getDiscountById(@PathVariable Long id) {
+        return BaseResponse.<Optional<DiscountResponseDetail>>ok("Successfully retrieved discount details!")
                 .setPayload(discountService.getDiscountById(id));
     }
 
-//    @GetMapping("/{name}")
-//    BaseResponse<Optional<DiscountResponseDetail>> getDiscountById(@PathVariable String name) {
-//        return BaseResponse.<Optional<DiscountResponseDetail>>ok("Successfully retrieved discount details!")
-//                .setPayload(discountService.getDiscountByName(name));
-//    }
+    @GetMapping("/{name}")
+    BaseResponse<Optional<DiscountResponseDetail>> getDiscountById(@PathVariable String name) {
+        return BaseResponse.<Optional<DiscountResponseDetail>>ok("Successfully retrieved discount details!")
+                .setPayload(discountService.getDiscountByName(name));
+    }
 
-    @GetMapping("/")
-    PageResponse<DiscountResponse> filterDiscount(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "2") int size,
-            @RequestParam(defaultValue = "id") String field,
-            @RequestParam(defaultValue = "asc") String order,
-            @RequestParam Map<String, String> params) {
-        return discountService.getAllDiscounts(page, size, field, order, params);
+    //    @GetMapping("/")
+    BaseResponse<List<DiscountResponseDetail>> getAllDiscount() {
+        return BaseResponse.<List<DiscountResponseDetail>>ok("Successfully retrieved discounts!")
+                .setPayload(discountService.getAllDiscounts());
+    }
+
+    @GetMapping("")
+    PageResponse<DiscountResponseDetail> filterDiscount(@RequestParam Map<String, String> params) {
+        return discountService.filterDiscount(params);
     }
 
     @PutMapping("/{id}")
-    BaseResponse<DiscountResponse> updateDiscountById(@PathVariable Long id, @RequestBody DiscountUpdateRequest discountUpdateRequest) {
-        return BaseResponse.<DiscountResponse>updateSuccess("Update discount successfully!")
+    BaseResponse<DiscountResponseDetail> updateDiscountById(@PathVariable Long id, @RequestBody DiscountUpdateRequest discountUpdateRequest) {
+        return BaseResponse.<DiscountResponseDetail>updateSuccess("Update discount successfully!")
                 .setPayload(discountService.updateDiscountById(id, discountUpdateRequest));
     }
 

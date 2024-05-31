@@ -26,15 +26,16 @@ public class ProductSpecification implements Specification<Product> {
             predicates.add(name);
         }
 
+        if (productFilter.getCategory() != null) {
+            Predicate category = criteria.like(criteria.upper(product.join("category").get("category")),productFilter.getCategory().toUpperCase() + "%");
+            predicates.add(category);
+        }
+
         if (productFilter.getDiscountPercentage() >= 0) {
             Predicate discountPercentage = product.join("discount").get("discountPercentage").in(productFilter.getDiscountPercentage());
             predicates.add(discountPercentage);
         }
 
-        if (productFilter.getCategory() != null) {
-            Predicate category = product.get("category").in(productFilter.getCategory());
-            predicates.add(category);
-        }
 
         return criteria.and(predicates.toArray(Predicate[]::new));
     }
