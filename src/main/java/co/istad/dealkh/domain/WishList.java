@@ -25,9 +25,11 @@ public class WishList extends Auditable {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @ManyToOne
-    @JoinColumn(name = "discount_id", nullable = false)
-    private Discount discount;
+    Integer discountPercentage;
 
-    private Boolean isGranted;
+    @ManyToOne
+    @JoinColumn(name = "discountType_id", nullable = false)
+    private DiscountType discountType;
+
+    private Boolean isGranted = null;
 }

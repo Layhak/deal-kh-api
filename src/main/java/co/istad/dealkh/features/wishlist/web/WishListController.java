@@ -1,9 +1,9 @@
 package co.istad.dealkh.features.wishlist.web;
 
+import co.istad.dealkh.base.BaseResponse;
 import co.istad.dealkh.features.wishlist.WishListService;
 import co.istad.dealkh.features.wishlist.dto.WishListRequest;
 import co.istad.dealkh.features.wishlist.dto.WishListResponse;
-import co.istad.dealkh.features.wishlist.dto.WishListUpdate;
 import co.istad.dealkh.paging.PageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +19,8 @@ public class WishListController {
     private final WishListService wishListService;
 
     @PostMapping
-    public WishListResponse createWishList(@RequestBody @Valid WishListRequest wishListRequest) {
-        return wishListService.wishList(wishListRequest);
+    public BaseResponse<WishListResponse> createWishList(@RequestBody @Valid WishListRequest wishListRequest) {
+        return BaseResponse.<WishListResponse>ok("Successfully create new wish list!!").setPayload(wishListService.addWishList(wishListRequest));
     }
 
     @GetMapping
@@ -28,14 +28,24 @@ public class WishListController {
         return wishListService.getAllWishList(params);
     }
 
-    @PutMapping("/{id}")
-    WishListResponse updateWishListById(@PathVariable Long id, @RequestBody @Valid WishListUpdate wishListUpdate) {
-        return wishListService.updateWishListById(id, wishListUpdate);
-    }
 
     @DeleteMapping("/{id}")
-    void deleteWishList(@PathVariable Long id) {
+    BaseResponse<?> deleteWishList(@PathVariable Long id) {
         wishListService.deleteWishList(id);
+        return BaseResponse.ok("Successfully delete wish list with id:" + id).setPayload("");
     }
 
+    @PostMapping("/{id}/grant")
+    BaseResponse<WishListResponse> grantWishList(@PathVariable Long id) {
+        return BaseResponse.<WishListResponse>ok("Successfully grant wish list with id:" + id).setPayload(
+                wishListService.grantWishList(id)
+        );
+    }
+
+    @PostMapping("/{id}/deny")
+    BaseResponse<WishListResponse> denyWishList(@PathVariable Long id) {
+        return BaseResponse.<WishListResponse>ok("Successfully grant wish list with id:" + id).setPayload(
+                wishListService.denyWishList(id)
+        );
+    }
 }

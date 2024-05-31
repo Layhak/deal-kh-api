@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This class is a global exception handler for the REST API. It catches various types of exceptions that can occur during
@@ -99,27 +97,13 @@ public class GlobalRestControllerAdviser {
      * Handles DataIntegrityViolationException which is typically thrown when there is a violation of an integrity constraint in the database.
      *
      * @param ex The exception that is caught when DataIntegrityViolationException is thrown.
-     * @return A BaseResponse with a status of "Bad Request" and a more readable error message.
+     * @return A BaseResponse with a status of "Bad Request" and the original error message from the database.
      */
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse<?> handlePSQLException(DataIntegrityViolationException ex) {
         String errorMessage = ex.getMostSpecificCause().getMessage();
-
-        // Extract the constraint name from the error message
-        String constraintName = null;
-        Matcher matcher = Pattern.compile("constraint \\[([\\w_]+)]").matcher(errorMessage);
-        if (matcher.find()) {
-            constraintName = matcher.group(1);
-        }
-
-        // Create a more readable error message
-        String readableMessage = "An error occurred";
-        if (constraintName != null) {
-            readableMessage = "The operation violated the '" + constraintName + "' constraint";
-        }
-
-        return BaseResponse.badRequest(readableMessage);
+        return BaseResponse.badRequest(errorMessage);
     }
 
     /**

@@ -3,7 +3,7 @@ package co.istad.dealkh.features.discount;
 
 import co.istad.dealkh.domain.Discount;
 import co.istad.dealkh.features.discount.dto.DiscountCreateRequest;
-import co.istad.dealkh.features.discount.dto.DiscountResponse;
+import co.istad.dealkh.features.discount.dto.DiscountTypeResponse;
 import co.istad.dealkh.features.discount.dto.DiscountUpdateRequest;
 import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
 import co.istad.dealkh.mapper.DiscountMapper;
@@ -34,7 +34,7 @@ public class DiscountServiceImpl implements DiscountService {
     private final DiscountTypeRepository discountTypeRepository;
 
     @Override
-    public DiscountResponse createDiscount(DiscountCreateRequest discountCreateRequest) {
+    public DiscountTypeResponse createDiscount(DiscountCreateRequest discountCreateRequest) {
 
         if (discountRepository.existsByDiscountPercentageAndDiscountTypeId(discountCreateRequest.discountPercentage(), discountCreateRequest.discountTypeId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Discount percentage already exists for this discount type");
@@ -45,17 +45,17 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public Optional<DiscountResponse> getDiscountById(Long id) {
+    public Optional<DiscountTypeResponse> getDiscountById(Long id) {
 
         Discount discount = discountRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount id not found!"));
 
-        DiscountResponse discountResponse = discountMapper.mapDiscountToResponseDetail(discount);
+        DiscountTypeResponse discountResponse = discountMapper.mapDiscountToResponseDetail(discount);
         return Optional.of(discountResponse);
     }
 
     @Override
-    public Optional<DiscountResponse> getDiscountByName(String name) {
+    public Optional<DiscountTypeResponse> getDiscountByName(String name) {
 
 //        Discount discount = discountRepository.findByName(name)
 //                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount name not found!"));
@@ -66,7 +66,7 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public PageResponse<DiscountResponse> getAllDiscounts(int pageNumber, int size, String field, String order, Map<String, String> params) {
+    public PageResponse<DiscountTypeResponse> getAllDiscounts(int pageNumber, int size, String field, String order, Map<String, String> params) {
 
         DiscountFilter discountFilter = new DiscountFilter();
         pageNumber = Pagination.page_number;
@@ -91,7 +91,7 @@ public class DiscountServiceImpl implements DiscountService {
         DiscountSpecification specification = new DiscountSpecification(discountFilter);
         Pageable pageable = Pagination.getPageable(pageNumber, size, Sort.by(Sort.Direction.fromString(order), field));
 
-        Page<DiscountResponse> page = discountRepository.findAll(specification, pageable)
+        Page<DiscountTypeResponse> page = discountRepository.findAll(specification, pageable)
                 .map(discountMapper::mapDiscountToResponseDetail);
 
         return new PageResponse<>(page);
@@ -99,7 +99,7 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public DiscountResponse updateDiscountById(Long id, DiscountUpdateRequest discountUpdateRequest) {
+    public DiscountTypeResponse updateDiscountById(Long id, DiscountUpdateRequest discountUpdateRequest) {
         Discount discount = discountRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount id not found!"));
 

@@ -52,6 +52,7 @@ public class DataInit {
             initDiscountTypes();
             initDiscounts();
             initCategories();
+//            initWishLists();
 //            initProducts();
             logger.info("Data initialized successfully");
         } catch (Exception e) {
@@ -225,19 +226,6 @@ public class DataInit {
                 discount.setDiscountType(discountType);
                 discountRepository.save(discount);
             });
-        }
-    }
-
-    private void initWishLists() {
-        if (wishListRepository.findAll().isEmpty()) {
-            WishList wishList = new WishList();
-            wishList.setUser(userRepository.findAll().get(0));
-            wishList.setProduct(productRepository.findAll().get(0));
-            wishList.setDiscount(discountRepository.findAll().get(0));
-            wishList.setCreatedAt(LocalDateTime.now());
-            wishList.setCreatedBy("Admin");
-            wishList.setIsGranted(false); // initially not granted
-            wishListRepository.save(wishList);
         }
     }
 }

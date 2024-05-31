@@ -2,7 +2,7 @@ package co.istad.dealkh.mapper;
 
 import co.istad.dealkh.domain.Discount;
 import co.istad.dealkh.features.discount.dto.DiscountCreateRequest;
-import co.istad.dealkh.features.discount.dto.DiscountResponse;
+import co.istad.dealkh.features.discount.dto.DiscountTypeResponse;
 import co.istad.dealkh.features.discount.dto.DiscountUpdateRequest;
 import org.mapstruct.*;
 
@@ -10,7 +10,7 @@ import org.mapstruct.*;
 public interface DiscountMapper {
 
     @Mapping(source = "discountType.name", target = "discountType")
-    DiscountResponse mapDiscountToResponseDetail(Discount discount);
+    DiscountTypeResponse mapDiscountToResponseDetail(Discount discount);
 
     @Mapping(target = "discountType", source = "discountTypeId", qualifiedByName = "discountTypeToLong")
     Discount mapDiscountRequestToDiscount(DiscountCreateRequest discountCreateRequest);

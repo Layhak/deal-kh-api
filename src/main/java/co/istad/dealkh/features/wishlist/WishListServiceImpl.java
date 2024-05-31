@@ -1,13 +1,14 @@
 package co.istad.dealkh.features.wishlist;
 
+import co.istad.dealkh.domain.DiscountType;
 import co.istad.dealkh.domain.Product;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.domain.WishList;
+import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
 import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.features.wishlist.dto.WishListRequest;
 import co.istad.dealkh.features.wishlist.dto.WishListResponse;
-import co.istad.dealkh.features.wishlist.dto.WishListUpdate;
 import co.istad.dealkh.mapper.WishListMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.specification.filter.PageFilter;
@@ -18,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
@@ -29,26 +29,30 @@ public class WishListServiceImpl implements WishListService {
     private final WishListMapper wishListMapper;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-
+    private final DiscountTypeRepository discountTypeRepository;
 
     @Override
-    public WishListResponse wishList(WishListRequest wishListRequest) {
+    public WishListResponse addWishList(WishListRequest wishListRequest) {
 
         WishList newWishList = wishListMapper.mapRequestToWishList(wishListRequest);
 
-        User user = userRepository.findById(wishListRequest.userId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        String.format("User with id %d not found! ", wishListRequest.userId())));
+        User user = userRepository.findById(wishListRequest.userId()).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                String.format("User with id %d not found! ", wishListRequest.userId())
+        ));
+        Product product = productRepository.findById(wishListRequest.productId()).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                String.format("Product with id %d not found! ", wishListRequest.productId())
+        ));
 
-        Product product = productRepository.findById(wishListRequest.productId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        String.format("Product with id %d not found! ", wishListRequest.productId())));
+        DiscountType discountType = discountTypeRepository.findById(wishListRequest.discountTypeId()).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                String.format("DiscountType with id %d not found! ", wishListRequest.discountTypeId())
+        ));
 
         newWishList.setUser(user);
         newWishList.setProduct(product);
-        newWishList.setIsGranted(false);
+        newWishList.setDiscountType(discountType);
         wishListRepository.save(newWishList);
 
         return wishListMapper.mapToWishListResponse(newWishList);
@@ -77,25 +81,6 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public WishListResponse updateWishListById(Long id, WishListUpdate wishListUpdate) {
-        WishList wishList = wishListRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        String.format("WishList with id %d not found! ", id)
-                ));
-
-
-        wishList.setUpdatedAt(LocalDateTime.now());
-
-        wishListMapper.mapWishListUpdateRequest(wishList, wishListUpdate);
-
-        wishListRepository.save(wishList);
-
-
-        return null;
-    }
-
-    @Override
     public void deleteWishList(Long id) {
 
         wishListRepository.findById(id)
@@ -105,5 +90,29 @@ public class WishListServiceImpl implements WishListService {
                 ));
 
         wishListRepository.deleteById(id);
+    }
+
+    @Override
+    public WishListResponse grantWishList(Long id) {
+        WishList wishList = wishListRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("WishList with id %d not found! ", id)
+                ));
+        wishList.setIsGranted(true);
+        wishListRepository.save(wishList);
+        return wishListMapper.mapToWishListResponse(wishList);
+    }
+
+    @Override
+    public WishListResponse denyWishList(Long id) {
+        WishList wishList = wishListRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("WishList with id %d not found! ", id)
+                ));
+        wishList.setIsGranted(false);
+        wishListRepository.save(wishList);
+        return wishListMapper.mapToWishListResponse(wishList);
     }
 }
