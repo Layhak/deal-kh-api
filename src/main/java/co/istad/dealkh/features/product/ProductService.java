@@ -6,6 +6,7 @@ import co.istad.dealkh.features.product.dto.ProductResponseDetail;
 import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -20,5 +21,9 @@ public interface ProductService {
     ProductResponseDetail updateProductById(Long id, ProductUpdateRequest productUpdateRequest);
 
     void deleteProduct(Long id);
+
+    ProductResponseDetail updateProductImage(Long id, List<String> imageUrl, List<String> description);
+
+    boolean existsById(Long id);
 
 }

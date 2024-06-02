@@ -33,7 +33,7 @@ public class Product extends Auditable {
     private String description;
 
     @Convert(converter = ImageListConverter.class)
-    @Column(name = "images", nullable = false)
+    @Column(name = "images", nullable = false, length = 1000)
     private List<Image> images;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)

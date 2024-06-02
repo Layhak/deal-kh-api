@@ -11,7 +11,7 @@ import java.util.List;
 public interface FileService {
     FileResponse uploadSingleFile(MultipartFile file, HttpServletRequest request);
 
-    List<FileResponse> uploadMultipleFiles(MultipartFile[] files);
+    List<FileResponse> uploadMultipleFiles(MultipartFile[] files, HttpServletRequest request);
 
 
     ResponseEntity<Resource> serveFile(String filename, HttpServletRequest request);

@@ -91,13 +91,22 @@ public class UserFileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileResponse> uploadMultipleFiles(MultipartFile[] files) {
-        List<String> fileNames = new ArrayList<>();
-        for (var file : files) {
-            fileNames.add(uploadFile(file));
+    public List<FileResponse> uploadMultipleFiles(MultipartFile[] files, HttpServletRequest request) {
+        List<FileResponse> fileResponses = new ArrayList<>();
+        for (MultipartFile file : files) {
+            String filename = uploadFile(file);
+            String fullImageUrl = generateImageUrl(request, filename);
+            FileResponse fileResponse = FileResponse.builder()
+                    .downloadUrl(generateDownloadImageUrl(request, filename))
+                    .fileType(file.getContentType())
+                    .size((float) file.getSize() / 1024) // in KB
+                    .filename(filename)
+                    .fullUrl(fullImageUrl).build();
+            fileResponses.add(fileResponse);
         }
-        return null;
+        return fileResponses;
     }
+
 
     @Override
     public ResponseEntity<Resource> serveFile(String filename, HttpServletRequest request) {

@@ -4,8 +4,11 @@ import co.istad.dealkh.domain.Category;
 import co.istad.dealkh.domain.Discount;
 import co.istad.dealkh.domain.Product;
 import co.istad.dealkh.domain.Shop;
+import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.features.category.CategoryRepository;
 import co.istad.dealkh.features.discount.DiscountRepository;
+import co.istad.dealkh.features.file.FileService;
+import co.istad.dealkh.features.file.dto.FileResponse;
 import co.istad.dealkh.features.product.dto.ProductCreateRequest;
 import co.istad.dealkh.features.product.dto.ProductResponseDetail;
 import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
@@ -23,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,7 +40,7 @@ public class ProductServiceImpl implements ProductService{
     private final DiscountRepository discountRepository;
     private final CategoryRepository categoryRepository;
     private final ShopRepository shopRepository;
-
+    private final FileService fileService;
 
     @Override
     public ProductResponseDetail createProduct(ProductCreateRequest productCreateRequest) {
@@ -133,7 +138,6 @@ public class ProductServiceImpl implements ProductService{
 
         productRepository.save(product);
 
-
         return productMapper.mapProductToProductResponseDetail(product);
     }
 
@@ -146,5 +150,38 @@ public class ProductServiceImpl implements ProductService{
                 ));
 
         productRepository.delete(product);
+    }
+
+    @Override
+    public ProductResponseDetail updateProductImage(Long id, List<String> imageUrl, List<String> description) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Product with id %d not found!", id)
+                ));
+
+        List<Image> productImages = product.getImages();
+        if (productImages == null) {
+            productImages = new ArrayList<>();
+        }
+
+        for (int i = 0; i < imageUrl.size(); i++) {
+            Image imageInfo = new Image();
+            imageInfo.setUrl(imageUrl.get(i));
+            imageInfo.setDescription(description.get(i));
+            productImages.add(imageInfo);
+        }
+
+        product.setImages(productImages);
+        productRepository.save(product);
+
+        return productMapper.mapProductToProductResponseDetail(product);
+
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return productRepository.existsById(id);
     }
 }
