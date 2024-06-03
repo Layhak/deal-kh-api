@@ -1,4 +1,5 @@
 package co.istad.dealkh.features.shop;
+
 import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.domain.ShopType;
 import co.istad.dealkh.domain.User;
@@ -96,7 +97,7 @@ public class ShopServiceImpl implements ShopService {
         shop.setEmail(shopRequest.email());
         shop.setOpenAt(shopRequest.openAt());
         shop.setCloseAt(shopRequest.closeAt());
-        shop.setImages(shopRequest.images());
+//        shop.setImages(shopRequest.images());
         shop.setLocation(shopRequest.location());
         List<User> users = shopRequest.userIds().stream().map(userId -> userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"))).toList();

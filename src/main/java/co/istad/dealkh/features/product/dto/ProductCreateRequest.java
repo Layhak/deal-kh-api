@@ -1,14 +1,9 @@
 package co.istad.dealkh.features.product.dto;
-import co.istad.dealkh.domain.json.Image;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+
+import co.istad.dealkh.features.image.dto.ImageResponse;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public record ProductCreateRequest(
@@ -18,7 +13,7 @@ public record ProductCreateRequest(
 
         double price,
         String description,
-        List<Image> images,
+        List<ImageResponse> images,
 
         @NotNull(message = "Create shop first before create product")
         Long shopId,

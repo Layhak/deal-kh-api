@@ -1,13 +1,10 @@
 package co.istad.dealkh.domain;
 
-import co.istad.dealkh.converter.ImageListConverter;
-import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Cascade;
 
 import java.util.List;
 
@@ -32,8 +29,7 @@ public class Product extends Auditable {
     @Column(length = 250)
     private String description;
 
-    @Convert(converter = ImageListConverter.class)
-    @Column(name = "images", nullable = false, length = 1000)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)

@@ -4,6 +4,8 @@ import co.istad.dealkh.features.user.dto.UserProfileResponse;
 import co.istad.dealkh.features.user.dto.UserRequest;
 import co.istad.dealkh.features.user.dto.UserResponse;
 import co.istad.dealkh.paging.PageResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +24,8 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    UserResponse updateUserImage(Long id, String imageUrl, String description);
+    UserResponse createProfileImage(Long id, String imageUrl, String description);
+
 
     boolean existsById(Long id);
 
@@ -33,4 +36,5 @@ public interface UserService {
     //getAllEnabledUsers
     List<UserResponse> getAllUsersByStatus(String status);
 
+    UserResponse uploadMultipleImages(Long id, List<MultipartFile> files, List<String> descriptions, HttpServletRequest request);
 }

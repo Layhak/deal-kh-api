@@ -1,6 +1,6 @@
 package co.istad.dealkh.features.productfeedback.dto;
 
-import co.istad.dealkh.domain.json.Image;
+import co.istad.dealkh.features.image.dto.ImageResponse;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ public record ProductFeedbackRequest(
         Long productId,
 
         Long userId,
-        List<Image> images
+        List<ImageResponse> images
 
 ) {
 }

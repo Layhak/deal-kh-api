@@ -1,8 +1,6 @@
 package co.istad.dealkh.domain;
 
 import co.istad.dealkh.audit.Auditable;
-import co.istad.dealkh.converter.ImageListConverter;
-import co.istad.dealkh.domain.json.Image;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +37,9 @@ public class Shop extends Auditable {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SocialMedia> socialMedias;
+
     private Boolean isDeleted;
     private Boolean isDisabled;
     private Time openAt;
@@ -47,8 +48,7 @@ public class Shop extends Auditable {
     @JoinColumn(name = "shop_type_id", nullable = false)
     private ShopType shopType;
 
-    @Convert(converter = ImageListConverter.class)
-    @Column(name = "images", nullable = false)
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
 
     @ManyToMany(cascade = CascadeType.PERSIST)

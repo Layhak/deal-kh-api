@@ -5,7 +5,7 @@ import co.istad.dealkh.domain.Discount;
 import co.istad.dealkh.domain.Product;
 import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.features.product.dto.ProductCreateRequest;
-import co.istad.dealkh.features.product.dto.ProductResponseDetail;
+import co.istad.dealkh.features.product.dto.ProductResponse;
 import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
 import org.mapstruct.*;
 
@@ -15,7 +15,7 @@ public interface ProductMapper {
     @Mapping(target = "category", source = "category", qualifiedByName = "categoryToString")
     @Mapping(target = "shop", source = "shop", qualifiedByName = "shopToString")
     @Mapping(target = "discountPercentage", source = "discount", qualifiedByName = "discountToDouble")
-    ProductResponseDetail mapProductToProductResponseDetail(Product product);
+    ProductResponse mapProductToProductResponseDetail(Product product);
 
     Product mapProductRequestToProduct(ProductCreateRequest productCreateRequest);
 

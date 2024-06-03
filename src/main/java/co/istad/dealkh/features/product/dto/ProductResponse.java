@@ -1,17 +1,17 @@
 package co.istad.dealkh.features.product.dto;
 
-import co.istad.dealkh.domain.json.Image;
+import co.istad.dealkh.features.image.dto.ImageResponse;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public record ProductResponseDetail(
+public record ProductResponse(
 
         Long id,
         String name,
         double price,
         String description,
-        List<Image> images,
+        List<ImageResponse> images,
         String shop,
         Double discountPercentage,
         String category,

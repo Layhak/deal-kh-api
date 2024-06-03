@@ -1,9 +1,5 @@
 package co.istad.dealkh.domain;
 
-import co.istad.dealkh.converter.ImageListConverter;
-import co.istad.dealkh.converter.SocialListConverter;
-import co.istad.dealkh.domain.json.Image;
-import co.istad.dealkh.domain.json.SocialMedia;
 import co.istad.dealkh.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -36,21 +32,18 @@ public class User extends Auditable {
     @Column(nullable = false)
     private String password;
 
-    @Convert(converter = ImageListConverter.class)
-    @Column(name = "images", nullable = false)
-    private List<Image> image;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> images;
 
     private String phoneNumber;
 
     private LocalDate dob;
 
-    //    @Column(unique = true)
     private String location;
 
     private Boolean isDisabled;
 
-    @Convert(converter = SocialListConverter.class)
-    @Column(name = "socialMedias", nullable = false)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SocialMedia> socialMedias;
 
     @ManyToOne

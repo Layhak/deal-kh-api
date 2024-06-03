@@ -1,6 +1,6 @@
 package co.istad.dealkh.features.shop.dto;
 
-import co.istad.dealkh.domain.json.Image;
+import co.istad.dealkh.features.image.dto.ImageResponse;
 
 import java.sql.Time;
 import java.util.List;
@@ -17,7 +17,7 @@ public record ShopResponse(
         Time openAt,
         Time closeAt,
         String shopType,
-        List<Image> images,
+        List<ImageResponse> images,
         List<String> users,
         String location
 ) {

@@ -1,8 +1,6 @@
 package co.istad.dealkh.init;
 
 import co.istad.dealkh.domain.*;
-import co.istad.dealkh.domain.json.Image;
-import co.istad.dealkh.domain.json.SocialMedia;
 import co.istad.dealkh.features.authority.AuthorityRepository;
 import co.istad.dealkh.features.category.CategoryRepository;
 import co.istad.dealkh.features.discount.DiscountRepository;
@@ -95,8 +93,7 @@ public class DataInit {
         if (userRepository.findAll().isEmpty()) {
             List<User> users = new ArrayList<>();
             List<Role> roles = roleRepository.findAll();
-            List<SocialMedia> social = new ArrayList<>();
-            List<Image> images = new ArrayList<>();
+//            List<Image> images = new ArrayList<>();
             // Example user
             User user1 = new User();
             user1.setFirstName("Heng");
@@ -105,12 +102,10 @@ public class DataInit {
             user1.setEmail("layhak@gmail.com");
             user1.setGender("Male");
             user1.setPassword("123456");
-            images.add(new Image("https://example.com/image1.jpg", "Image 1"));
-            images.add(new Image("https://example.com/image2.jpg", "Image 2"));
-            user1.setImage(images);
-            social.add(new SocialMedia("Facebook", "www.facebook.com", "facebook_icon.jpg"));
-            social.add(new SocialMedia("Telegram", "www.telegram.com", "telegram_icon.jpg"));
-            user1.setSocialMedias(social);
+//            images.add(new Image("https://example.com/image1.jpg", "Image 1"));
+//            images.add(new Image("https://example.com/image2.jpg", "Image 2"));
+//            user1.setImage(images);
+
             user1.setPhoneNumber("123456789");
             user1.setDob(LocalDate.of(2002, 11, 27));
             user1.setLocation("Phnom Penh");
@@ -149,10 +144,10 @@ public class DataInit {
             shop.setIsDeleted(false);
             shop.setIsDisabled(false);
             shop.setShopType(shopTypeRepository.findAll().get(0));
-            List<Image> images = new ArrayList<>();
-            images.add(new Image("https://example.com/image1.jpg", "Image 1"));
-            images.add(new Image("https://example.com/image2.jpg", "Image 2"));
-            shop.setImages(images);
+//            List<Image> images = new ArrayList<>();
+//            images.add(new Image("https://example.com/image1.jpg", "Image 1"));
+//            images.add(new Image("https://example.com/image2.jpg", "Image 2"));
+//            shop.setImages(images);
             shops.add(shop);
             shopRepository.save(shop);
         }
@@ -166,10 +161,7 @@ public class DataInit {
                 product1.setName(product);
                 product1.setPrice(800.0);
                 product1.setDescription("Product Description");
-                List<Image> images = new ArrayList<>();
-                images.add(new Image("https://example.com/image1.jpg", "Image 1"));
-                images.add(new Image("https://example.com/image2.jpg", "Image 2"));
-                product1.setImages(images);
+//                product1.setImages(images);
                 product1.setShop(shopRepository.findAll().get(0));
                 product1.setCategory(categoryRepository.findAll().get(0));
                 product1.setDiscount(discountRepository.findAll().get(0));
