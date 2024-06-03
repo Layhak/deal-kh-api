@@ -29,17 +29,12 @@ public class ImageController {
     }
 
     @PostMapping(value = "/multiple", consumes = "multipart/form-data")
-//    return payload as List<ImageUploadResponse>
     public BaseResponse<List<ImageUploadResponse>> uploadMultipleFiles(@RequestPart("files") List<MultipartFile> images, HttpServletRequest request) {
         return BaseResponse
                 .<List<ImageUploadResponse>>createSuccess("Successfully uploaded images!")
                 .setPayload(imageService.uploadMultipleImages(images, request));
     }
 
-
-//    localhost:8888/api/v1/files/download/fskfjdkjsfdf.jpg
-
-    //    @Hidden   // use this hide your method @GET.... from the swagger ui
     @GetMapping("/download/{fileName}")
     public ResponseEntity<?> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
         return imageService.serveFile(fileName, request);
