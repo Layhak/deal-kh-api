@@ -10,6 +10,7 @@ public record ProductResponse(
         Long id,
         String name,
         double price,
+        double discountPrice,
         String description,
         List<ImageResponse> images,
         String shop,

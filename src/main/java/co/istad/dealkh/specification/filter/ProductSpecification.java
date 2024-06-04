@@ -1,6 +1,5 @@
 package co.istad.dealkh.specification.filter;
 
-import co.istad.dealkh.domain.Discount;
 import co.istad.dealkh.domain.Product;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -22,20 +21,24 @@ public class ProductSpecification implements Specification<Product> {
     public Predicate toPredicate(Root<Product> product, CriteriaQuery<?> query, CriteriaBuilder criteria) {
 
         if (productFilter.getName() != null) {
-            Predicate name = criteria.like(criteria.upper(product.get("name")),productFilter.getName().toUpperCase() + "%");
+            Predicate name = criteria.like(criteria.upper(product.get("name")), productFilter.getName().toUpperCase() + "%");
             predicates.add(name);
         }
 
         if (productFilter.getCategory() != null) {
-            Predicate category = criteria.like(criteria.upper(product.join("category").get("category")),productFilter.getCategory().toUpperCase() + "%");
+            Predicate category = criteria.like(criteria.upper(product.join("category").get("category")), productFilter.getCategory().toUpperCase() + "%");
             predicates.add(category);
         }
 
-        if (productFilter.getDiscountPercentage() > 0) {
-            Predicate discountPercentage = product.join("discount").get("discountPercentage").in(productFilter.getDiscountPercentage());
+        if (productFilter.getDiscountPercentage() >= 0) {
+            Predicate discountPercentage = criteria.greaterThan(product.join("discount").get("discountPercentage"), productFilter.getDiscountPercentage());
             predicates.add(discountPercentage);
         }
 
+        if (productFilter.getShop() != null) {
+            Predicate shop = criteria.like(criteria.upper(product.join("shop").get("name")), productFilter.getShop().toUpperCase() + "%");
+            predicates.add(shop);
+        }
 
         return criteria.and(predicates.toArray(Predicate[]::new));
     }

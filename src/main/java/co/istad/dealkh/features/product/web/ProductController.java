@@ -33,8 +33,15 @@ public class ProductController {
     }
 
     @GetMapping("")
-    PageResponse<ProductResponse> filterProduct(@RequestParam Map<String, String> params) {
-        return productService.filterProduct(params);
+    BaseResponse<PageResponse<ProductResponse>> filterProduct(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(defaultValue = "name") String field,
+            @RequestParam(defaultValue = "asc") String order,
+            @RequestParam Map<String, String> params
+    ) {
+        return BaseResponse.<PageResponse<ProductResponse>>ok("Successfully retrieved products!")
+                .setPayload(productService.getAllProducts(page, size, field, order, params));
     }
 
     @PutMapping("/{id}")

@@ -26,6 +26,9 @@ public class Product extends Auditable {
     @Column(nullable = false)
     private double price;
 
+    @Column(nullable = false)
+    private double discountPrice;
+
     @Column(length = 250)
     private String description;
 

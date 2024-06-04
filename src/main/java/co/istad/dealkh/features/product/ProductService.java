@@ -14,7 +14,7 @@ public interface ProductService {
 
     Optional<ProductResponse> getProductById(Long id);
 
-    PageResponse<ProductResponse> filterProduct(Map<String, String> params);
+    PageResponse<ProductResponse> getAllProducts(int page, int size, String field, String order, Map<String, String> params);
 
     ProductResponse updateProductById(Long id, ProductUpdateRequest productUpdateRequest);
 

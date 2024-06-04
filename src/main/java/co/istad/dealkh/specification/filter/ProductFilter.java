@@ -11,4 +11,5 @@ public class ProductFilter {
     private String name;
     private double discountPercentage;
     private String category;
+    private String shop;
 }

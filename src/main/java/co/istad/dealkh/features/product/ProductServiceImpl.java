@@ -12,17 +12,19 @@ import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
 import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.mapper.ProductMapper;
 import co.istad.dealkh.paging.PageResponse;
-import co.istad.dealkh.specification.filter.PageFilter;
+import co.istad.dealkh.paging.Pagination;
 import co.istad.dealkh.specification.filter.ProductFilter;
 import co.istad.dealkh.specification.filter.ProductSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -42,22 +44,11 @@ public class ProductServiceImpl implements ProductService {
 
         Product newProduct = productMapper.mapProductRequestToProduct(productCreateRequest);
 
-        Discount discount = discountRepository.findById(productCreateRequest.discountId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        String.format("Discount with id %d not found! ", productCreateRequest.discountId())));
+        Discount discount = discountRepository.findById(productCreateRequest.discountId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Discount with id %d not found! ", productCreateRequest.discountId())));
 
-        Category category = categoryRepository.findById(productCreateRequest.categoryId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        String.format("Category with id %d not found! ", productCreateRequest.categoryId())
-                ));
+        Category category = categoryRepository.findById(productCreateRequest.categoryId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with id %d not found! ", productCreateRequest.categoryId())));
 
-        Shop shop = shopRepository.findById(productCreateRequest.shopId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        String.format("Shop with id %d not found! ", productCreateRequest.shopId())
-                ));
+        Shop shop = shopRepository.findById(productCreateRequest.shopId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop with id %d not found! ", productCreateRequest.shopId())));
 
         newProduct.setDiscount(discount);
         newProduct.setCategory(category);
@@ -70,21 +61,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Optional<ProductResponse> getProductById(Long id) {
 
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        String.format("Product with id %d not found! ", id)
-                ));
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with id %d not found! ", id)));
 
         ProductResponse productResponseDetail = productMapper.mapProductToProductResponseDetail(product);
 
         return Optional.of(productResponseDetail);
     }
 
-
     @Override
-    public PageResponse<ProductResponse> filterProduct(Map<String, String> params) {
-
+    public PageResponse<ProductResponse> getAllProducts(int page, int size, String field, String order, Map<String, String> params) {
+        size = Pagination.page_limit;
+        page = Pagination.page_number;
         ProductFilter productFilter = new ProductFilter();
         if (params.containsKey("name")) {
             String name = params.get("name");
@@ -99,33 +86,28 @@ public class ProductServiceImpl implements ProductService {
             String category = params.get("category");
             productFilter.setCategory(category);
         }
-
-        int pageLimit = PageFilter.DEFAULT_PAGE_LIMIT;
-        if (params.containsKey(PageFilter.PAGE_LIMIT)) {
-            pageLimit = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
+        if (params.containsKey("shop")) {
+            String shop = params.get("shop");
+            productFilter.setShop(shop);
         }
 
-        int pageNumber = PageFilter.DEFAULT_PAGE_NUMBER;
-        if (params.containsKey(PageFilter.PAGE_NUMBER)) {
-            pageNumber = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
+        List<String> validFields = List.of("name", "price", "discountPrice", "description", "shop", "discountPercentage", "category", "createdAt", "updatedAt", "createdBy", "updateBy");
+
+        if (field == null || field.isEmpty() || !validFields.contains(field)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, name, price, discountPrice, description, shop, discountPercentage, category, createdAt, updatedAt, createdBy, updateBy");
         }
 
         ProductSpecification specification = new ProductSpecification(productFilter);
 
-        Pageable pageable = PageFilter.getPageable(pageNumber, pageLimit);
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
 
-        Page<ProductResponse> page = productRepository.findAll(specification, pageable)
-                .map(productMapper::mapProductToProductResponseDetail);
-        return new PageResponse<>(page);
+        Page<ProductResponse> products = productRepository.findAll(specification, pageable).map(productMapper::mapProductToProductResponseDetail);
+        return new PageResponse<>(products);
     }
 
     @Override
     public ProductResponse updateProductById(Long id, ProductUpdateRequest productUpdateRequest) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        String.format("Product with id %d not found! ", id)
-                ));
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with id %d not found! ", id)));
 
         product.setUpdatedAt(LocalDateTime.now());
 
@@ -138,11 +120,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        String.format("Product with id %d not found! ", id)
-                ));
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with id %d not found! ", id)));
 
         productRepository.delete(product);
     }

@@ -12,6 +12,7 @@ public record ProductCreateRequest(
         String name,
 
         double price,
+        double discountPrice,
         String description,
         List<ImageResponse> images,
 
