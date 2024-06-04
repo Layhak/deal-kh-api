@@ -24,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -110,7 +107,7 @@ public class UserServiceImpl implements UserService {
                     HttpStatus.CONFLICT,
                     "Email already token ! Try another one ");
         }
-        Role role = roleRepository.findByName(userRequest.role())
+        Role role = roleRepository.findByName(userRequest.roles().toString())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role has not been found!"));
         User newUser = userMapper.mapRequestToUser(userRequest);
         newUser.setIsDisabled(false);
@@ -118,7 +115,7 @@ public class UserServiceImpl implements UserService {
         newUser.setUpdatedAt(LocalDateTime.now());
 //        newUser.setPassword(new BCryptPasswordEncoder().encode(newUser.getPassword()));
 
-        newUser.setRole(role);
+        newUser.setRoles(Set.of(role));
         userRepository.save(newUser);
         return userMapper.mapToUserResponse(newUser);
     }
@@ -137,9 +134,9 @@ public class UserServiceImpl implements UserService {
                     HttpStatus.CONFLICT,
                     "Email already token ! Try another one ");
         }
-        Role role = roleRepository.findByName(userRequest.role())
+        Role role = roleRepository.findByName(userRequest.roles().toString())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role has not been found!"));
-        user.setRole(role);
+        user.setRoles(Set.of(role));
         userRepository.save(user);
         return userMapper.mapToUserResponse(user);
     }

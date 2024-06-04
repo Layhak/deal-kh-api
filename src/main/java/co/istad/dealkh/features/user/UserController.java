@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -100,5 +102,19 @@ public class UserController {
     @GetMapping("/profile/download/{fileName}")
     public ResponseEntity<?> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
         return fileService.serveFile(fileName, request);
+    }
+
+    @GetMapping("/me")
+    public BaseResponse<UserResponse> getCurrentUserInfo(@AuthenticationPrincipal Jwt jwt) {
+
+        System.out.println("These are the information extracted from jwt : ");
+        System.out.println(jwt.getSubject());
+        System.out.println(jwt.getTokenValue());
+//        System.out.println(jwt.getIssuer());
+
+        return BaseResponse.<UserResponse>ok("Success")
+                .setPayload(
+                        userService.getById(Long.parseLong(jwt.getId()))
+                );
     }
 }

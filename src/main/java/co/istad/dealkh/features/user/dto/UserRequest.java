@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 public record UserRequest(
 
@@ -32,7 +33,7 @@ public record UserRequest(
 
         LocalDate dob,
         String location,
-        String role
+        Set<String> roles
 //        List<UserShopResponse> shops
 ) {
 }
