@@ -1,11 +1,11 @@
 package co.istad.dealkh.init;
 
 import co.istad.dealkh.domain.*;
+import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.features.authority.AuthorityRepository;
 import co.istad.dealkh.features.category.CategoryRepository;
 import co.istad.dealkh.features.discount.DiscountRepository;
 import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
-import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,6 @@ public class DataInit {
     private final ShopTypeRepository shopTypeRepository;
     private final UserRepository userRepository;
     private final DiscountRepository discountRepository;
-    private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final DiscountTypeRepository discountTypeRepository;
     private final WishListRepository wishListRepository;
@@ -50,11 +50,10 @@ public class DataInit {
             initDiscountTypes();
             initDiscounts();
             initCategories();
-//            initWishLists();
-//            initProducts();
             logger.info("Data initialized successfully");
         } catch (Exception e) {
-            logger.severe("Error in data initialization");
+            logger.severe("Error in data initialization: " + e.getMessage());
+            e.printStackTrace(); // This will print the full stack trace to the console
             throw new RuntimeException(e);
         }
     }
@@ -79,9 +78,7 @@ public class DataInit {
                 if (role.equals("SUPER_ADMIN") || role.equals("ADMIN") || role.equals("SELLER")) {
                     roleObj.setAuthorities(new HashSet<>(allAuth));
                 } else if (role.equals("BUYER")) {
-                    roleObj.setAuthorities(allAuth.stream()
-                            .filter(authority -> authority.getName().equals("READ"))
-                            .collect(Collectors.toSet()));
+                    roleObj.setAuthorities(allAuth.stream().filter(authority -> authority.getName().equals("READ")).collect(Collectors.toSet()));
                 }
                 roleObj.setName(role);
                 roleRepository.save(roleObj);
@@ -93,7 +90,7 @@ public class DataInit {
         if (userRepository.findAll().isEmpty()) {
             List<User> users = new ArrayList<>();
             List<Role> roles = roleRepository.findAll();
-//            List<Image> images = new ArrayList<>();
+            List<Image> images = new ArrayList<>();
             // Example user
             User user1 = new User();
             user1.setFirstName("Heng");
@@ -102,9 +99,9 @@ public class DataInit {
             user1.setEmail("layhak@gmail.com");
             user1.setGender("Male");
             user1.setPassword("123456");
-//            images.add(new Image("https://example.com/image1.jpg", "Image 1"));
-//            images.add(new Image("https://example.com/image2.jpg", "Image 2"));
-//            user1.setImage(images);
+            images.add(new Image("https://example.com/image1.jpg"));
+            images.add(new Image("https://example.com/image2.jpg"));
+            user1.setImages(images);
 
             user1.setPhoneNumber("123456789");
             user1.setDob(LocalDate.of(2002, 11, 27));
@@ -144,32 +141,8 @@ public class DataInit {
             shop.setIsDeleted(false);
             shop.setIsDisabled(false);
             shop.setShopType(shopTypeRepository.findAll().get(0));
-//            List<Image> images = new ArrayList<>();
-//            images.add(new Image("https://example.com/image1.jpg", "Image 1"));
-//            images.add(new Image("https://example.com/image2.jpg", "Image 2"));
-//            shop.setImages(images);
             shops.add(shop);
             shopRepository.save(shop);
-        }
-    }
-
-    private void initProducts() {
-        List<String> products = List.of("Laptop", "Computer", "Phone", "Tablet", "Headphone");
-        if (productRepository.findAll().isEmpty()) {
-            products.forEach(product -> {
-                Product product1 = new Product();
-                product1.setName(product);
-                product1.setPrice(800.0);
-                product1.setDescription("Product Description");
-//                product1.setImages(images);
-                product1.setShop(shopRepository.findAll().get(0));
-                product1.setCategory(categoryRepository.findAll().get(0));
-                product1.setDiscount(discountRepository.findAll().get(0));
-                product1.setOrders(new ArrayList<>());
-                product1.setCreatedAt(LocalDateTime.now());
-//                product1.setCreatedBy("Admin");
-                productRepository.save(product1);
-            });
         }
     }
 
@@ -209,8 +182,9 @@ public class DataInit {
                 discount.setDescription("Discount Description");
                 // Random 0-100 except for No Discount
                 if (!discountType.getName().equals("No Discount")) {
-                    List<Integer> discountPercentages = List.of(50, 80, 90);
-                    discountPercentages.forEach(discount::setDiscountPercentage);
+                    //random 0-100
+                    int random = new Random().nextInt(100);
+                    discount.setDiscountPercentage(random);
                 } else {
                     discount.setDiscountPercentage(0);
                 }

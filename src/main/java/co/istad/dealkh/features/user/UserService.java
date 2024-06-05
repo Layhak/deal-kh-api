@@ -24,8 +24,6 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    UserResponse createProfileImage(Long id, String imageUrl, String description);
-
 
     boolean existsById(Long id);
 

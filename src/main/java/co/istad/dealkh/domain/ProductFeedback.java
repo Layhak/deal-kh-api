@@ -2,6 +2,8 @@ package co.istad.dealkh.domain;
 
 
 import co.istad.dealkh.audit.Auditable;
+import co.istad.dealkh.converter.ImageListConverter;
+import co.istad.dealkh.domain.json.Image;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +24,7 @@ public class ProductFeedback extends Auditable {
     @Column(length = 250)
     private String description;
 
-    @OneToMany(mappedBy = "productFeedback", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Convert(converter = ImageListConverter.class)
     private List<Image> images;
 
     @ManyToOne

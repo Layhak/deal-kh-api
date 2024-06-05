@@ -1,12 +1,13 @@
 package co.istad.dealkh.features.user.dto;
 
+import co.istad.dealkh.domain.json.Image;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public record UserRequest(
-
         @NotBlank
         String firstName,
 
@@ -30,8 +31,14 @@ public record UserRequest(
         @Size(max = 20, message = "Phone number must less than 20 characters")
         String phoneNumber,
 
+        @NotBlank
         LocalDate dob,
+
+        List<Image> images,
+
+        @NotBlank
         String location,
+
         String role
 //        List<UserShopResponse> shops
 ) {

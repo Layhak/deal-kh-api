@@ -1,0 +1,17 @@
+package co.istad.dealkh.domain.json;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class SocialMedia {
+
+    private String socialName;
+    private String socialLink;
+
+}

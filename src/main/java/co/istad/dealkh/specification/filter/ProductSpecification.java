@@ -30,13 +30,13 @@ public class ProductSpecification implements Specification<Product> {
             predicates.add(category);
         }
 
-        if (productFilter.getDiscountPercentage() >= 0) {
+        if (productFilter.getDiscountPercentage() > 0) {
             Predicate discountPercentage = criteria.greaterThan(product.join("discount").get("discountPercentage"), productFilter.getDiscountPercentage());
             predicates.add(discountPercentage);
         }
 
         if (productFilter.getShop() != null) {
-            Predicate shop = criteria.like(criteria.upper(product.join("shop").get("name")), productFilter.getShop().toUpperCase() + "%");
+            Predicate shop = criteria.like(criteria.upper(product.join("shop").get("name")), "%" + productFilter.getShop().toUpperCase() + "%");
             predicates.add(shop);
         }
 

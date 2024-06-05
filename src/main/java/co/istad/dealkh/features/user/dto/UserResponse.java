@@ -1,7 +1,7 @@
 package co.istad.dealkh.features.user.dto;
 
+import co.istad.dealkh.domain.json.SocialMedia;
 import co.istad.dealkh.features.image.dto.ImageResponse;
-import co.istad.dealkh.features.socialMedia.dto.SocialMediaResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,7 +20,7 @@ public record UserResponse(
         Boolean isDisabled,
         LocalDate createdAt,
         LocalDate updatedAt,
-        List<SocialMediaResponse> socialMedias,
+        List<SocialMedia> socialMedias,
         String role,
         List<UserShopResponse> shops
 ) {

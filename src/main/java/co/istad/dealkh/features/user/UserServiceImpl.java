@@ -1,9 +1,7 @@
 package co.istad.dealkh.features.user;
 
-import co.istad.dealkh.domain.Image;
 import co.istad.dealkh.domain.Role;
 import co.istad.dealkh.domain.User;
-import co.istad.dealkh.features.image.ImageRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.user.dto.UserProfileResponse;
 import co.istad.dealkh.features.user.dto.UserRequest;
@@ -35,7 +33,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final ImageRepository imageRepository;
+    //    private final ImageRepository imageRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
 
@@ -192,30 +190,17 @@ public class UserServiceImpl implements UserService {
             String description = descriptions.get(i);
             System.out.println("File: " + file.getOriginalFilename());
             System.out.println("Description: " + description);
-            Image image = new Image();
-            image.setUrl(file.getOriginalFilename());
-            image.setDescription(description);
-            image.setUser(user);
-            System.out.println("Image: " + image);
+//            Image image = new Image();
+//            image.setUrl(file.getOriginalFilename());
+//            image.setDescription(description);
+//            image.setUser(user);
+//            System.out.println("Image: " + image);
 //            imageRepository.save(image);
         }
         return userMapper.mapToUserResponse(user);
 
     }
 
-    @Override
-    public UserResponse createProfileImage(Long id, String imageUrl, String description) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
-        Image image = new Image();
-        image.setUrl(imageUrl);
-        image.setDescription(description);
-        image.setUser(user);
-        imageRepository.save(image);
-
-        return userMapper.mapToUserResponse(user);
-    }
 
     @Override
     public boolean existsById(Long id) {
