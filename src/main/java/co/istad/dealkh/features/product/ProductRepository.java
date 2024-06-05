@@ -13,4 +13,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     Optional<Long> findIdByName(String s);
 
     boolean existsById(@NotNull Long id);
+
+
 }

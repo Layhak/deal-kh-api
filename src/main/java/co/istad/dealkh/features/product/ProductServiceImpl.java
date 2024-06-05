@@ -9,6 +9,7 @@ import co.istad.dealkh.features.discount.DiscountRepository;
 import co.istad.dealkh.features.product.dto.ProductCreateRequest;
 import co.istad.dealkh.features.product.dto.ProductResponse;
 import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
+import co.istad.dealkh.features.productrating.ProductRatingRepository;
 import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.mapper.ProductMapper;
 import co.istad.dealkh.paging.PageResponse;
@@ -35,6 +36,7 @@ public class ProductServiceImpl implements ProductService {
     private final DiscountRepository discountRepository;
     private final CategoryRepository categoryRepository;
     private final ShopRepository shopRepository;
+    private final ProductRatingRepository productRatingRepository;
 
 
     @Override
@@ -62,6 +64,7 @@ public class ProductServiceImpl implements ProductService {
         newProduct.setDiscount(discount);
         newProduct.setCategory(category);
         newProduct.setShop(shop);
+//        newProduct.setRatingAvg(getProductRatingAvg(newProduct.getId()));
         productRepository.save(newProduct);
 
         return productMapper.mapProductToProductResponseDetail(newProduct);
@@ -75,7 +78,7 @@ public class ProductServiceImpl implements ProductService {
                         HttpStatus.NOT_FOUND,
                         String.format("Product with id %d not found! ", id)
                 ));
-
+        product.setRatingAvg(getProductRatingAvg(id));
         ProductResponse productResponseDetail = productMapper.mapProductToProductResponseDetail(product);
 
         return Optional.of(productResponseDetail);
@@ -145,6 +148,16 @@ public class ProductServiceImpl implements ProductService {
                 ));
 
         productRepository.delete(product);
+    }
+    public Double getProductRatingAvg(Long id) {
+        Double totalRating = productRatingRepository.findRatingByProductId(id);
+        Long ratingCount = productRatingRepository.countByProductId(id);
+
+        if (ratingCount == 0) {
+            return 0.0; // or throw an exception if you prefer
+        }
+
+        return totalRating / ratingCount;
     }
 
 }

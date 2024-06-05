@@ -2,6 +2,7 @@ package co.istad.dealkh.features.user;
 
 import co.istad.dealkh.domain.Image;
 import co.istad.dealkh.domain.Role;
+import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.image.ImageRepository;
 import co.istad.dealkh.features.role.RoleRepository;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -107,15 +109,27 @@ public class UserServiceImpl implements UserService {
                     HttpStatus.CONFLICT,
                     "Email already token ! Try another one ");
         }
-        Role role = roleRepository.findByName(userRequest.roles().toString())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role has not been found!"));
+
+        Set<Role> roles = new HashSet<>();
+        for (var role : userRequest.roles()) {
+            var roleObj = roleRepository.findByName(role)
+                    .orElseThrow(
+                            () -> new ResponseStatusException(
+                                    HttpStatus.BAD_REQUEST,
+                                    "Role: <" + role + "> could not found!"
+                            )
+                    );
+            roles.add(roleObj);
+        }
+
         User newUser = userMapper.mapRequestToUser(userRequest);
         newUser.setIsDisabled(false);
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setUpdatedAt(LocalDateTime.now());
-//        newUser.setPassword(new BCryptPasswordEncoder().encode(newUser.getPassword()));
 
-        newUser.setRoles(Set.of(role));
+        newUser.setPassword(new BCryptPasswordEncoder().encode(newUser.getPassword()));
+
+        newUser.setRoles(roles);
         userRepository.save(newUser);
         return userMapper.mapToUserResponse(newUser);
     }
