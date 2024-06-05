@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -110,7 +111,7 @@ public class DataInit {
             user1.setCreatedAt(LocalDateTime.now());
             user1.setCreatedBy("Admin");
             user1.setUpdatedBy("Admin");
-            user1.setRole(roles.get(1));
+            user1.setRoles(Set.of(roles.get(0), roles.get(1)));
             users.add(user1);
             userRepository.saveAll(users);
         }

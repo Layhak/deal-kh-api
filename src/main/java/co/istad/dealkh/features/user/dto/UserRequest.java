@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.List;
 
 public record UserRequest(
@@ -38,8 +39,7 @@ public record UserRequest(
 
         @NotBlank
         String location,
-
-        String role
+        Set<String> roles
 //        List<UserShopResponse> shops
 ) {
 }
