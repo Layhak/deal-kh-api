@@ -153,15 +153,15 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public List<ShopResponse> getNearbyShop(double latitude, double longitude) {
-        double radiusInKilometers = 0.5;
+        double radiusInKilometers =1;
         final int R = 6371; // Radius of the earth in km
 
         List<Shop> allShops = shopRepository.findAll();
         List<Shop> nearbyShops = new ArrayList<>();
 
         for (Shop shop : allShops) {
-            String shopAddress = shop.getAddress();
-            String[] latLng = shopAddress.split(",");
+            String shopLocation = shop.getLocation();
+            String[] latLng = shopLocation.split(",");
             double shopLatitude = Double.parseDouble(latLng[0]);
             double shopLongitude = Double.parseDouble(latLng[1]);
             double latDistance = Math.toRadians(shopLatitude - latitude);
@@ -172,7 +172,7 @@ public class ShopServiceImpl implements ShopService {
             double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             double distance = R * c; // convert to kilometers
 
-            System.out.println("Shop: " + shop.getName() + ", Distance: " + distance + " km");
+
 
             if (distance <= radiusInKilometers) {
                 nearbyShops.add(shop);
