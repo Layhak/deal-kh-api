@@ -1,12 +1,12 @@
 package co.istad.dealkh.features.user;
 
 import co.istad.dealkh.domain.Role;
-import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.user.dto.UserProfileResponse;
 import co.istad.dealkh.features.user.dto.UserRequest;
 import co.istad.dealkh.features.user.dto.UserResponse;
+import co.istad.dealkh.features.user.dto.UserUpdateRequest;
 import co.istad.dealkh.mapper.UserMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
@@ -133,22 +133,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(Long id, UserRequest userRequest) {
+    public UserResponse updateUser(Long id, UserUpdateRequest userUpdateRequest) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
-        if (userRepository.existsByUsername(userRequest.username()) && !user.getUsername().equals(userRequest.username())) {
+        if (userRepository.existsByUsername(userUpdateRequest.username()) && !user.getUsername().equals(userUpdateRequest.username())) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
                     "Username already exist ! Try another one ");
         }
-        if (userRepository.existsByEmail(userRequest.email()) && !user.getEmail().equals(userRequest.email())) {
+//        //username are unique
+//        if (userRepository.existsByPhone(userUpdateRequest.phoneNumber()) && !user.getPhoneNumber().equals(userUpdateRequest.phoneNumber())) {
+//            throw new ResponseStatusException(
+//                    HttpStatus.CONFLICT,
+//                    "Phone number already exist ! Try another one ");
+//        }
+        if (userRepository.existsByUsername(userUpdateRequest.username()) && !user.getUsername().equals(userUpdateRequest.username())) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Email already token ! Try another one ");
+                    "Username already exist ! Try another one ");
         }
-        Role role = roleRepository.findByName(userRequest.roles().toString())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role has not been found!"));
-        user.setRoles(Set.of(role));
+        userMapper.mapUpdateRequestToUser(user, userUpdateRequest);
         userRepository.save(user);
         return userMapper.mapToUserResponse(user);
     }
@@ -209,7 +213,6 @@ public class UserServiceImpl implements UserService {
 //            imageRepository.save(image);
         }
         return userMapper.mapToUserResponse(user);
-
     }
 
 

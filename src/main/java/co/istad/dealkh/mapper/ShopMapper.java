@@ -1,13 +1,11 @@
 package co.istad.dealkh.mapper;
 
-import co.istad.dealkh.domain.Image;
 import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.features.shop.dto.ShopRequest;
 import co.istad.dealkh.features.shop.dto.ShopResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {CustomMapper.class})
 public interface ShopMapper {

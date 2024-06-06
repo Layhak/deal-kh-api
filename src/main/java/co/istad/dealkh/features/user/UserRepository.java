@@ -25,7 +25,6 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     List<User> findAllByIsDisabledTrue();
 
-
     Optional<User> findByUsername(String username);
 
     User getUserById(Long id);
@@ -33,4 +32,6 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     Optional<Long> findIdByUsername(String username);
 
     Optional<User> findByEmail(String email);
+
+//    boolean existsByPhone(String s);
 }

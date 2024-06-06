@@ -4,9 +4,8 @@ import co.istad.dealkh.domain.Role;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.user.dto.UserRequest;
 import co.istad.dealkh.features.user.dto.UserResponse;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import co.istad.dealkh.features.user.dto.UserUpdateRequest;
+import org.mapstruct.*;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +21,11 @@ public interface UserMapper {
     @Mapping(target = "roles", ignore = true)
     User mapRequestToUser(UserRequest userRequest);
 
+    //map update request to userResponse if user don't input replace by the old value
+
+    @Mapping(target = "id", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void mapUpdateRequestToUser(@MappingTarget User user, UserUpdateRequest userUpdateRequest);
 
 
 //    @Named("stringToRole")
@@ -33,7 +37,7 @@ public interface UserMapper {
 //    }
 
     @Named("roleToString")
-    default Set<String> mapRoleToString(Set<Role> roles){
+    default Set<String> mapRoleToString(Set<Role> roles) {
         return roles.stream().map(Role::getName).collect(Collectors.toSet());
     }
 }

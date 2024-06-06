@@ -13,16 +13,13 @@ import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.features.wishlist.WishListRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -39,6 +36,7 @@ public class DataInit {
     private final CategoryRepository categoryRepository;
     private final DiscountTypeRepository discountTypeRepository;
     private final WishListRepository wishListRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
     void initData() {
@@ -99,7 +97,7 @@ public class DataInit {
             user1.setUsername("layhak");
             user1.setEmail("layhak@gmail.com");
             user1.setGender("Male");
-            user1.setPassword("123456");
+            user1.setPassword(passwordEncoder.encode("layhak"));
             images.add(new Image("https://example.com/image1.jpg"));
             images.add(new Image("https://example.com/image2.jpg"));
             user1.setImages(images);

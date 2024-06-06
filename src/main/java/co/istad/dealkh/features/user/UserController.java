@@ -4,6 +4,7 @@ import co.istad.dealkh.base.BaseResponse;
 import co.istad.dealkh.features.image.ImageService;
 import co.istad.dealkh.features.user.dto.UserRequest;
 import co.istad.dealkh.features.user.dto.UserResponse;
+import co.istad.dealkh.features.user.dto.UserUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,10 +59,10 @@ public class UserController {
         return BaseResponse.<Void>deleteSuccess("Delete user success");
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     @Operation(summary = "Update user")
-    BaseResponse<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest userRequest) {
-        return BaseResponse.<UserResponse>ok("update success").setPayload(userService.updateUser(id, userRequest));
+    BaseResponse<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequest updateRequest) {
+        return BaseResponse.<UserResponse>ok("update success").setPayload(userService.updateUser(id, updateRequest));
     }
 
     @PatchMapping("/{id}/disable")

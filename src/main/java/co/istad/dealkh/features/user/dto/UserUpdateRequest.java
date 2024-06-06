@@ -7,9 +7,8 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
-public record UserRequest(
+public record UserUpdateRequest(
         @NotBlank
         String firstName,
 
@@ -18,12 +17,6 @@ public record UserRequest(
 
         @NotBlank
         String username,
-
-        @NotBlank(message = "Email is required")
-        String email,
-
-        @NotBlank(message = "Password is required")
-        String password,
 
         @NotBlank
         @Size(max = 6)
@@ -39,8 +32,7 @@ public record UserRequest(
         List<Image> images,
 
         @NotBlank
-        String location,
-        Set<String> roles
+        String location
 //        List<UserShopResponse> shops
 ) {
 }

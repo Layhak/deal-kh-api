@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -38,10 +37,12 @@ public class SecurityConfiguration {
     private final CustomUserDetailsService userDetailsService;
     private final JwtToUserConverter jwtToUserConverter;
     private final KeyUtils keyUtils;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -57,31 +58,33 @@ public class SecurityConfiguration {
                         (authz) ->
                                 authz
                                         // allow all resources regarding  swagger ui
-                                        .requestMatchers("/",
-                                                "/v3/api-docs/**",
-                                                "/swagger-ui/**",
-                                                "/v2/api-docs/**",
-                                                "/swagger-resources/**")
-                                        .permitAll()
-                                        .requestMatchers("/api/v1/auth/**")
-                                        .permitAll()
-                                        // since user will need to upload the picture in order to register
-                                        .requestMatchers(
-                                                "api/v1/files/**",
-                                                "images/**")
-                                        .permitAll()
-
-
-                                     // changing the information , disable , delete requires admin priviledge to do so
-                                        .requestMatchers(
-                                                HttpMethod.PATCH,
-                                                "api/v1/users/**")
-                                        .hasRole("ADMIN").requestMatchers(
-                                                HttpMethod.DELETE,
-                                                "api/v1/users/**")
-                                        .hasRole("ADMIN")
-//                                        .hasAnyAuthority("ROLE_ADMIN","WRITE","DELETE")
-                                        .anyRequest().authenticated()
+                                        .anyRequest().permitAll()
+//                                        .requestMatchers("/",
+//                                                "/v3/api-docs/**",
+//                                                "/swagger-ui/**",
+//                                                "/v2/api-docs/**",
+//                                                "/swagger-resources/**",
+//                                                "/api/v1/users/**")
+//                                        .permitAll()
+//                                        .requestMatchers("/api/v1/auth/**")
+//                                        .permitAll()
+//                                        // since user will need to upload the picture in order to register
+//                                        .requestMatchers(
+//                                                "api/v1/files/**",
+//                                                "images/**")
+//                                        .permitAll()
+//
+//
+//                                        // changing the information , disable , delete requires admin priviledge to do so
+//                                        .requestMatchers(
+//                                                HttpMethod.PATCH,
+//                                                "api/v1/users/**")
+//                                        .hasRole("ADMIN").requestMatchers(
+//                                                HttpMethod.DELETE,
+//                                                "api/v1/users/**")
+//                                        .hasRole("ADMIN")
+////                                        .hasAnyAuthority("ROLE_ADMIN","WRITE","DELETE")
+//                                        .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -103,7 +106,7 @@ public class SecurityConfiguration {
     // related to jwtEncoder and Decoder
     @Bean
     @Qualifier("jwtRefreshTokenEncoder")
-    JwtEncoder jwtRefreshTokenEncoder(){
+    JwtEncoder jwtRefreshTokenEncoder() {
         JWK jwk = new RSAKey.Builder(keyUtils.getRefreshTokenPublicKey())
                 .privateKey(keyUtils.getRefreshTokenPrivateKey())
                 .build();
@@ -113,7 +116,7 @@ public class SecurityConfiguration {
 
     @Bean
     @Qualifier("jwtRefreshTokenDecoder")
-    JwtDecoder jwtRefreshTokenDecoder(){
+    JwtDecoder jwtRefreshTokenDecoder() {
         return NimbusJwtDecoder
                 .withPublicKey(keyUtils.getRefreshTokenPublicKey())
                 .build();
@@ -121,16 +124,17 @@ public class SecurityConfiguration {
 
     @Bean
     @Primary
-    JwtEncoder jwtAccessTokenEncoder(){
+    JwtEncoder jwtAccessTokenEncoder() {
         JWK jwk = new RSAKey.Builder(keyUtils.getAccessTokenPublicKey())
                 .privateKey(keyUtils.getAccessTokenPrivateKey())
                 .build();
         JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwkSource);
     }
+
     @Bean
     @Primary
-    JwtDecoder jwtAccessTokenDecoder(){
+    JwtDecoder jwtAccessTokenDecoder() {
         return NimbusJwtDecoder
                 .withPublicKey(keyUtils.getAccessTokenPublicKey())
                 .build();
@@ -138,7 +142,7 @@ public class SecurityConfiguration {
 
     @Bean
     @Qualifier("refreshTokenAuthProvider")
-    JwtAuthenticationProvider refreshTokenAuthProvider(){
+    JwtAuthenticationProvider refreshTokenAuthProvider() {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(
                 jwtRefreshTokenDecoder()
         );

@@ -3,6 +3,7 @@ package co.istad.dealkh.features.user;
 import co.istad.dealkh.features.user.dto.UserProfileResponse;
 import co.istad.dealkh.features.user.dto.UserRequest;
 import co.istad.dealkh.features.user.dto.UserResponse;
+import co.istad.dealkh.features.user.dto.UserUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +21,7 @@ public interface UserService {
 
     UserResponse createUser(UserRequest userRequest);
 
-    UserResponse updateUser(Long id, UserRequest userRequest);
+    UserResponse updateUser(Long id, UserUpdateRequest userUpdateRequest);
 
     void deleteUser(Long id);
 
