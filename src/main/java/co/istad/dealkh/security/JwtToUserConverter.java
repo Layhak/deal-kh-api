@@ -5,10 +5,12 @@ import co.istad.dealkh.features.user.UserRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 
@@ -16,19 +18,21 @@ import org.springframework.stereotype.Component;
 @Setter
 @RequiredArgsConstructor
 @Component
-public class JwtToUserConverter implements Converter<Jwt, JwtAuthenticationToken> {
+public class JwtToUserConverter implements Converter<Jwt, UsernamePasswordAuthenticationToken> {
     private final UserRepository userRepository;
+    private final Logger logger = LoggerFactory.getLogger(JwtToUserConverter.class);
 
     @Override
-    public JwtAuthenticationToken convert(Jwt source) {
+    public UsernamePasswordAuthenticationToken convert(Jwt source) {
+        logger.info("JwtAuthenticationToken converter" + source.getSubject());
         User user = userRepository.findByEmail(source.getSubject())
                 .orElseThrow(() -> new BadCredentialsException("Invalid Token!!! "));
         CustomUserDetails customUserDetails = new CustomUserDetails();
         customUserDetails.setUser(user);
 
-
-        return new JwtAuthenticationToken(
-                source,
+        return new UsernamePasswordAuthenticationToken(
+                customUserDetails,
+                "",
                 customUserDetails.getAuthorities()
         );
     }

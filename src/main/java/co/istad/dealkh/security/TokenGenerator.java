@@ -30,7 +30,7 @@ public class TokenGenerator {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(now.plus(10, ChronoUnit.HOURS))
-                .subject(customUserDetails.getUsername())
+                .subject(customUserDetails.getEmail())
                 .issuer("co.istad.dealkh")
                 .claim("id", customUserDetails.getUser().getId().toString())
                 .build();
@@ -42,7 +42,7 @@ public class TokenGenerator {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(now.plus(7, ChronoUnit.DAYS))
-                .subject(customUserDetails.getUsername())
+                .subject(customUserDetails.getEmail())
                 .issuer("co.istad.dealkh")
                 .build();
         return jwtRefreshTokenEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
