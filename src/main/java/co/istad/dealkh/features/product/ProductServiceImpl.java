@@ -119,7 +119,6 @@ public class ProductServiceImpl implements ProductService {
         product.setUpdatedAt(LocalDateTime.now());
 
         productMapper.mapProductToUpdateRequest(product, productUpdateRequest);
-
         productRepository.save(product);
 
         return productMapper.mapProductToProductResponseDetail(product);
@@ -131,6 +130,7 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.delete(product);
     }
+
     @Override
     public Double getProductRatingAvg(Long id) {
         Double totalRating = productRatingRepository.findRatingValueByProductId(id);

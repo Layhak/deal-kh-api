@@ -1,7 +1,7 @@
 package co.istad.dealkh.config;
 
 import co.istad.dealkh.security.CustomAuthenticationProvider;
-import co.istad.dealkh.security.CustomUserDetailsService;
+import co.istad.dealkh.security.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,7 +16,7 @@ public class AuthProviderConfig {
     }
 
     @Bean
-    public CustomAuthenticationProvider customAuthenticationProvider(CustomUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    public CustomAuthenticationProvider customAuthenticationProvider(UserDetailsServiceImpl userDetailsService, PasswordEncoder passwordEncoder) {
         return new CustomAuthenticationProvider(userDetailsService, passwordEncoder);
     }
 }
