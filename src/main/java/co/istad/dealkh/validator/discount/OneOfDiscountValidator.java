@@ -1,4 +1,4 @@
-package co.istad.dealkh.validator;
+package co.istad.dealkh.validator.discount;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

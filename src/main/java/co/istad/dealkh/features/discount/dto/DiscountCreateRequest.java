@@ -1,6 +1,6 @@
 package co.istad.dealkh.features.discount.dto;
 
-import co.istad.dealkh.validator.OneOfDiscount;
+import co.istad.dealkh.validator.discount.OneOfDiscount;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;

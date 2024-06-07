@@ -1,6 +1,6 @@
 package co.istad.dealkh.features.wishlist.dto;
 
-import co.istad.dealkh.validator.OneOfDiscount;
+import co.istad.dealkh.validator.discount.OneOfDiscount;
 import jakarta.validation.constraints.NotNull;
 
 public record WishListRequest(

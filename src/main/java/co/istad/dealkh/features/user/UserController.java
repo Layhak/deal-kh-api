@@ -2,7 +2,7 @@ package co.istad.dealkh.features.user;
 
 import co.istad.dealkh.base.BaseResponse;
 import co.istad.dealkh.features.image.ImageService;
-import co.istad.dealkh.features.user.dto.UserRequest;
+import co.istad.dealkh.features.user.dto.UserCreateRequest;
 import co.istad.dealkh.features.user.dto.UserResponse;
 import co.istad.dealkh.features.user.dto.UserUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
@@ -48,8 +48,8 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "Create a new user")
-    BaseResponse<UserResponse> createUser(@RequestBody UserRequest userRequest) {
-        return BaseResponse.<UserResponse>createSuccess("Successfully create new user!").setPayload(userService.createUser(userRequest));
+    BaseResponse<UserResponse> createUser(@RequestBody UserCreateRequest userCreateRequest) {
+        return BaseResponse.<UserResponse>createSuccess("Successfully create new user!").setPayload(userService.createUser(userCreateRequest));
     }
 
     @DeleteMapping("/{id}")

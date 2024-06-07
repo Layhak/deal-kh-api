@@ -1,7 +1,7 @@
 package co.istad.dealkh.features.user;
 
+import co.istad.dealkh.features.user.dto.UserCreateRequest;
 import co.istad.dealkh.features.user.dto.UserProfileResponse;
-import co.istad.dealkh.features.user.dto.UserRequest;
 import co.istad.dealkh.features.user.dto.UserResponse;
 import co.istad.dealkh.features.user.dto.UserUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
@@ -19,7 +19,7 @@ public interface UserService {
 
     UserProfileResponse getUserProfile(Long id);
 
-    UserResponse createUser(UserRequest userRequest);
+    UserResponse createUser(UserCreateRequest userCreateRequest);
 
     UserResponse updateUser(Long id, UserUpdateRequest userUpdateRequest);
 

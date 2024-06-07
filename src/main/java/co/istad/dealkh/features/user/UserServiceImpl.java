@@ -1,10 +1,9 @@
 package co.istad.dealkh.features.user;
 
-import co.istad.dealkh.domain.Role;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.role.RoleRepository;
+import co.istad.dealkh.features.user.dto.UserCreateRequest;
 import co.istad.dealkh.features.user.dto.UserProfileResponse;
-import co.istad.dealkh.features.user.dto.UserRequest;
 import co.istad.dealkh.features.user.dto.UserResponse;
 import co.istad.dealkh.features.user.dto.UserUpdateRequest;
 import co.istad.dealkh.mapper.UserMapper;
@@ -18,7 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -35,6 +34,7 @@ public class UserServiceImpl implements UserService {
     //    private final ImageRepository imageRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse getById(Long id) {
@@ -96,41 +96,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse createUser(UserRequest userRequest) {
+    public UserResponse createUser(UserCreateRequest userRequest) {
         if (userRepository.existsByUsername(userRequest.username())) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Username already exist ! Try another one ");
+                    "Username already exists! Try another one.");
         }
         if (userRepository.existsByEmail(userRequest.email())) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Email already token ! Try another one ");
+                    "Email already taken! Try another one.");
         }
 
-        Set<Role> roles = new HashSet<>();
-        for (var role : userRequest.roles()) {
-            var roleObj = roleRepository.findByName(role)
-                    .orElseThrow(
-                            () -> new ResponseStatusException(
-                                    HttpStatus.BAD_REQUEST,
-                                    "Role: <" + role + "> could not found!"
-                            )
-                    );
-            roles.add(roleObj);
-        }
-
-        User newUser = userMapper.mapRequestToUser(userRequest);
+        User newUser = userMapper.mapCreateRequestToUser(userRequest);
         newUser.setIsDisabled(false);
+        newUser.setEmail(userRequest.email());
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setUpdatedAt(LocalDateTime.now());
+        newUser.setRoles(Set.of(roleRepository.findByName("BUYER").orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found!")
+        )));
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
-        newUser.setPassword(new BCryptPasswordEncoder().encode(newUser.getPassword()));
-
-        newUser.setRoles(roles);
         userRepository.save(newUser);
         return userMapper.mapToUserResponse(newUser);
     }
+
 
     @Override
     public UserResponse updateUser(Long id, UserUpdateRequest userUpdateRequest) {

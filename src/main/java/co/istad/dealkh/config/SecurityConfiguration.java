@@ -1,6 +1,6 @@
 package co.istad.dealkh.config;
 
-import co.istad.dealkh.security.CustomUserDetailsService;
+import co.istad.dealkh.security.CustomAuthenticationProvider;
 import co.istad.dealkh.security.JwtToUserConverter;
 import co.istad.dealkh.security.KeyUtils;
 import com.nimbusds.jose.jwk.JWK;
@@ -14,12 +14,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -29,81 +26,35 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthen
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 
-
 @Configuration
 @RequiredArgsConstructor
-//@EnableWebSecurity
 public class SecurityConfiguration {
-    private final CustomUserDetailsService userDetailsService;
+
     private final JwtToUserConverter jwtToUserConverter;
     private final KeyUtils keyUtils;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
+    private final CustomAuthenticationProvider customAuthenticationProvider;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-                .authorizeHttpRequests(
-                        (authz) ->
-                                authz
-                                        // allow all resources regarding  swagger ui
-                                        .anyRequest().permitAll()
-//                                        .requestMatchers("/",
-//                                                "/v3/api-docs/**",
-//                                                "/swagger-ui/**",
-//                                                "/v2/api-docs/**",
-//                                                "/swagger-resources/**",
-//                                                "/api/v1/users/**")
-//                                        .permitAll()
-//                                        .requestMatchers("/api/v1/auth/**")
-//                                        .permitAll()
-//                                        // since user will need to upload the picture in order to register
-//                                        .requestMatchers(
-//                                                "api/v1/files/**",
-//                                                "images/**")
-//                                        .permitAll()
-//
-//
-//                                        // changing the information , disable , delete requires admin priviledge to do so
-//                                        .requestMatchers(
-//                                                HttpMethod.PATCH,
-//                                                "api/v1/users/**")
-//                                        .hasRole("ADMIN").requestMatchers(
-//                                                HttpMethod.DELETE,
-//                                                "api/v1/users/**")
-//                                        .hasRole("ADMIN")
-////                                        .hasAnyAuthority("ROLE_ADMIN","WRITE","DELETE")
-//                                        .anyRequest().authenticated()
+        http
+                .authorizeHttpRequests(authz -> authz
+                        .anyRequest().permitAll()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .oauth2ResourceServer(
-                        (oauth2) -> oauth2.jwt(jwtConfigurer ->
-                                jwtConfigurer.jwtAuthenticationConverter(jwtToUserConverter)))
-                .sessionManagement(
-                        (session) -> session
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer ->
+                        jwtConfigurer.jwtAuthenticationConverter(jwtToUserConverter)))
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .exceptionHandling(
-                        (ex) -> ex.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-                                .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
-                .build();
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
+                .authenticationProvider(customAuthenticationProvider);
+        return http.build();
     }
 
-
-    // related to jwtEncoder and Decoder
     @Bean
     @Qualifier("jwtRefreshTokenEncoder")
     JwtEncoder jwtRefreshTokenEncoder() {
@@ -141,13 +92,20 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    @Qualifier("refreshTokenAuthProvider")
+    JwtAuthenticationProvider accessTokenAuthProvider() {
+        JwtAuthenticationProvider provider = new JwtAuthenticationProvider(
+                jwtAccessTokenDecoder()
+        );
+        provider.setJwtAuthenticationConverter(jwtToUserConverter);
+        return provider;
+    }
+
+    @Bean
     JwtAuthenticationProvider refreshTokenAuthProvider() {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(
                 jwtRefreshTokenDecoder()
         );
         provider.setJwtAuthenticationConverter(jwtToUserConverter);
         return provider;
-
     }
 }

@@ -16,8 +16,11 @@ import java.util.List;
 @NoArgsConstructor
 public class CustomUserDetails implements UserDetails {
     private User user;
-    // make the proper format for the authorities
-    //["ROLE_SOMETHING","AUTHORITY1",...]
+
+    public CustomUserDetails(User user) {
+        this.user = user;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -31,6 +34,10 @@ public class CustomUserDetails implements UserDetails {
         return authorities;
     }
 
+    public String getEmail() {
+        return user.getEmail();
+    }
+
     @Override
     public String getPassword() {
         return user.getPassword();
@@ -38,12 +45,9 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return user.getUsername();
     }
 
-
-
-    // will add it tmr!
     @Override
     public boolean isAccountNonExpired() {
         return !user.isAccountExpired();

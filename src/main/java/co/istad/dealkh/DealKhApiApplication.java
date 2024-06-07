@@ -15,12 +15,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @OpenAPIDefinition(
         info = @Info(
-                title = "Mobile Banking API (Data Analytics Class )",
+                title = "Deal Kh API",
                 version = "1.0",
-                description = "Mobile Banking API for Data Analytics Class 2024",
+                description = "Deal Kh Api for final project",
                 contact = @Contact(
-                        name = "Admin",
-                        email = "admin@gmail.com"
+                        name = "Deal kh",
+                        email = "dealkh@gmail.com"
 
                 ),
                 termsOfService = "http://swagger.io/terms/",

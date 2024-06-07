@@ -4,20 +4,19 @@ import co.istad.dealkh.features.auth.dto.AuthResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 @Component
 public class TokenGenerator {
-    private final  JwtEncoder jwtAccessTokenEncoder;
+    private final JwtEncoder jwtAccessTokenEncoder;
     private final JwtEncoder jwtRefreshTokenEncoder;
+
     public TokenGenerator(
             JwtEncoder jwtAccessTokenEncoder,
             @Qualifier("jwtRefreshTokenEncoder") JwtEncoder jwtRefreshTokenEncoder
@@ -26,59 +25,40 @@ public class TokenGenerator {
         this.jwtAccessTokenEncoder = jwtAccessTokenEncoder;
     }
 
-    private String createAccessToken(Authentication authentication) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    private String createAccessToken(CustomUserDetails customUserDetails) {
         Instant now = Instant.now();
-        //  we can also create scope for the token from the userDetails object here !
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(now.plus(10, ChronoUnit.HOURS))
-                .subject(userDetails.getUsername()) // email
-                .issuer("co.istad.dealkh") //
-                .id(userDetails.getUser().getId().toString())
-//                .notBefore(now)
-//                .claims("scope", "read write")
+                .subject(customUserDetails.getUsername())
+                .issuer("co.istad.dealkh")
+                .claim("id", customUserDetails.getUser().getId().toString())
                 .build();
         return jwtAccessTokenEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
-    // expire after 7 days
-    private String createRefreshToken(Authentication authentication) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    private String createRefreshToken(CustomUserDetails customUserDetails) {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(now.plus(7, ChronoUnit.DAYS))
-                .subject(userDetails.getUsername())
+                .subject(customUserDetails.getUsername())
                 .issuer("co.istad.dealkh")
                 .build();
         return jwtRefreshTokenEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
-    // token rotation !
-    public AuthResponse generateTokens(Authentication authentication ) {
-        if(!(authentication.getPrincipal() instanceof CustomUserDetails  customUserDetails)){
-            throw new BadCredentialsException("Provided Token is not valid");
-        }
-        String refreshToken ;
-        if( authentication.getCredentials() instanceof Jwt jwt){
-            Instant now = Instant.now();
-            Instant expireAt = jwt.getExpiresAt();
-            Duration duration = Duration.between(now, expireAt);
-            long daysUtilsExpired = duration.toDays();
-            // Duration.between(Instant.now(), jwt.getExpiresAt()).toDays() < 7
-            if(daysUtilsExpired < 7){
-                refreshToken = createRefreshToken(authentication);
-            }else {
-                refreshToken = jwt.getTokenValue();
-            }
-        }else {
-            refreshToken = createRefreshToken(authentication);
-        }
-        return AuthResponse.builder()
-                .refreshToken(refreshToken)
-                .accessToken(createAccessToken(authentication))
-                .userId(customUserDetails.getUser().getId())
-                .build();
 
+    public AuthResponse generateTokens(Authentication authentication) {
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        if (!customUserDetails.getUser().getIsDisabled()) {
+            String refreshToken = createRefreshToken(customUserDetails);
+            String accessToken = createAccessToken(customUserDetails);
+            return AuthResponse.builder()
+                    .refreshToken(refreshToken)
+                    .accessToken(accessToken)
+                    .userId(customUserDetails.getUser().getId())
+                    .build();
+        }
+        throw new BadCredentialsException("User is disabled");
     }
 }

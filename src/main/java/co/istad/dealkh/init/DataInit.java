@@ -6,6 +6,7 @@ import co.istad.dealkh.features.authority.AuthorityRepository;
 import co.istad.dealkh.features.category.CategoryRepository;
 import co.istad.dealkh.features.discount.DiscountRepository;
 import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
+import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
@@ -37,6 +38,7 @@ public class DataInit {
     private final DiscountTypeRepository discountTypeRepository;
     private final WishListRepository wishListRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ProductRepository productRepository;
 
     @PostConstruct
     void initData() {
@@ -127,23 +129,34 @@ public class DataInit {
     }
 
     private void initShops() {
-        List<Shop> shops = new ArrayList<>();
         if (shopRepository.findAll().isEmpty()) {
-            Shop shop = new Shop();
-            shop.setName("Layhak Shop");
-            shop.setAddress("Phnom Penh");
-            shop.setDescription("Shop description");
-            shop.setPhoneNumber("0123456789");
-            shop.setEmail("layhakshop@gmail.com");
-            shop.setOpenAt(Time.valueOf("08:00:00"));
-            shop.setCloseAt(Time.valueOf("17:00:00"));
-            shop.setIsDeleted(false);
-            shop.setIsDisabled(false);
-            shop.setShopType(shopTypeRepository.findAll().get(0));
-            shops.add(shop);
-            shopRepository.save(shop);
+            Optional<User> userOptional = userRepository.findByEmail("layhak@gmail.com");
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+
+                // Ensure the user is managed by attaching it to the current session
+                user = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+
+                Shop shop = new Shop();
+                shop.setName("Layhak Shop");
+                shop.setAddress("Phnom Penh");
+                shop.setDescription("Shop description");
+                shop.setPhoneNumber("0123456789");
+                shop.setEmail("layhakshop@gmail.com");
+                shop.setOpenAt(Time.valueOf("08:00:00"));
+                shop.setCloseAt(Time.valueOf("17:00:00"));
+                shop.setIsDeleted(false);
+                shop.setIsDisabled(false);
+                shop.setShopType(shopTypeRepository.findAll().get(0));
+//                shop.setUsers(List.of(user));
+
+                shopRepository.save(shop);
+            } else {
+                logger.severe("User with email 'layhak@gmail.com' not found");
+            }
         }
     }
+
 
     private void initCategories() {
         List<String> categories = List.of("Electronics", "Fashion", "Health", "Books", "Food");
