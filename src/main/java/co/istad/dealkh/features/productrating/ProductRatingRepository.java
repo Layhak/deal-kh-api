@@ -2,7 +2,6 @@ package co.istad.dealkh.features.productrating;
 
 import co.istad.dealkh.domain.ProductRating;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -12,8 +11,15 @@ public interface ProductRatingRepository extends JpaRepository<ProductRating, Lo
 
     Optional<ProductRating> findByUserIdAndProductId(Long userId, Long productId);
 
-    @Query("SELECT SUM(pr.ratingValue) FROM ProductRating pr WHERE pr.product.id = :id")
-    Double findRatingByProductId(@Param("id") Long id);
+    ProductRating findProductRatingById(Long id);
 
-    Long countByProductId(Long id);
+//    @Query("select sum(pr.ratingValue) from ProductRating pr where pr.product.id = :id")
+//    Double findRatingValueByProductId(@Param("id") Long id);
+
+    @Query("SELECT COALESCE(SUM(pr.ratingValue), 0) FROM ProductRating pr WHERE pr.product.id = :id")
+    Double findRatingValueByProductId(@Param("id") Long id);
+
+    @Query("SELECT COUNT(pr) FROM ProductRating pr WHERE pr.product.id = :id")
+    Long countByProductId(@Param("id") Long id);
+
 }

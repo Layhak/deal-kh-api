@@ -55,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
         newProduct.setDiscount(discount);
         newProduct.setCategory(category);
         newProduct.setShop(shop);
-//        newProduct.setRatingAvg(getProductRatingAvg(newProduct.getId()));
+
         productRepository.save(newProduct);
 
         return productMapper.mapProductToProductResponseDetail(newProduct);
@@ -69,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
                         HttpStatus.NOT_FOUND,
                         String.format("Product with id %d not found! ", id)
                 ));
-        product.setRatingAvg(getProductRatingAvg(id));
+
         ProductResponse productResponseDetail = productMapper.mapProductToProductResponseDetail(product);
 
         return Optional.of(productResponseDetail);
@@ -131,14 +131,14 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.delete(product);
     }
+    @Override
     public Double getProductRatingAvg(Long id) {
-        Double totalRating = productRatingRepository.findRatingByProductId(id);
+        Double totalRating = productRatingRepository.findRatingValueByProductId(id);
         Long ratingCount = productRatingRepository.countByProductId(id);
 
         if (ratingCount == 0) {
-            return 0.0; // or throw an exception if you prefer
+            return 0.0;
         }
-
         return totalRating / ratingCount;
     }
 

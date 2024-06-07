@@ -20,4 +20,6 @@ public interface ProductService {
 
     void deleteProduct(Long id);
 
+    Double getProductRatingAvg(Long id);
+
 }

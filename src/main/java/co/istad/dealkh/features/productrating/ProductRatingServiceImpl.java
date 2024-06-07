@@ -4,6 +4,7 @@ import co.istad.dealkh.domain.Product;
 import co.istad.dealkh.domain.ProductRating;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.product.ProductRepository;
+import co.istad.dealkh.features.product.ProductService;
 import co.istad.dealkh.features.productrating.dto.ProductRatingRequest;
 import co.istad.dealkh.features.productrating.dto.ProductRatingResponse;
 import co.istad.dealkh.features.user.UserRepository;
@@ -27,6 +28,7 @@ public class ProductRatingServiceImpl implements ProductRatingService{
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final ProductRatingMapper productRatingMapper;
+    private final ProductService productService;
 
     @Override
     public ProductRatingResponse rateProduct(ProductRatingRequest productRatingRequest) {
@@ -49,7 +51,6 @@ public class ProductRatingServiceImpl implements ProductRatingService{
             );
         }
 
-
         if (productRatingRepository.findByUserIdAndProductId(productRatingRequest.userId(), productRatingRequest.productId()).isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "You have already rated this product!"
@@ -60,6 +61,15 @@ public class ProductRatingServiceImpl implements ProductRatingService{
         newProductRating.setProduct(product);
         newProductRating.setCreatedAt(LocalDateTime.now());
         productRatingRepository.save(newProductRating);
+
+        product.setRatingAvg(productService.getProductRatingAvg(product.getId()));
+        productRepository.save(product);
+
+//        Double totalRating = productRatingRepository.findRatingValueByProductId(product.getId());
+//        Long ratingCount = productRatingRepository.countByProductId(product.getId());
+//        double ratingAvg = totalRating / ratingCount;
+//        product.setRatingAvg(ratingAvg);
+//        productRepository.save(product);
 
         return productRatingMapper.mapProductRatingToProductRatingResponse(newProductRating);
     }
