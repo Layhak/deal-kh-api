@@ -5,6 +5,16 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
+/**
+ * DiscountUpdateRequest is a request object for updating a discount.
+ * It contains the discount percentage, expired at, and discount type ID.
+ *
+ * <p>This class uses the following annotations:
+ * <ul>
+ * <li>{@link NotNull} - Indicates that the discount percentage and expired at are required.</li>
+ * </ul>
+ * </p>
+ */
 public record DiscountUpdateRequest(
 
         @NotNull(message = "Discount Type Id is required")

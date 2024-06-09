@@ -15,20 +15,36 @@ import org.springframework.security.oauth2.server.resource.authentication.Bearer
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.stereotype.Service;
 
+/**
+ * AuthServiceImpl is a service implementation of {@link AuthService} that handles authentication
+ * and token refresh operations. It uses custom authentication providers and a token generator
+ * to manage authentication and token issuance.
+ *
+ * <p>This class uses the following annotations:
+ * <ul>
+ * <li>{@link Service} - Indicates that this class is a Spring service.</li>
+ * <li>{@link RequiredArgsConstructor} - Generates a constructor with required arguments (final fields).</li>
+ * </ul>
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final CustomAuthenticationProvider customAuthenticationProvider;
     private final TokenGenerator tokenGenerator;
 
-    @Qualifier("accessTokenAuthProvider")
-    private final JwtAuthenticationProvider accessTokenAuthProvider;
 
     @Qualifier("refreshTokenAuthProvider")
     private final JwtAuthenticationProvider refreshTokenAuthProvider;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
+    /**
+     * Authenticates a user based on the provided credentials and generates access and refresh tokens.
+     *
+     * @param request the authentication request containing the user's email and password
+     * @return an {@link AuthResponse} containing the access and refresh tokens
+     */
     @Override
     public AuthResponse login(AuthRequest request) {
         logger.info("Attempting to authenticate user with email: {}", request.email());
@@ -42,6 +58,12 @@ public class AuthServiceImpl implements AuthService {
         return tokenGenerator.generateTokens(authentication);
     }
 
+    /**
+     * Refreshes the authentication tokens based on the provided refresh token.
+     *
+     * @param request the refresh token request containing the refresh token
+     * @return an {@link AuthResponse} containing the new access and refresh tokens
+     */
     @Override
     public AuthResponse refreshToken(RefreshTokenRequest request) {
         Authentication authentication = refreshTokenAuthProvider

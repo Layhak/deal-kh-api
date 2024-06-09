@@ -3,6 +3,10 @@ package co.istad.dealkh.features.image.dto;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * ImageUploadResponse is a response object for uploading an image.
+ * It contains the download URL of the image, the file type, and the size of the image.
+ */
 @Data
 @Builder
 public class ImageUploadResponse {
