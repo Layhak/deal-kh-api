@@ -45,19 +45,19 @@ public class AuthRestController {
                     content = @Content(schema = @Schema(implementation = UserCreateRequest.class),
                             examples = @ExampleObject(value = """
                                             {
-                                                "firstName": "art",
-                                                "lastName": "vandeth",
-                                                "username": "panda",
-                                                "email": "panda@gmail.com",
-                                                "password": "panda8888",
-                                                "gender": "male",
+                                                "firstName": "Hom",
+                                                "lastName": "Pheakakvotey",
+                                                "username": "Votey",
+                                                "email": "votey@gmail.com",
+                                                "password": "votey",
+                                                "gender": "gender",
                                                 "phoneNumber": "0987654321",
-                                                "dob": "2001-01-01",
+                                                "dob": "2001-07-01",
                                                 "location": "phnom penh",
                                                 "roles": [
-                                                  "ADMIN"
+                                                  "BUYER"
                                                 ]
-                                              }                          
+                                              }
                                     """)
                     )
             )

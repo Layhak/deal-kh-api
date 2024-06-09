@@ -40,14 +40,14 @@ public class ShopTypeController {
 
     @PutMapping("/{name}")
     BaseResponse<ShopTypeResponse> updateShopTypeByName(@PathVariable String name, @RequestBody ShopTypeUpdateRequest shopTypeUpdateRequest) {
-        return BaseResponse.<ShopTypeResponse>updateSuccess("Update shop type successfully!")
+        return BaseResponse.<ShopTypeResponse>ok("Update shop type successfully!")
                 .setPayload(shopTypeService.updateShopTypeByName(name, shopTypeUpdateRequest));
     }
 
     @DeleteMapping("/{name}")
     BaseResponse<?> deleteShopTypeByName(@PathVariable String name) {
         shopTypeService.deleteShopTypeByName(name);
-        return BaseResponse.deleteSuccess("Delete shop type successfully!");
+        return BaseResponse.ok("Delete shop type successfully!");
     }
 
 }

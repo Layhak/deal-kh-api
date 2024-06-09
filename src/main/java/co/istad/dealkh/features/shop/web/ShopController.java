@@ -38,7 +38,7 @@ public class ShopController {
     @PatchMapping("/{id}")
     @Operation(summary = "Update shop")
     public BaseResponse<ShopResponse> updateShop(@PathVariable Long id, @RequestBody ShopRequest shopRequest) {
-        return BaseResponse.<ShopResponse>updateSuccess("Updated shop").setPayload(shopService.updateShop(id, shopRequest));
+        return BaseResponse.<ShopResponse>ok("Updated shop").setPayload(shopService.updateShop(id, shopRequest));
     }
 
     @GetMapping("/{id}")
@@ -51,7 +51,7 @@ public class ShopController {
     @Operation(summary = "Delete shop")
     public BaseResponse<Void> deleteShop(@PathVariable Long id) {
         shopService.deleteShop(id);
-        return BaseResponse.<Void>deleteSuccess("Deleted shop");
+        return BaseResponse.<Void>ok("Deleted shop");
     }
 
     @GetMapping("/nearby")
@@ -69,13 +69,13 @@ public class ShopController {
     @PatchMapping("/{id}/disable")
     @Operation(summary = "Disable shop")
     public BaseResponse<ShopResponse> disableShop(@PathVariable Long id) {
-        return BaseResponse.<ShopResponse>updateSuccess("Disabled shop").setPayload(shopService.disableShop(id));
+        return BaseResponse.<ShopResponse>ok("Disabled shop").setPayload(shopService.disableShop(id));
     }
 
     @PatchMapping("/{id}/enable")
     @Operation(summary = "Enable shop")
     public BaseResponse<ShopResponse> enableShop(@PathVariable Long id) {
-        return BaseResponse.<ShopResponse>updateSuccess("Enabled shop").setPayload(shopService.enableShop(id));
+        return BaseResponse.<ShopResponse>ok("Enabled shop").setPayload(shopService.enableShop(id));
     }
 
     @GetMapping("/user/{userId}")

@@ -16,9 +16,11 @@ import java.util.List;
 @NoArgsConstructor
 public class CustomUserDetails implements UserDetails {
     private User user;
+    private Long userId;  // Add this field
 
     public CustomUserDetails(User user) {
         this.user = user;
+        this.userId = user.getId();  // Initialize the userId here
     }
 
     @Override
@@ -33,6 +35,7 @@ public class CustomUserDetails implements UserDetails {
         });
         return authorities;
     }
+
 
     public String getEmail() {
         return user.getEmail();
@@ -67,4 +70,6 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return !user.isBlocked();
     }
+
+
 }

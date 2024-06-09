@@ -13,8 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/product-feedback")
 @RequiredArgsConstructor
-public class ProductFeedbackController
-{
+public class ProductFeedbackController {
     private final ProductFeedbackService productFeedbackService;
 
     @GetMapping("/{productId}")
@@ -25,7 +24,7 @@ public class ProductFeedbackController
     }
 
     @PostMapping
-@Operation(summary = "Create product feedback")
+    @Operation(summary = "Create product feedback")
     public BaseResponse<ProductFeedbackResponse> createProductFeedback(@RequestBody ProductFeedbackRequest productFeedbackRequest) {
         return BaseResponse.<ProductFeedbackResponse>createSuccess("Successfully created product feedback!")
                 .setPayload(productFeedbackService.createProductFeedback(productFeedbackRequest));
@@ -34,7 +33,7 @@ public class ProductFeedbackController
     @PatchMapping("/{id}")
     @Operation(summary = "Update product feedback")
     public BaseResponse<ProductFeedbackResponse> updateProductFeedback(@PathVariable Long id, @RequestBody ProductFeedbackRequest productFeedbackRequest) {
-        return BaseResponse.<ProductFeedbackResponse>updateSuccess("Successfully updated product feedback!")
+        return BaseResponse.<ProductFeedbackResponse>ok("Successfully updated product feedback!")
                 .setPayload(productFeedbackService.updateProductFeedback(id, productFeedbackRequest));
     }
 
@@ -42,6 +41,6 @@ public class ProductFeedbackController
     @Operation(summary = "Delete product feedback")
     public BaseResponse<?> deleteProductFeedback(@PathVariable Long id) {
         productFeedbackService.deleteProductFeedback(id);
-        return BaseResponse.deleteSuccess("Successfully deleted product feedback!");
+        return BaseResponse.ok("Successfully deleted product feedback!");
     }
 }

@@ -24,16 +24,7 @@ public class BaseResponse<T> {
         return new BaseResponse<T>().setStatus(HttpStatus.NOT_FOUND.value()).setMessage(message);
     }
 
-
-    public static <T> BaseResponse<T> updateSuccess(String message) {
-        return new BaseResponse<T>().setStatus(HttpStatus.OK.value()).setMessage(message);
-    }
-
-    public static <T> BaseResponse<T> deleteSuccess(String message) {
-        return new BaseResponse<T>().setStatus(HttpStatus.OK.value()).setMessage(message);
-    }
-
-    public static BaseResponse badRequest(String message) {
-        return new BaseResponse().setStatus(HttpStatus.BAD_REQUEST.value()).setMessage(message);
+    public static <T> BaseResponse<T> badRequest(String message) {
+        return new BaseResponse<T>().setStatus(HttpStatus.BAD_REQUEST.value()).setMessage(message);
     }
 }

@@ -1,29 +1,32 @@
 package co.istad.dealkh.features.user;
 
 import co.istad.dealkh.domain.User;
+import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.features.role.RoleRepository;
-import co.istad.dealkh.features.user.dto.UserCreateRequest;
-import co.istad.dealkh.features.user.dto.UserProfileResponse;
-import co.istad.dealkh.features.user.dto.UserResponse;
-import co.istad.dealkh.features.user.dto.UserUpdateRequest;
+import co.istad.dealkh.features.user.dto.*;
 import co.istad.dealkh.mapper.UserMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
 import co.istad.dealkh.specification.filter.UserFilter;
 import co.istad.dealkh.specification.filter.UserSpecification;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,10 +34,30 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    //    private final ImageRepository imageRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    private void extractFilterParams(@NotNull UserFilter userFilter, Map<String, String> params) {
+        userFilter.setUsername(params.get("username"));
+        userFilter.setEmail(params.get("email"));
+        userFilter.setPhone(params.get("phone"));
+        userFilter.setRole(params.get("role"));
+        userFilter.setStatus(params.get("status"));
+        userFilter.setGender(params.get("gender"));
+    }
+
+    private void validateSortingParams(String field, String order) {
+        List<String> validFields = Arrays.asList("id", "username", "email", "dob", "createdAt", "updatedAt");
+
+        if (field == null || field.isEmpty() || !validFields.contains(field)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, username, email, dob, createdAt, updatedAt");
+        }
+        if (order != null && !order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
+        }
+    }
 
     @Override
     public UserResponse getById(Long id) {
@@ -46,43 +69,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public PageResponse<UserResponse> getAllUsers(int page, int size, String field, String order, Map<String, String> params) {
         UserFilter userFilter = new UserFilter();
-        int pageSize = Pagination.page_limit;
-        page = Pagination.page_number;
-        size = pageSize;
+        extractFilterParams(userFilter, params);
 
-        if (params.containsKey("username")) {
-            String username = params.get("username");
-            userFilter.setUsername(username);
-        }
-        if (params.containsKey("email")) {
-            String email = params.get("email");
-            userFilter.setEmail(email);
-        }
-        if (params.containsKey("phone")) {
-            String phone = params.get("phone");
-            userFilter.setPhone(phone);
-        }
-        if (params.containsKey("role")) {
-            String role = params.get("role");
-            userFilter.setRole(role);
-        }
-        if (params.containsKey("status")) {
-            String status = params.get("status");
-            userFilter.setStatus(status);
-        }
-        if (params.containsKey("gender")) {
-            String gender = params.get("gender");
-            userFilter.setGender(gender);
-        }
+        validateSortingParams(field, order);
 
-        List<String> validFields = Arrays.asList("username", "email", "dob", "createdAt", "updatedAt");
-        if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, username, email, or dob");
-        }
-        if (order != null && !order.equals("asc") && !order.equals("desc")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
-        }
-        UserSpecification specification = new UserSpecification(userFilter);
+        Specification<User> specification = new UserSpecification(userFilter);
 
         Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
 
@@ -90,10 +81,6 @@ public class UserServiceImpl implements UserService {
         return new PageResponse<>(users);
     }
 
-    @Override
-    public UserProfileResponse getUserProfile(Long id) {
-        return null;
-    }
 
     @Override
     public UserResponse createUser(UserCreateRequest userRequest) {
@@ -122,31 +109,27 @@ public class UserServiceImpl implements UserService {
         return userMapper.mapToUserResponse(newUser);
     }
 
-
     @Override
     public UserResponse updateUser(Long id, UserUpdateRequest userUpdateRequest) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+
         if (userRepository.existsByUsername(userUpdateRequest.username()) && !user.getUsername().equals(userUpdateRequest.username())) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Username already exist ! Try another one ");
+                    "Username already exists! Try another one.");
         }
-//        //username are unique
-//        if (userRepository.existsByPhone(userUpdateRequest.phoneNumber()) && !user.getPhoneNumber().equals(userUpdateRequest.phoneNumber())) {
-//            throw new ResponseStatusException(
-//                    HttpStatus.CONFLICT,
-//                    "Phone number already exist ! Try another one ");
-//        }
-        if (userRepository.existsByUsername(userUpdateRequest.username()) && !user.getUsername().equals(userUpdateRequest.username())) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Username already exist ! Try another one ");
-        }
+
+        // Update other user fields
         userMapper.mapUpdateRequestToUser(user, userUpdateRequest);
+
+        // Save the updated user
         userRepository.save(user);
+
+        // Return the updated user response
         return userMapper.mapToUserResponse(user);
     }
+
 
     @Override
     public void deleteUser(Long id) {
@@ -157,6 +140,98 @@ public class UserServiceImpl implements UserService {
                             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!");
                         });
     }
+
+    @Override
+    public UserProfileResponse getUserProfile(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+        return userMapper.mapToUserProfileResponse(user);
+    }
+
+    @Override
+    public void deleteUserProfile(Long id, String imageUrl) {
+        // Fetch the user by ID
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+
+        // Filter the images list to remove the image URL that matches the given imageUrl
+        List<Image> filteredImages = user.getImages().stream()
+                .filter(image -> !image.getUrl().equals(imageUrl))
+                .collect(Collectors.toList());
+
+        // Update the user's images list
+        user.setImages(filteredImages);
+
+        // Save the updated user
+        userRepository.save(user);
+    }
+
+    @Override
+    public UserProfileResponse uploadUserProfile(Long id, UserProfileRequest userProfileRequest) {
+        // Fetch the user by ID
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+
+        // Get the existing images
+        List<Image> existingImages = user.getImages();
+
+        // Create a new Image object with the provided URL
+        Image newImage = new Image(userProfileRequest.imageUrl());
+
+        // Append the new image to the existing list
+        existingImages.add(newImage);
+
+        // Set the updated image list to the user
+        user.setImages(existingImages);
+
+        // Save the updated user
+        userRepository.save(user);
+
+        // Map the updated user entity to UserProfileResponse and return it
+        return userMapper.mapToUserProfileResponse(user);
+    }
+
+    @Override
+    public void updatePassword(Long id, UserUpdatePasswordRequest userUpdatePasswordRequest) {
+        // Fetch the user by ID
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+
+        // Validate the old password
+        if (!passwordEncoder.matches(userUpdatePasswordRequest.oldPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Old password is incorrect.");
+        }
+
+        // Check that the new passwords match
+        if (!userUpdatePasswordRequest.newPassword().equals(userUpdatePasswordRequest.newPasswordConfirmation())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "New passwords do not match.");
+        }
+
+        // Update the password
+        user.setPassword(passwordEncoder.encode(userUpdatePasswordRequest.newPassword()));
+
+        // Save the updated user
+        userRepository.save(user);
+    }
+
+    @Override
+    public void resetPassword(Long id, UserResetPasswordRequest userResetPasswordRequest) {
+        // Fetch the user by ID
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+
+        // Check that the new passwords match
+        if (!userResetPasswordRequest.newPassword().equals(userResetPasswordRequest.newPasswordConfirmation())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "New passwords do not match.");
+        }
+
+        // Update the password
+        user.setPassword(passwordEncoder.encode(userResetPasswordRequest.newPassword()));
+
+        // Save the updated user
+        userRepository.save(user);
+    }
+
 
     @Override
     public UserResponse disableUser(Long id) {
@@ -176,39 +251,4 @@ public class UserServiceImpl implements UserService {
         return userMapper.mapToUserResponse(user);
     }
 
-    @Override
-    public List<UserResponse> getAllUsersByStatus(String status) {
-        List<User> users = new ArrayList<>();
-        if (status.equalsIgnoreCase("enabled") || status.equalsIgnoreCase("enable")) {
-            users = userRepository.findAllByIsDisabledFalse();
-        } else if (status.equalsIgnoreCase("disabled") || status.equalsIgnoreCase("disable")) {
-            users = userRepository.findAllByIsDisabledTrue();
-        }
-        return users.stream().map(userMapper::mapToUserResponse).collect(Collectors.toList());
-    }
-
-    @Override
-    public UserResponse uploadMultipleImages(Long id, List<MultipartFile> files, List<String> descriptions, HttpServletRequest request) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        for (int i = 0; i < files.size(); i++) {
-            MultipartFile file = files.get(i);
-            String description = descriptions.get(i);
-            System.out.println("File: " + file.getOriginalFilename());
-            System.out.println("Description: " + description);
-//            Image image = new Image();
-//            image.setUrl(file.getOriginalFilename());
-//            image.setDescription(description);
-//            image.setUser(user);
-//            System.out.println("Image: " + image);
-//            imageRepository.save(image);
-        }
-        return userMapper.mapToUserResponse(user);
-    }
-
-
-    @Override
-    public boolean existsById(Long id) {
-        return userRepository.existsById(id);
-    }
 }

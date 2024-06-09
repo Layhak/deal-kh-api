@@ -2,10 +2,7 @@ package co.istad.dealkh.mapper;
 
 import co.istad.dealkh.domain.Role;
 import co.istad.dealkh.domain.User;
-import co.istad.dealkh.features.user.dto.UserCreateRequest;
-import co.istad.dealkh.features.user.dto.UserRequest;
-import co.istad.dealkh.features.user.dto.UserResponse;
-import co.istad.dealkh.features.user.dto.UserUpdateRequest;
+import co.istad.dealkh.features.user.dto.*;
 import org.mapstruct.*;
 
 import java.util.Set;
@@ -33,4 +30,9 @@ public interface UserMapper {
     default Set<String> mapRoleToString(Set<Role> roles) {
         return roles.stream().map(Role::getName).collect(Collectors.toSet());
     }
+
+    @Mapping(target = "imageUrl", source = "images")
+    UserProfileResponse mapToUserProfileResponse(User user);
+
+
 }

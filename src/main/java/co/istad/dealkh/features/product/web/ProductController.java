@@ -46,14 +46,14 @@ public class ProductController {
 
     @PutMapping("/{id}")
     BaseResponse<ProductResponse> updateProductById(@PathVariable Long id, @RequestBody ProductUpdateRequest productUpdateRequest) {
-        return BaseResponse.<ProductResponse>updateSuccess("Update product successfully!")
+        return BaseResponse.<ProductResponse>ok("Update product successfully!")
                 .setPayload(productService.updateProductById(id, productUpdateRequest));
     }
 
     @DeleteMapping("/{id}")
     BaseResponse<?> deleteProductById(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return BaseResponse.deleteSuccess("Delete product successfully!");
+        return BaseResponse.ok("Delete product successfully!");
     }
 
 }

@@ -1,14 +1,8 @@
 package co.istad.dealkh.features.user;
 
-import co.istad.dealkh.features.user.dto.UserCreateRequest;
-import co.istad.dealkh.features.user.dto.UserProfileResponse;
-import co.istad.dealkh.features.user.dto.UserResponse;
-import co.istad.dealkh.features.user.dto.UserUpdateRequest;
+import co.istad.dealkh.features.user.dto.*;
 import co.istad.dealkh.paging.PageResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Map;
 
 public interface UserService {
@@ -17,7 +11,6 @@ public interface UserService {
 
     PageResponse<UserResponse> getAllUsers(int page, int size, String field, String order, Map<String, String> params);
 
-    UserProfileResponse getUserProfile(Long id);
 
     UserResponse createUser(UserCreateRequest userCreateRequest);
 
@@ -25,15 +18,18 @@ public interface UserService {
 
     void deleteUser(Long id);
 
+    UserProfileResponse getUserProfile(Long id);
 
-    boolean existsById(Long id);
+    void deleteUserProfile(Long id, String imageUrl);
+
+    UserProfileResponse uploadUserProfile(Long id, UserProfileRequest userProfileRequest);
+
+    void updatePassword(Long id, UserUpdatePasswordRequest userUpdatePasswordRequest);
+
+    void resetPassword(Long id, UserResetPasswordRequest userResetPasswordRequest);
 
     UserResponse disableUser(Long id);
 
     UserResponse enableUser(Long id);
 
-    //getAllEnabledUsers
-    List<UserResponse> getAllUsersByStatus(String status);
-
-    UserResponse uploadMultipleImages(Long id, List<MultipartFile> files, List<String> descriptions, HttpServletRequest request);
 }

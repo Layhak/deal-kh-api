@@ -117,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with id %d not found! ", id)));
 
         product.setUpdatedAt(LocalDateTime.now());
-
+//        product.setUpdatedBy(product.getCreatedBy());
         productMapper.mapProductToUpdateRequest(product, productUpdateRequest);
         productRepository.save(product);
 

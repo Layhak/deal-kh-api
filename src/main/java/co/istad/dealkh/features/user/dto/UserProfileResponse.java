@@ -1,4 +1,10 @@
 package co.istad.dealkh.features.user.dto;
 
-public record UserProfileResponse() {
+import co.istad.dealkh.domain.json.Image;
+
+import java.util.List;
+
+public record UserProfileResponse(
+        List<Image> imageUrl
+) {
 }

@@ -56,14 +56,14 @@ public class DiscountController {
 
     @PutMapping("/{id}")
     BaseResponse<DiscountTypeResponse> updateDiscountById(@PathVariable Long id, @RequestBody DiscountUpdateRequest discountUpdateRequest) {
-        return BaseResponse.<DiscountTypeResponse>updateSuccess("Update discount successfully!")
+        return BaseResponse.<DiscountTypeResponse>ok("Update discount successfully!")
                 .setPayload(discountService.updateDiscountById(id, discountUpdateRequest));
     }
 
     @DeleteMapping("/{id}")
     BaseResponse<?> deleteDiscountById(@PathVariable Long id) {
         discountService.deleteDiscountById(id);
-        return BaseResponse.deleteSuccess("Delete discount successfully!");
+        return BaseResponse.ok("Delete discount successfully!");
     }
 
 }

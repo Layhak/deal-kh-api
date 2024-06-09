@@ -44,7 +44,7 @@ public class ImageController {
     @DeleteMapping("{fileName}")
     public BaseResponse<String> deleteFile(@PathVariable String fileName) {
         imageService.deleteFile(fileName);
-        return BaseResponse.<String>deleteSuccess("File is deleted successfully!");
+        return BaseResponse.<String>ok("File is deleted successfully!");
     }
 
 }

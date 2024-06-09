@@ -109,8 +109,6 @@ public class DataInit {
             user1.setLocation("Phnom Penh");
             user1.setIsDisabled(false);
             user1.setCreatedAt(LocalDateTime.now());
-            user1.setCreatedBy("Admin");
-            user1.setUpdatedBy("Admin");
             user1.setRoles(Set.of(roles.get(0), roles.get(1)));
             users.add(user1);
             userRepository.saveAll(users);
@@ -168,7 +166,6 @@ public class DataInit {
                 category1.setCreatedAt(LocalDateTime.now());
                 category1.setUpdatedAt(LocalDateTime.now());
                 category1.setCreatedBy("Admin");
-                category1.setUpdatedBy("Admin");
                 categoryRepository.save(category1);
             });
         }

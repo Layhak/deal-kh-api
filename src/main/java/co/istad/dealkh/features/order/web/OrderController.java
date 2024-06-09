@@ -21,7 +21,7 @@ public class OrderController {
     public BaseResponse<List<OrderResponse>> getOrders(@RequestParam Long userId) {
         return BaseResponse.<List<OrderResponse>>ok("Success get all order").setPayload(orderService.getOrdersByUserId(userId));
     }
-        
+
     @PostMapping
     @Operation(summary = "Create order")
     public BaseResponse<OrderResponse> createOrder(OrderRequest orderRequest) {
@@ -32,7 +32,7 @@ public class OrderController {
     @Operation(summary = "Delete order")
     public BaseResponse<Void> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
-        return BaseResponse.<Void>deleteSuccess("Success delete order");
+        return BaseResponse.<Void>ok("Success delete order");
     }
 
 }

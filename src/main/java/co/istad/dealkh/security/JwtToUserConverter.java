@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
-
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -27,8 +26,7 @@ public class JwtToUserConverter implements Converter<Jwt, UsernamePasswordAuthen
         logger.info("JwtAuthenticationToken converter" + source.getSubject());
         User user = userRepository.findByEmail(source.getSubject())
                 .orElseThrow(() -> new BadCredentialsException("Invalid Token!!! "));
-        CustomUserDetails customUserDetails = new CustomUserDetails();
-        customUserDetails.setUser(user);
+        CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
         return new UsernamePasswordAuthenticationToken(
                 customUserDetails,
@@ -36,5 +34,4 @@ public class JwtToUserConverter implements Converter<Jwt, UsernamePasswordAuthen
                 customUserDetails.getAuthorities()
         );
     }
-
 }

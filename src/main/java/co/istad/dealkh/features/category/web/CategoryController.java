@@ -45,14 +45,14 @@ public class CategoryController {
 
     @PutMapping("/{name}")
     BaseResponse<CategoryResponse> updateCategory(@PathVariable String name, @RequestBody CategoryUpdateRequest categoryUpdateRequest) {
-        return BaseResponse.<CategoryResponse>updateSuccess("Update category successfully!")
+        return BaseResponse.<CategoryResponse>ok("Update category successfully!")
                 .setPayload(categoryService.updateCategoryByName(name, categoryUpdateRequest));
     }
 
     @DeleteMapping("/{name}")
     BaseResponse<?> deleteCategory(@PathVariable String name) {
         categoryService.deleteCategoryByName(name);
-        return BaseResponse.deleteSuccess("Delete category successfully!");
+        return BaseResponse.ok("Delete category successfully!");
     }
 
 }

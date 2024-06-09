@@ -6,7 +6,6 @@ import co.istad.dealkh.features.shop.dto.ShopResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-
 @Mapper(componentModel = "spring", uses = {CustomMapper.class})
 public interface ShopMapper {
 
