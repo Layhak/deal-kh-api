@@ -1,5 +1,6 @@
 package co.istad.dealkh.features.user;
 
+import co.istad.dealkh.domain.Role;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.features.role.RoleRepository;
@@ -248,6 +249,44 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
         user.setIsDisabled(false);
         userRepository.save(user);
+        return userMapper.mapToUserResponse(user);
+    }
+
+    @Override
+    public UserResponse addRole(Long id, UserRoleRequest userRoleRequest) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+
+        // Fetch the role from the request and add it to the user
+        Role newRole = roleRepository.findByName(userRoleRequest.role())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + userRoleRequest.role()));
+
+        // Add the new role to the user's existing roles if not already present
+        user.getRoles().add(newRole);
+
+        // Save the updated user
+        userRepository.save(user);
+
+        // Return the updated user response
+        return userMapper.mapToUserResponse(user);
+    }
+
+    @Override
+    public UserResponse removerRole(Long id, UserRoleRequest userRoleRequest) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+
+        // Fetch the role from the request and remove it from the user
+        Role roleToRemove = roleRepository.findByName(userRoleRequest.role())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + userRoleRequest.role()));
+
+        // Remove the role from the user's existing roles
+        user.getRoles().remove(roleToRemove);
+
+        // Save the updated user
+        userRepository.save(user);
+
+        // Return the updated user response
         return userMapper.mapToUserResponse(user);
     }
 

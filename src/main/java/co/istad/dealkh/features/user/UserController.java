@@ -120,4 +120,18 @@ public class UserController {
         userService.resetPassword(userId, userResetPasswordRequest);
         return BaseResponse.ok("Successfully reset user password");
     }
+
+    @PostMapping("/addRole")
+    @Operation(summary = "Add role to user")
+    public BaseResponse<UserResponse> addRole(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserRoleRequest userRoleRequest) {
+        Long userId = customUserDetails.getUserId();
+        return BaseResponse.<UserResponse>ok("Successfully add role to user").setPayload(userService.addRole(userId, userRoleRequest));
+    }
+
+    @DeleteMapping("/removeRole")
+    @Operation(summary = "Remove role from user")
+    public BaseResponse<UserResponse> removeRole(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserRoleRequest userRoleRequest) {
+        Long userId = customUserDetails.getUserId();
+        return BaseResponse.<UserResponse>ok("Successfully remove role from user").setPayload(userService.removerRole(userId, userRoleRequest));
+    }
 }

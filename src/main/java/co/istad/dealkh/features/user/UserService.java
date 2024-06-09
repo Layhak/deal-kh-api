@@ -32,4 +32,8 @@ public interface UserService {
 
     UserResponse enableUser(Long id);
 
+    UserResponse addRole(Long id, UserRoleRequest userRoleRequest);
+
+    UserResponse removerRole(Long id, UserRoleRequest userRoleRequest);
+
 }
