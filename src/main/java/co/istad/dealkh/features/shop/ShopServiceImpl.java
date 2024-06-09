@@ -1,8 +1,10 @@
 package co.istad.dealkh.features.shop;
 
+import co.istad.dealkh.domain.Role;
 import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.domain.ShopType;
 import co.istad.dealkh.domain.User;
+import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.dto.ShopRequest;
 import co.istad.dealkh.features.shop.dto.ShopResponse;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
@@ -21,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class ShopServiceImpl implements ShopService {
     private final ShopTypeRepository shopTypeRepository;
     private final UserRepository userRepository;
     private final ShopMapper shopMapper;
+    private final RoleRepository roleRepository;
 
     @Override
     public PageResponse<ShopResponse> getAllShop(int page, int size, String field, String order) {
@@ -82,6 +86,15 @@ public class ShopServiceImpl implements ShopService {
         shop.setIsDisabled(false);
 
         Shop savedShop = shopRepository.save(shop);
+
+        users.stream().filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals("BUYER"))).forEach(user -> {
+            user.getRoles()
+                    .add(roleRepository.findByName("SELLER")
+                            .orElseThrow(() -> new RuntimeException("Role not found")));
+            userRepository.save(user);
+        });
+
+
         return shopMapper.toShopResponse(savedShop);
     }
 
