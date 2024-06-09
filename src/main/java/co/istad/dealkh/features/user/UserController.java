@@ -24,8 +24,30 @@ public class UserController {
 
 
     @GetMapping
-    @Operation(summary = "Get all users with pagination, sorting, and filtering", description = "Default parameters: page=1, size=10, field=username, order=asc, status=enable")
-    public BaseResponse<PageResponse<UserResponse>> getAllUsers(@Parameter(name = "page", description = "Page number", in = ParameterIn.QUERY, schema = @Schema(defaultValue = "1")) @RequestParam(defaultValue = "1") int page, @Parameter(name = "size", description = "Page size", in = ParameterIn.QUERY, schema = @Schema(defaultValue = "10")) @RequestParam(defaultValue = "10") int size, @Parameter(name = "field", description = "Sort field", in = ParameterIn.QUERY, schema = @Schema(defaultValue = "username")) @RequestParam(defaultValue = "username") String field, @Parameter(name = "order", description = "Sort order", in = ParameterIn.QUERY, schema = @Schema(defaultValue = "asc")) @RequestParam(defaultValue = "asc") String order, @Parameter(name = "params", description = "Additional filter parameters (default: {\"status\": \"enable\"})", in = ParameterIn.QUERY) @RequestParam Map<String, String> params) {
+    @Operation(
+            summary = "Get all users with pagination, sorting, and filtering",
+            description = "Default parameters: page=1, size=10, field=username, order=asc, status=enable")
+    public BaseResponse<PageResponse<UserResponse>> getAllUsers(
+            @Parameter(name = "page",
+                    description = "Page number",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "1")) @RequestParam(defaultValue = "1") int page,
+            @Parameter(name = "size",
+                    description = "Page size",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "10")) @RequestParam(defaultValue = "10") int size,
+            @Parameter(name = "field",
+                    description = "Sort field",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "username")) @RequestParam(defaultValue = "username") String field,
+            @Parameter(name = "order",
+                    description = "Sort order",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "asc")) @RequestParam(defaultValue = "asc") String order,
+            @Parameter(name = "params",
+                    description = "Additional filter parameters (default: {\"status\": \"enable\"})",
+                    in = ParameterIn.QUERY) @RequestParam Map<String,
+                    String> params) {
         // Add default parameters if not present
         params.putIfAbsent("status", "enable");
 
