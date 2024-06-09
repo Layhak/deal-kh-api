@@ -21,7 +21,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
                 contact = @Contact(
                         name = "Deal kh",
                         email = "dealkh@gmail.com"
-
                 ),
                 termsOfService = "http://swagger.io/terms/",
                 license = @io.swagger.v3.oas.annotations.info.License(

@@ -54,6 +54,9 @@ public class UserController {
                            "location": "Phnom Penh",
                            "phoneNumber": "0987654321",
                            "username": "Votey",
+                           "shopId": [
+                           1
+                           ]
                          }
             """))))
     BaseResponse<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequest updateRequest) {

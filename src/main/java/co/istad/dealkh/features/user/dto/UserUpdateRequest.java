@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public record UserUpdateRequest(
         @NotBlank
@@ -27,9 +28,9 @@ public record UserUpdateRequest(
         @NotNull
         LocalDate dob,
 
-
         @NotBlank
-        String location
-//        List<UserShopResponse> shops
+        String location,
+
+        List<Long> shopId
 ) {
 }
