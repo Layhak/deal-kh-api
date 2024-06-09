@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,22 +37,85 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authz -> authz
-                        .anyRequest().permitAll()
-                )
-                .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer ->
-                        jwtConfigurer.jwtAuthenticationConverter(jwtToUserConverter)))
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
-                .authenticationProvider(customAuthenticationProvider);
+
+        http.authorizeHttpRequests(authz -> authz
+
+                // auth
+                .requestMatchers("/api/v1/auth/**").permitAll()
+
+                // users
+                .requestMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAnyAuthority("ADMIN", "SUPPER_ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAnyAuthority("ADMIN", "SUPPER_ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/users/**").hasAnyAuthority("ADMIN", "SUPPER_ADMIN")
+
+                // discounts
+                .requestMatchers(HttpMethod.GET, "/api/v1/discounts/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/discounts/**").hasAuthority("SELLER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/discounts/**").hasAuthority("SELLER")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/discounts/**").hasAuthority("SELLER")
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/discounts/**").hasAuthority("SELLER")
+
+                // products
+                .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasAuthority("SELLER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasAuthority("SELLER")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasAuthority("SELLER")
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/products/**").hasAuthority("SELLER")
+
+                // shops
+                .requestMatchers(HttpMethod.GET, "/api/v1/shops/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/shops/**").hasAuthority("BUYER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/shops/**").hasAnyAuthority("SELLER", "SUPER_ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/shops/**").hasAnyAuthority("SELLER", "ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/shops/**").hasAnyAuthority("SELLER", "ADMIN")
+
+                // wishlists
+                .requestMatchers(HttpMethod.GET, "/api/v1/wishlists/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/wishlists/**").hasAnyAuthority("BUYER", "SELLER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/wishlists/**").hasAuthority("BUYER")
+
+                // categories
+                .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").hasAuthority("SELLER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/**").hasAuthority("SELLER")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/categories/**").hasAuthority("SELLER")
+
+                // product-ratings
+                .requestMatchers(HttpMethod.GET, "/api/v1/product-ratings/**").hasAuthority("SELLER")
+                .requestMatchers(HttpMethod.POST, "/api/v1/product-ratings/**").hasAuthority("BUYER")
+
+                //shop-types
+                .requestMatchers(HttpMethod.GET, "/api/v1/shop-types/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/shop-types/**").hasAnyAuthority("ADMIN", "SUPPER_ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/shop-types/**").hasAnyAuthority("ADMIN", "SUPPER_ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/shop-types/**").hasAnyAuthority("ADMIN", "SUPPER_ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/shop-types/**").hasAnyAuthority("ADMIN", "SUPPER_ADMIN")
+
+                // product-feedbacks
+                .requestMatchers(HttpMethod.GET, "/api/v1/product-feedbacks/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/product-feedbacks/**").hasAuthority("BUYER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/product-feedbacks/**").hasAnyAuthority("BUYER", "SELLER")
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/product-feedbacks/**").hasAuthority("BUYER")
+
+                // images
+                .requestMatchers("/api/v1/images/**").permitAll()
+
+                .anyRequest().permitAll()
+            )
+            .csrf(AbstractHttpConfigurer::disable)
+            .formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer ->
+                    jwtConfigurer.jwtAuthenticationConverter(jwtToUserConverter)))
+            .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .exceptionHandling(ex -> ex
+                    .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+                    .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
+            .authenticationProvider(customAuthenticationProvider);
         return http.build();
     }
 

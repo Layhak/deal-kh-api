@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/product-feedback")
+@RequestMapping("/api/v1/product-feedbacks")
 @RequiredArgsConstructor
 public class ProductFeedbackController {
     private final ProductFeedbackService productFeedbackService;
