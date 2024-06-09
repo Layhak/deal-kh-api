@@ -29,6 +29,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * ProductServiceImpl is a service implementation of {@link ProductService} that handles product-related operations.
+ * It includes methods for creating, retrieving, updating, and deleting products.
+ *
+ * <p>This class uses the following annotations:
+ * <ul>
+ * <li>{@link Service} - Indicates that this class is a Spring service.</li>
+ * <li>{@link RequiredArgsConstructor} - Generates a constructor with required arguments (final fields).</li>
+ * </ul>
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -41,6 +52,12 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRatingRepository productRatingRepository;
 
 
+    /**
+     * Creates a new product based on the provided request.
+     *
+     * @param productCreateRequest the request containing the details for the new product
+     * @return
+     */
     @Override
     public ProductResponse createProduct(ProductCreateRequest productCreateRequest) {
 
@@ -61,6 +78,12 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.mapProductToProductResponseDetail(newProduct);
     }
 
+    /**
+     * Retrieves a product by its ID.
+     *
+     * @param id
+     * @return
+     */
     @Override
     public Optional<ProductResponse> getProductById(Long id) {
 
@@ -75,6 +98,16 @@ public class ProductServiceImpl implements ProductService {
         return Optional.of(productResponseDetail);
     }
 
+    /**
+     * Retrieves all products.
+     *
+     * @param page
+     * @param size
+     * @param field
+     * @param order
+     * @param params
+     * @return
+     */
     @Override
     public PageResponse<ProductResponse> getAllProducts(int page, int size, String field, String order, Map<String, String> params) {
         size = Pagination.page_limit;
@@ -112,6 +145,13 @@ public class ProductServiceImpl implements ProductService {
         return new PageResponse<>(products);
     }
 
+    /**
+     * Updates a product based on its ID.
+     *
+     * @param id
+     * @param productUpdateRequest
+     * @return
+     */
     @Override
     public ProductResponse updateProductById(Long id, ProductUpdateRequest productUpdateRequest) {
         Product product = productRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with id %d not found! ", id)));
@@ -124,6 +164,11 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.mapProductToProductResponseDetail(product);
     }
 
+    /**
+     * Deletes a product based on its ID.
+     *
+     * @param id
+     */
     @Override
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with id %d not found! ", id)));
@@ -131,6 +176,12 @@ public class ProductServiceImpl implements ProductService {
         productRepository.delete(product);
     }
 
+    /**
+     * Retrieves a product rating average based on its ID.
+     *
+     * @param id
+     * @return
+     */
     @Override
     public Double getProductRatingAvg(Long id) {
         Double totalRating = productRatingRepository.findRatingValueByProductId(id);

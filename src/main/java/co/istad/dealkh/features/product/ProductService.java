@@ -22,14 +22,50 @@ public interface ProductService {
      */
     ProductResponse createProduct(ProductCreateRequest productCreateRequest);
 
+    /**
+     * Retrieves a product by its ID.
+     *
+     * @param id
+     * @return
+     */
     Optional<ProductResponse> getProductById(Long id);
 
+    /**
+     * Retrieves all products.
+     * This method uses the {@link PageResponse} class to return a paginated list of products.
+     *
+     * @param page
+     * @param size
+     * @param field
+     * @param order
+     * @param params
+     * @return
+     */
     PageResponse<ProductResponse> getAllProducts(int page, int size, String field, String order, Map<String, String> params);
 
+    /**
+     * Updates a product based on its ID.
+     *
+     * @param id
+     * @param productUpdateRequest
+     * @return
+     */
     ProductResponse updateProductById(Long id, ProductUpdateRequest productUpdateRequest);
 
+    /**
+     * Deletes a product based on its ID.
+     *
+     * @param id
+     * @return
+     */
     void deleteProduct(Long id);
 
+    /**
+     * Retrieves a product rating average based on its ID.
+     *
+     * @param id
+     * @return
+     */
     Double getProductRatingAvg(Long id);
 
 }

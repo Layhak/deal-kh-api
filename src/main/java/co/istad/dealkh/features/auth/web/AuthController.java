@@ -1,6 +1,7 @@
-package co.istad.dealkh.features.auth;
+package co.istad.dealkh.features.auth.web;
 
 import co.istad.dealkh.base.BaseResponse;
+import co.istad.dealkh.features.auth.AuthService;
 import co.istad.dealkh.features.auth.dto.AuthRequest;
 import co.istad.dealkh.features.auth.dto.AuthResponse;
 import co.istad.dealkh.features.auth.dto.RefreshTokenRequest;

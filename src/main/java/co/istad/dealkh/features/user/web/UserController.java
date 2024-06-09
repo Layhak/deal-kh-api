@@ -1,6 +1,7 @@
-package co.istad.dealkh.features.user;
+package co.istad.dealkh.features.user.web;
 
 import co.istad.dealkh.base.BaseResponse;
+import co.istad.dealkh.features.user.UserService;
 import co.istad.dealkh.features.user.dto.*;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.security.CustomUserDetails;
@@ -16,12 +17,23 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * UserController is a controller for managing users.
+ * It handles creating, retrieving, updating, and deleting users.
+ *
+ * <p>This class uses the following annotations:
+ * <ul>
+ * <li>{@link RestController} - Indicates that this class is a REST controller.</li>
+ * <li>{@link RequiredArgsConstructor} - Generates a constructor with required arguments (final fields).</li>
+ * <li>{@link RequestMapping} - Maps HTTP requests to handler methods of MVC and REST controllers.</li>
+ * </ul>
+ * </p>
+ */
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
 
     @GetMapping
     @Operation(
