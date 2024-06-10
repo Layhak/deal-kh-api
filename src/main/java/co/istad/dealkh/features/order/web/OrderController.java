@@ -5,13 +5,14 @@ import co.istad.dealkh.features.order.OrderService;
 import co.istad.dealkh.features.order.dto.OrderRequest;
 import co.istad.dealkh.features.order.dto.OrderResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
@@ -24,7 +25,7 @@ public class OrderController {
 
     @PostMapping
     @Operation(summary = "Create order")
-    public BaseResponse<OrderResponse> createOrder(OrderRequest orderRequest) {
+    public BaseResponse<OrderResponse> createOrder(@RequestBody @Valid OrderRequest orderRequest) {
         return BaseResponse.<OrderResponse>createSuccess("Success create order").setPayload(orderService.createOrder(orderRequest));
     }
 

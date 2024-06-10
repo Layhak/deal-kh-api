@@ -5,6 +5,7 @@ import co.istad.dealkh.features.productfeedback.ProductFeedbackService;
 import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackRequest;
 import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class ProductFeedbackController {
 
     @PostMapping
     @Operation(summary = "Create product feedback")
-    public BaseResponse<ProductFeedbackResponse> createProductFeedback(@RequestBody ProductFeedbackRequest productFeedbackRequest) {
+    public BaseResponse<ProductFeedbackResponse> createProductFeedback(@RequestBody @Valid ProductFeedbackRequest productFeedbackRequest) {
         return BaseResponse.<ProductFeedbackResponse>createSuccess("Successfully created product feedback!")
                 .setPayload(productFeedbackService.createProductFeedback(productFeedbackRequest));
     }

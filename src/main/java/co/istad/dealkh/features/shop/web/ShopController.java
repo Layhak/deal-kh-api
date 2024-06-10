@@ -7,6 +7,7 @@ import co.istad.dealkh.features.shop.dto.ShopRequest;
 import co.istad.dealkh.features.shop.dto.ShopResponse;
 import co.istad.dealkh.paging.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class ShopController {
 
     @PostMapping
     @Operation(summary = "Create new shop")
-    public BaseResponse<ShopResponse> createShop(@RequestBody ShopRequest shopRequest) {
+    public BaseResponse<ShopResponse> createShop(@RequestBody @Valid ShopRequest shopRequest) {
         return BaseResponse.<ShopResponse>createSuccess("Created new shop").setPayload(shopService.createShop(shopRequest));
     }
 
