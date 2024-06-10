@@ -10,8 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SocialMedia {
-
     private String socialName;
     private String socialLink;
-
 }

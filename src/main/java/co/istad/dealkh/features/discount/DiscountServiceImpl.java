@@ -25,6 +25,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * DiscountServiceImpl is a service implementation of {@link DiscountService} that handles discount-related operations.
+ * It includes methods for creating, retrieving, updating, and deleting discounts.
+ *
+ * <p>This class uses the following annotations:
+ * <ul>
+ * <li>{@link Service} - Indicates that this class is a Spring service.</li>
+ * <li>{@link RequiredArgsConstructor} - Generates a constructor with required arguments (final fields).</li>
+ * </ul>
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 public class DiscountServiceImpl implements DiscountService {
@@ -33,6 +44,13 @@ public class DiscountServiceImpl implements DiscountService {
     private final DiscountMapper discountMapper;
     private final DiscountTypeRepository discountTypeRepository;
 
+    /**
+     * Creates a new discount based on the provided request.
+     *
+     * @param discountCreateRequest the request containing the details for the new discount
+     * @return a {@link DiscountTypeResponse} containing the details of the created discount
+     * @throws ResponseStatusException if the discount name already exists
+     */
     @Override
     public DiscountTypeResponse createDiscount(DiscountCreateRequest discountCreateRequest) {
 
@@ -44,6 +62,13 @@ public class DiscountServiceImpl implements DiscountService {
         return discountMapper.mapDiscountToResponseDetail(discountRepository.save(newDiscount));
     }
 
+    /**
+     * Retrieves a discount by its ID.
+     *
+     * @param id the ID of the discount to retrieve
+     * @return a {@link DiscountTypeResponse} containing the details of the retrieved discount
+     * @throws ResponseStatusException if the discount is not found
+     */
     @Override
     public Optional<DiscountTypeResponse> getDiscountById(Long id) {
 
@@ -54,6 +79,12 @@ public class DiscountServiceImpl implements DiscountService {
         return Optional.of(discountResponse);
     }
 
+    /**
+     * Retrieves a discount by its name.
+     *
+     * @param name the name of the discount to retrieve
+     * @return
+     */
     @Override
     public Optional<DiscountTypeResponse> getDiscountByName(String name) {
 
@@ -65,6 +96,11 @@ public class DiscountServiceImpl implements DiscountService {
         return null;
     }
 
+    /**
+     * Retrieves all discounts.
+     *
+     * @return a list of {@link DiscountTypeResponse} containing the details of all discounts
+     */
     @Override
     public PageResponse<DiscountTypeResponse> getAllDiscounts(int pageNumber, int size, String field, String order, Map<String, String> params) {
 
@@ -98,6 +134,13 @@ public class DiscountServiceImpl implements DiscountService {
 
     }
 
+    /**
+     * Updates a discount identified by its name based on the provided request.
+     *
+     * @param id                    the ID of the discount to update
+     * @param discountUpdateRequest the request containing the updated details for the discount
+     * @return
+     */
     @Override
     public DiscountTypeResponse updateDiscountById(Long id, DiscountUpdateRequest discountUpdateRequest) {
         Discount discount = discountRepository.findById(id)
@@ -112,6 +155,11 @@ public class DiscountServiceImpl implements DiscountService {
         return discountMapper.mapDiscountToResponseDetail(discount);
     }
 
+    /**
+     * Deletes a discount identified by its name.
+     *
+     * @param id
+     */
     @Override
     public void deleteDiscountById(Long id) {
         Discount discount = discountRepository.findById(id)

@@ -1,6 +1,7 @@
-package co.istad.dealkh.features.user;
+package co.istad.dealkh.features.user.web;
 
 import co.istad.dealkh.base.BaseResponse;
+import co.istad.dealkh.features.user.UserService;
 import co.istad.dealkh.features.user.dto.*;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.security.CustomUserDetails;
@@ -16,16 +17,49 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * UserController is a controller for managing users.
+ * It handles creating, retrieving, updating, and deleting users.
+ *
+ * <p>This class uses the following annotations:
+ * <ul>
+ * <li>{@link RestController} - Indicates that this class is a REST controller.</li>
+ * <li>{@link RequiredArgsConstructor} - Generates a constructor with required arguments (final fields).</li>
+ * <li>{@link RequestMapping} - Maps HTTP requests to handler methods of MVC and REST controllers.</li>
+ * </ul>
+ * </p>
+ */
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-
     @GetMapping
-    @Operation(summary = "Get all users with pagination, sorting, and filtering", description = "Default parameters: page=1, size=10, field=username, order=asc, status=enable")
-    public BaseResponse<PageResponse<UserResponse>> getAllUsers(@Parameter(name = "page", description = "Page number", in = ParameterIn.QUERY, schema = @Schema(defaultValue = "1")) @RequestParam(defaultValue = "1") int page, @Parameter(name = "size", description = "Page size", in = ParameterIn.QUERY, schema = @Schema(defaultValue = "10")) @RequestParam(defaultValue = "10") int size, @Parameter(name = "field", description = "Sort field", in = ParameterIn.QUERY, schema = @Schema(defaultValue = "username")) @RequestParam(defaultValue = "username") String field, @Parameter(name = "order", description = "Sort order", in = ParameterIn.QUERY, schema = @Schema(defaultValue = "asc")) @RequestParam(defaultValue = "asc") String order, @Parameter(name = "params", description = "Additional filter parameters (default: {\"status\": \"enable\"})", in = ParameterIn.QUERY) @RequestParam Map<String, String> params) {
+    @Operation(
+            summary = "Get all users with pagination, sorting, and filtering",
+            description = "Default parameters: page=1, size=10, field=username, order=asc, status=enable")
+    public BaseResponse<PageResponse<UserResponse>> getAllUsers(
+            @Parameter(name = "page",
+                    description = "Page number",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "1")) @RequestParam(defaultValue = "1") int page,
+            @Parameter(name = "size",
+                    description = "Page size",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "10")) @RequestParam(defaultValue = "10") int size,
+            @Parameter(name = "field",
+                    description = "Sort field",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "username")) @RequestParam(defaultValue = "username") String field,
+            @Parameter(name = "order",
+                    description = "Sort order",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "asc")) @RequestParam(defaultValue = "asc") String order,
+            @Parameter(name = "params",
+                    description = "Additional filter parameters (default: {\"status\": \"enable\"})",
+                    in = ParameterIn.QUERY) @RequestParam Map<String,
+                    String> params) {
         // Add default parameters if not present
         params.putIfAbsent("status", "enable");
 
@@ -119,5 +153,19 @@ public class UserController {
         Long userId = customUserDetails.getUserId();
         userService.resetPassword(userId, userResetPasswordRequest);
         return BaseResponse.ok("Successfully reset user password");
+    }
+
+    @PostMapping("/addRole")
+    @Operation(summary = "Add role to user")
+    public BaseResponse<UserResponse> addRole(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserRoleRequest userRoleRequest) {
+        Long userId = customUserDetails.getUserId();
+        return BaseResponse.<UserResponse>ok("Successfully add role to user").setPayload(userService.addRole(userId, userRoleRequest));
+    }
+
+    @DeleteMapping("/removeRole")
+    @Operation(summary = "Remove role from user")
+    public BaseResponse<UserResponse> removeRole(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserRoleRequest userRoleRequest) {
+        Long userId = customUserDetails.getUserId();
+        return BaseResponse.<UserResponse>ok("Successfully remove role from user").setPayload(userService.removerRole(userId, userRoleRequest));
     }
 }

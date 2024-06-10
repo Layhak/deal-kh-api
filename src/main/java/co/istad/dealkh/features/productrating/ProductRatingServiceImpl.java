@@ -16,13 +16,21 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
+/**
+ * ProductRatingServiceImpl is a service implementation of {@link ProductRatingService} that handles product ratings-related operations.
+ * It includes methods for creating, retrieving, updating, and deleting product ratings.
+ *
+ * <p>This class uses the following annotations:
+ * <ul>
+ * <li>{@link Service} - Indicates that this class is a Spring service.</li>
+ * <li>{@link RequiredArgsConstructor} - Generates a constructor with required arguments (final fields).</li>
+ * </ul>
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
-public class ProductRatingServiceImpl implements ProductRatingService{
+public class ProductRatingServiceImpl implements ProductRatingService {
 
     private final ProductRatingRepository productRatingRepository;
     private final ProductRepository productRepository;
@@ -30,6 +38,12 @@ public class ProductRatingServiceImpl implements ProductRatingService{
     private final ProductRatingMapper productRatingMapper;
     private final ProductService productService;
 
+    /**
+     * Rates a product based on the provided request.
+     *
+     * @param productRatingRequest
+     * @return
+     */
     @Override
     public ProductRatingResponse rateProduct(ProductRatingRequest productRatingRequest) {
 
@@ -65,15 +79,14 @@ public class ProductRatingServiceImpl implements ProductRatingService{
         product.setRatingAvg(productService.getProductRatingAvg(product.getId()));
         productRepository.save(product);
 
-//        Double totalRating = productRatingRepository.findRatingValueByProductId(product.getId());
-//        Long ratingCount = productRatingRepository.countByProductId(product.getId());
-//        double ratingAvg = totalRating / ratingCount;
-//        product.setRatingAvg(ratingAvg);
-//        productRepository.save(product);
-
         return productRatingMapper.mapProductRatingToProductRatingResponse(newProductRating);
     }
 
+    /**
+     * Retrieves all product ratings.
+     *
+     * @return
+     */
     @Override
     public List<ProductRatingResponse> getAllProductRating() {
 

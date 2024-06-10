@@ -18,11 +18,27 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * KeyUtils is a utility class for managing RSA key pairs for access and refresh tokens.
+ * It handles the generation, storage, and retrieval of RSA public and private keys.
+ *
+ * <p>This class uses the following annotations:
+ * <ul>
+ * <li>{@link Component} - Indicates that this class is a Spring component and a candidate for component scanning and dependency injection.</li>
+ * <li>{@link Value} - Injects values from application properties.</li>
+ * </ul>
+ * </p>
+ */
 @Component
 public class KeyUtils {
 
     private final Environment environment;
 
+    /**
+     * Constructs a new KeyUtils with the specified environment.
+     *
+     * @param environment the environment to use for retrieving active profiles
+     */
     public KeyUtils(Environment environment) {
         this.environment = environment;
     }
@@ -39,6 +55,11 @@ public class KeyUtils {
     private KeyPair _accessTokenKeyPair;
     private KeyPair _refreshTokenKeyPair;
 
+    /**
+     * Retrieves the key pair for access tokens. If the key pair is not already loaded, it loads the key pair from the specified file paths.
+     *
+     * @return the key pair for access tokens
+     */
     private KeyPair getAccessTokenKeyPair() {
         if (Objects.isNull(_accessTokenKeyPair)) {
             _accessTokenKeyPair = getKeyPair(accessTokenPublicKey, accessTokenPrivateKey);
@@ -46,6 +67,11 @@ public class KeyUtils {
         return _accessTokenKeyPair;
     }
 
+    /**
+     * Retrieves the key pair for refresh tokens. If the key pair is not already loaded, it loads the key pair from the specified file paths.
+     *
+     * @return the key pair for refresh tokens
+     */
     private KeyPair getRefreshTokenKeyPair() {
         if (Objects.isNull(_refreshTokenKeyPair)) {
             _refreshTokenKeyPair = getKeyPair(refreshTokenPublicKey, refreshTokenPrivateKey);
@@ -53,6 +79,14 @@ public class KeyUtils {
         return _refreshTokenKeyPair;
     }
 
+    /**
+     * Loads a key pair from the specified file paths or generates a new key pair if the files do not exist.
+     *
+     * @param publicKeyPath  the path to the public key file
+     * @param privateKeyPath the path to the private key file
+     * @return the loaded or generated key pair
+     * @throws RuntimeException if an error occurs while loading or generating the key pair
+     */
     private KeyPair getKeyPair(String publicKeyPath, String privateKeyPath) {
         KeyPair keyPair;
         File publicKeyFile = new File(publicKeyPath);
@@ -111,19 +145,38 @@ public class KeyUtils {
         return keyPair;
     }
 
-    // Get public key and private key for the access token and refresh token for other classes to use
+    /**
+     * Retrieves the public key for access tokens.
+     *
+     * @return the public key for access tokens
+     */
     public RSAPublicKey getAccessTokenPublicKey() {
         return (RSAPublicKey) getAccessTokenKeyPair().getPublic();
     }
 
+    /**
+     * Retrieves the private key for access tokens.
+     *
+     * @return the private key for access tokens
+     */
     public RSAPrivateKey getAccessTokenPrivateKey() {
         return (RSAPrivateKey) getAccessTokenKeyPair().getPrivate();
     }
 
+    /**
+     * Retrieves the private key for refresh tokens.
+     *
+     * @return the private key for refresh tokens
+     */
     public RSAPrivateKey getRefreshTokenPrivateKey() {
         return (RSAPrivateKey) getRefreshTokenKeyPair().getPrivate();
     }
 
+    /**
+     * Retrieves the public key for refresh tokens.
+     *
+     * @return the public key for refresh tokens
+     */
     public RSAPublicKey getRefreshTokenPublicKey() {
         return (RSAPublicKey) getRefreshTokenKeyPair().getPublic();
     }

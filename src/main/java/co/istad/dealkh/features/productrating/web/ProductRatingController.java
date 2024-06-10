@@ -9,6 +9,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * ProductRatingController is a controller for managing product ratings.
+ * It handles creating, retrieving, updating, and deleting product ratings.
+ *
+ * <p>This class uses the following annotations:
+ * <ul>
+ * <li>{@link RestController} - Indicates that this class is a REST controller.</li>
+ * <li>{@link RequiredArgsConstructor} - Generates a constructor with required arguments (final fields).</li>
+ * <li>{@link RequestMapping} - Maps HTTP requests to handler methods of MVC and REST controllers.</li>
+ * </ul>
+ * </p>
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/product-ratings")
@@ -16,11 +28,22 @@ public class ProductRatingController {
 
     private final ProductRatingService productRatingService;
 
+    /**
+     * Rate a product based on the Request object.
+     *
+     * @param productRatingRequest
+     * @return
+     */
     @PostMapping("")
     ProductRatingResponse rateProduct(@RequestBody @Valid ProductRatingRequest productRatingRequest) {
         return productRatingService.rateProduct(productRatingRequest);
     }
 
+    /**
+     * Retrieves all product ratings
+     *
+     * @return
+     */
     @GetMapping("")
     List<ProductRatingResponse> getAllProductRatings() {
         return productRatingService.getAllProductRating();

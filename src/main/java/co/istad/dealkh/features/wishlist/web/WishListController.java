@@ -11,6 +11,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * WishListController is a controller for managing wish lists.
+ * It handles creating, retrieving, updating, and deleting wish lists.
+ *
+ * <p>This class uses the following annotations:
+ * <ul>
+ * <li>{@link RestController} - Indicates that this class is a REST controller.</li>
+ * <li>{@link RequiredArgsConstructor} - Generates a constructor with required arguments (final fields).</li>
+ * <li>{@link RequestMapping} - Maps HTTP requests to handler methods of MVC and REST controllers.</li>
+ * </ul>
+ * </p>
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/wishlists")

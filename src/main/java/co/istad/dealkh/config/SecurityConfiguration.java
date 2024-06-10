@@ -27,6 +27,20 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthen
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * SecurityConfiguration is a configuration class that defines beans and configurations for the security setup.
+ * It configures JWT authentication, custom authentication providers, and the security filter chain.
+ *
+ * <p>This class uses the following annotations:
+ * <ul>
+ * <li>{@link Configuration} - Indicates that the class can be used by the Spring IoC container as a source of bean definitions.</li>
+ * <li>{@link RequiredArgsConstructor} - Generates a constructor with required arguments (final fields).</li>
+ * <li>{@link Bean} - Indicates that a method produces a bean to be managed by the Spring container.</li>
+ * <li>{@link Primary} - Indicates that a bean should be given preference when multiple beans of the same type are available.</li>
+ * <li>{@link Qualifier} - Used to distinguish beans of the same type.</li>
+ * </ul>
+ * </p>
+ */
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfiguration {
@@ -35,6 +49,13 @@ public class SecurityConfiguration {
     private final KeyUtils keyUtils;
     private final CustomAuthenticationProvider customAuthenticationProvider;
 
+    /**
+     * Configures the security filter chain.
+     *
+     * @param http the {@link HttpSecurity} to modify
+     * @return the {@link SecurityFilterChain}
+     * @throws Exception if an error occurs configuring the security filter chain
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -119,6 +140,11 @@ public class SecurityConfiguration {
         return http.build();
     }
 
+    /**
+     * Creates a JWT encoder for refresh tokens.
+     *
+     * @return a {@link JwtEncoder} for refresh tokens
+     */
     @Bean
     @Qualifier("jwtRefreshTokenEncoder")
     JwtEncoder jwtRefreshTokenEncoder() {
@@ -129,6 +155,11 @@ public class SecurityConfiguration {
         return new NimbusJwtEncoder(jwkSource);
     }
 
+    /**
+     * Creates a JWT decoder for refresh tokens.
+     *
+     * @return a {@link JwtDecoder} for refresh tokens
+     */
     @Bean
     @Qualifier("jwtRefreshTokenDecoder")
     JwtDecoder jwtRefreshTokenDecoder() {
@@ -137,6 +168,11 @@ public class SecurityConfiguration {
                 .build();
     }
 
+    /**
+     * Creates a primary JWT encoder for access tokens.
+     *
+     * @return a {@link JwtEncoder} for access tokens
+     */
     @Bean
     @Primary
     JwtEncoder jwtAccessTokenEncoder() {
@@ -147,6 +183,11 @@ public class SecurityConfiguration {
         return new NimbusJwtEncoder(jwkSource);
     }
 
+    /**
+     * Creates a primary JWT decoder for access tokens.
+     *
+     * @return a {@link JwtDecoder} for access tokens
+     */
     @Bean
     @Primary
     JwtDecoder jwtAccessTokenDecoder() {
@@ -155,6 +196,11 @@ public class SecurityConfiguration {
                 .build();
     }
 
+    /**
+     * Creates a JWT authentication provider for access tokens.
+     *
+     * @return a {@link JwtAuthenticationProvider} for access tokens
+     */
     @Bean
     JwtAuthenticationProvider accessTokenAuthProvider() {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(
@@ -164,6 +210,11 @@ public class SecurityConfiguration {
         return provider;
     }
 
+    /**
+     * Creates a JWT authentication provider for refresh tokens.
+     *
+     * @return a {@link JwtAuthenticationProvider} for refresh tokens
+     */
     @Bean
     JwtAuthenticationProvider refreshTokenAuthProvider() {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(

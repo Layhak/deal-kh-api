@@ -20,6 +20,17 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 
+/**
+ * ImageServiceImpl is a service implementation of {@link ImageService} that handles image upload, retrieval, and deletion operations.
+ * It supports single and multiple image uploads and serves images as resources.
+ *
+ * <p>This class uses the following annotations:
+ * <ul>
+ * <li>{@link Service} - Indicates that this class is a Spring service.</li>
+ * <li>{@link Value} - Injects values from application properties.</li>
+ * </ul>
+ * </p>
+ */
 @Service("UserImages")
 public class ImageServiceImpl implements ImageService {
     @Value("${file.storage-dir}")
@@ -27,14 +38,35 @@ public class ImageServiceImpl implements ImageService {
 
     private static final Set<String> SUPPORTED_IMAGE_TYPES = Set.of(MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_GIF_VALUE);
 
+    /**
+     * Generates a full URL for the uploaded image.
+     *
+     * @param request  the HTTP servlet request
+     * @param filename the filename of the uploaded image
+     * @return the full URL of the uploaded image
+     */
     private String generateImageUrl(HttpServletRequest request, String filename) {
         return String.format("%s://%s:%d/images/%s", request.getScheme(), request.getServerName(), request.getServerPort(), filename);
     }
 
+    /**
+     * Generates a download URL for the uploaded image.
+     *
+     * @param request  the HTTP servlet request
+     * @param filename the filename of the uploaded image
+     * @return the download URL of the uploaded image
+     */
     private String generateDownloadImageUrl(HttpServletRequest request, String filename) {
         return String.format("%s://%s:%d/api/v1/files/download/%s", request.getScheme(), request.getServerName(), request.getServerPort(), filename);
     }
 
+    /**
+     * Uploads an image and returns the filename.
+     *
+     * @param file the image file to upload
+     * @return the filename of the uploaded image
+     * @throws ResponseStatusException if the file type is not supported or if the file upload fails
+     */
     private String uploadImage(MultipartFile file) {
         String contentType = file.getContentType();
         if (!SUPPORTED_IMAGE_TYPES.contains(contentType)) {
@@ -56,6 +88,14 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
+    /**
+     * This method uploads a single image and returns an {@link ImageUploadResponse} object.
+     * It uses the {@link #uploadImage(MultipartFile)} method to upload the image.
+     *
+     * @param image
+     * @param request
+     * @return
+     */
     @Override
     public ImageUploadResponse uploadSingleImage(MultipartFile image, HttpServletRequest request) {
         String filename = uploadImage(image);
@@ -64,6 +104,14 @@ public class ImageServiceImpl implements ImageService {
                 .filename(filename).fullUrl(fullImageUrl).build();
     }
 
+    /**
+     * This method uploads multiple images and returns a list of {@link ImageUploadResponse} objects.
+     * It uses the {@link #uploadImage(MultipartFile)} method to upload each image.
+     *
+     * @param images
+     * @param request
+     * @return
+     */
     @Override
     public List<ImageUploadResponse> uploadMultipleImages(List<MultipartFile> images, HttpServletRequest request) {
         List<ImageUploadResponse> fileResponses = new ArrayList<>();
@@ -74,6 +122,13 @@ public class ImageServiceImpl implements ImageService {
         return fileResponses;
     }
 
+    /**
+     * This method serves the file with the given filename from the server.
+     *
+     * @param filename
+     * @param request
+     * @return
+     */
     @Override
     public ResponseEntity<Resource> serveFile(String filename, HttpServletRequest request) {
         try {
@@ -89,6 +144,13 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
+    /**
+     * This method deletes the file with the given filename from the server.
+     * It uses the {@link #generateImageUrl(HttpServletRequest, String)} method to generate the full URL of the file.
+     *
+     * @param filename
+     * @throws ResponseStatusException if the file is not found or if the file deletion fails
+     */
     @Override
     public void deleteFile(String filename) {
         try {

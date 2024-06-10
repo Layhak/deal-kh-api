@@ -12,5 +12,4 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Image {
     private String url;
-    // Add any other fields you need for the image
 }
