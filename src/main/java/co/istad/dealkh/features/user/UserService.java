@@ -7,33 +7,33 @@ import java.util.Map;
 
 public interface UserService {
 
-    UserResponse getById(Long id);
+    UserResponse getByUsername(String username);
 
     PageResponse<UserResponse> getAllUsers(int page, int size, String field, String order, Map<String, String> params);
 
 
     UserResponse createUser(UserCreateRequest userCreateRequest);
 
-    UserResponse updateUser(Long id, UserUpdateRequest userUpdateRequest);
+    UserResponse updateUser(String username, UserUpdateRequest userUpdateRequest);
 
-    void deleteUser(Long id);
+    void deleteUser(String username);
 
-    UserProfileResponse getUserProfile(Long id);
+    UserProfileResponse getUserProfile(String username);
 
-    void deleteUserProfile(Long id, String imageUrl);
+    void deleteUserProfile(String username, String imageUrl);
 
-    UserProfileResponse uploadUserProfile(Long id, UserProfileRequest userProfileRequest);
+    UserProfileResponse uploadUserProfile(String username, UserProfileRequest userProfileRequest);
 
-    void updatePassword(Long id, UserUpdatePasswordRequest userUpdatePasswordRequest);
+    void updatePassword(String username, UserUpdatePasswordRequest userUpdatePasswordRequest);
 
-    void resetPassword(Long id, UserResetPasswordRequest userResetPasswordRequest);
+    void resetPassword(String username, UserResetPasswordRequest userResetPasswordRequest);
 
-    UserResponse disableUser(Long id);
+    UserResponse disableUser(String username);
 
-    UserResponse enableUser(Long id);
+    UserResponse enableUser(String username);
 
-    UserResponse addRole(Long id, UserRoleRequest userRoleRequest);
+    UserResponse addRole(String username, UserRoleRequest userRoleRequest);
 
-    UserResponse removerRole(Long id, UserRoleRequest userRoleRequest);
+    UserResponse removerRole(String username, UserRoleRequest userRoleRequest);
 
 }

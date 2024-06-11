@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Entity
 @Getter
 @Setter
@@ -15,6 +17,10 @@ public class ResetPassword extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    short opt;
+
+    Date expireDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

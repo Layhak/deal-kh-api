@@ -87,9 +87,6 @@ public class AuthController {
                                                 "phoneNumber": "0987654321",
                                                 "dob": "2001-01-01",
                                                 "location": "phnom penh",
-                                                "roles": [
-                                                  "BUYER"
-                                                ]
                                               }
                                     """)
                     )

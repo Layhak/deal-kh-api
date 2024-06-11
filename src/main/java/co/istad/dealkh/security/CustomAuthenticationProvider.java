@@ -1,13 +1,16 @@
 package co.istad.dealkh.security;
 
+import co.istad.dealkh.exception.CustomException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
 
 /**
  * CustomAuthenticationProvider is an implementation of {@link AuthenticationProvider} that provides custom authentication logic.
@@ -48,21 +51,57 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String email = authentication.getName();
         String password = (String) authentication.getCredentials();
 
+        List<Map<String, Object>> errors = new ArrayList<>();
+
         if (email == null || email.isEmpty()) {
-            throw new BadCredentialsException("Email cannot be null or empty");
+            Map<String, Object> error = new TreeMap<>();
+            error.put("field", "email");
+            error.put("reason", "Email is required");
+            errors.add(error);
+        } else if (!isValidEmail(email)) {
+            Map<String, Object> error = new TreeMap<>();
+            error.put("field", "email");
+            error.put("reason", "Email is not valid");
+            errors.add(error);
         }
 
         if (password == null || password.isEmpty()) {
-            throw new BadCredentialsException("Password cannot be null or empty");
+            Map<String, Object> error = new TreeMap<>();
+            error.put("field", "password");
+            error.put("reason", "Password is required");
+            errors.add(error);
+        } else if (!isValidPassword(password)) {
+            Map<String, Object> error = new TreeMap<>();
+            error.put("field", "password");
+            error.put("reason", "Password is not valid");
+            errors.add(error);
+        }
+
+        if (!errors.isEmpty()) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, errors);
         }
 
         UserDetails userDetails = userDetailsService.loadUserByEmail(email);
 
-        if (passwordEncoder.matches(password, userDetails.getPassword())) {
-            return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
-        } else {
-            throw new BadCredentialsException("Invalid email or password");
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("field", "password");
+            error.put("reason", "Password is not correct");
+            errors.add(error);
+            throw new CustomException(HttpStatus.BAD_REQUEST, errors);
         }
+
+        return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+    }
+
+    private boolean isValidEmail(String email) {
+        // Implement your email validation logic here
+        return email.contains("@");
+    }
+
+    private boolean isValidPassword(String password) {
+        // Implement your password validation logic here
+        return password.length() >= 6;
     }
 
     /**
