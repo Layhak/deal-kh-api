@@ -54,7 +54,7 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public DiscountResponseDetail createDiscount(DiscountCreateRequest discountCreateRequest) {
 
-        if (discountRepository.existsByValueAndDiscountTypeId(discountCreateRequest.value(), discountCreateRequest.discountTypeId())) {
+        if (discountRepository.existsByDiscountValueAndDiscountTypeId(discountCreateRequest.value(), discountCreateRequest.discountTypeId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Discount percentage already exists for this discount type");
         }
 

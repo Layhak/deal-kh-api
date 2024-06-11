@@ -21,7 +21,7 @@ public class ShopTypeSpecification implements Specification<ShopType> {
         public Predicate toPredicate(Root<ShopType> shopType, CriteriaQuery<?> query, CriteriaBuilder criteria) {
 
             if(shopTypeFilter.getName() != null){
-                Predicate name = criteria.like(criteria.upper(shopType.get("name")), "%" + shopTypeFilter.getName().toUpperCase() + "%");
+                Predicate name = criteria.like(criteria.upper(shopType.get("slug")), "%" + shopTypeFilter.getName().toUpperCase() + "%");
                 predicates.add(name);
             }
 

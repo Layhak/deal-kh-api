@@ -163,6 +163,7 @@ public class DataInit {
             categories.forEach(category -> {
                 Category category1 = new Category();
                 category1.setName(category);
+                category1.setSlug(category);
                 category1.setIcon("icon.jpg");
                 category1.setCreatedAt(LocalDateTime.now());
                 category1.setUpdatedAt(LocalDateTime.now());
@@ -196,9 +197,9 @@ public class DataInit {
 
                     BigDecimal random = BigDecimal.valueOf(Math.random() * 100);
                     int intValue = random.intValue();
-                    discount.setValue(BigDecimal.valueOf(intValue));
+                    discount.setDiscountValue(BigDecimal.valueOf(intValue));
                 } else {
-                    discount.setValue(BigDecimal.valueOf(0));
+                    discount.setDiscountValue(BigDecimal.valueOf(0));
                 }
                 discount.setExpiredAt(LocalDate.now().plusDays(30));
                 discount.setDiscountType(discountType);

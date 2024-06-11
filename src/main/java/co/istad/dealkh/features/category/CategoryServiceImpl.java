@@ -49,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
         String slug = SlugFormatter.formatSlug(categoryCreateRequest.name());
 
         if (categoryRepository.existsBySlug(slug)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Slug already exists!");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Category name already exists!");
         }
 
         Category newCategory = categoryMapper.mapCategoryRequestToCategory(categoryCreateRequest);
@@ -58,13 +58,6 @@ public class CategoryServiceImpl implements CategoryService {
         newCategory.setIcon("icon.png");
 
         return categoryMapper.mapCategoryToCategoryResponse(categoryRepository.save(newCategory));
-    }
-
-    private String formattedName(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Name is required");
-        }
-        return name.toLowerCase().replaceAll("\\s*-\\s*", "-").replaceAll("\\s+", "-").trim();
     }
 
     /**
@@ -91,7 +84,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Optional<CategoryResponse> getCategoryByName(String name) {
-        Category category = categoryRepository.findByName(name)
+        Category category = categoryRepository.findBySlug(name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found!"));
 
         CategoryResponse categoryResponse = categoryMapper.mapCategoryToCategoryResponse(category);
@@ -122,7 +115,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse updateCategoryByName(String name, CategoryUpdateRequest categoryUpdateRequest) {
 
-        Category category = categoryRepository.findByName(name)
+        Category category = categoryRepository.findBySlug(name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found!"));
 
         category.setUpdatedAt(LocalDateTime.now());
@@ -142,7 +135,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public void deleteCategoryByName(String name) {
-        Category category = categoryRepository.findByName(name)
+        Category category = categoryRepository.findBySlug(name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found!"));
         categoryRepository.delete(category);
     }

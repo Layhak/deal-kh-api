@@ -38,7 +38,7 @@ public interface ProductMapper {
 
     @Named("discountToDouble")
     default BigDecimal mapDiscount(Discount discount) {
-        return discount.getValue();
+        return discount.getDiscountValue();
     }
 
 

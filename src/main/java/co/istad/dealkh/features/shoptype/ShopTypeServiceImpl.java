@@ -9,6 +9,7 @@ import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.specification.filter.PageFilter;
 import co.istad.dealkh.specification.filter.ShopTypeFilter;
 import co.istad.dealkh.specification.filter.ShopTypeSpecification;
+import co.istad.dealkh.validator.category.SlugFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,14 +34,24 @@ public class ShopTypeServiceImpl implements ShopTypeService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Shop type name already exists");
         }
 
+
+
+        String slug = SlugFormatter.formatSlug(shopTypeCreateRequest.name());
+
+        if(shopTypeRepository.existsBySlug(slug)){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Shop type name already exists");
+        }
+
         ShopType newShopType = shopTypeMapper.mapShopTypeRequestToShopType(shopTypeCreateRequest);
+
+        newShopType.setSlug(slug);
 
         return shopTypeMapper.mapShopTypeToShopTypeResponse(shopTypeRepository.save(newShopType));
     }
 
     @Override
     public Optional<ShopTypeResponse> getShopTypeByName(String name) {
-        ShopType shopType = shopTypeRepository.findByName(name)
+        ShopType shopType = shopTypeRepository.findBySlug(name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop type with name %s not found! ", name)));
 
         return Optional.of(shopTypeMapper.mapShopTypeToShopTypeResponse(shopType));
@@ -52,8 +63,8 @@ public class ShopTypeServiceImpl implements ShopTypeService {
         int pageLimit = PageFilter.DEFAULT_PAGE_LIMIT;
         int pageNumber = PageFilter.DEFAULT_PAGE_NUMBER;
 
-        if (params.containsKey("name")) {
-            String name = params.get("name");
+        if (params.containsKey("slug")) {
+            String name = params.get("slug");
             shopTypeFilter.setName(name);
         }
 
@@ -77,7 +88,7 @@ public class ShopTypeServiceImpl implements ShopTypeService {
 
     @Override
     public ShopTypeResponse updateShopTypeByName(String name, ShopTypeUpdateRequest shopTypeUpdateRequest) {
-        ShopType shopType = shopTypeRepository.findByName(name)
+        ShopType shopType = shopTypeRepository.findBySlug(name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop type with name %s not found! ", name)));
 
         shopTypeMapper.mapShopTypeUpdateRequest(shopType, shopTypeUpdateRequest);
@@ -90,7 +101,7 @@ public class ShopTypeServiceImpl implements ShopTypeService {
     @Override
     public void deleteShopTypeByName(String name) {
 
-        ShopType shopType = shopTypeRepository.findByName(name)
+        ShopType shopType = shopTypeRepository.findBySlug(name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop type with name %s not found! ", name)));
 
         shopTypeRepository.delete(shopType);
