@@ -4,10 +4,12 @@ import co.istad.dealkh.domain.Discount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface DiscountRepository extends JpaRepository<Discount, Long>, JpaSpecificationExecutor<Discount> {
-    boolean existsByDiscountPercentage(double v);
+import java.math.BigDecimal;
 
-    boolean existsByDiscountPercentageAndDiscountTypeId(double v, Long discountTypeId);
+public interface DiscountRepository extends JpaRepository<Discount, Long>, JpaSpecificationExecutor<Discount> {
+    boolean existsByValue(BigDecimal value);
+
+    boolean existsByValueAndDiscountTypeId(BigDecimal value, Long discountTypeId);
 //    Optional<Discount> findByName(String discountName);
 
 //    boolean existsByName(String name);

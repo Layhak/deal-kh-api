@@ -1,8 +1,9 @@
 package co.istad.dealkh.features.discount.dto;
 
-import co.istad.dealkh.validator.discount.OneOfDiscount;
+import co.istad.dealkh.validator.discount.DiscountRange;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -20,8 +21,8 @@ public record DiscountCreateRequest(
 
         String description,
 
-        @OneOfDiscount(Values = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}, message = "Discount Percentage must be one of:{Values}")
-        Integer discountPercentage,
+        @DiscountRange(min = 0, max = 100, message = "Discount must be between 0 and 100")
+        BigDecimal discountPercentage,
 
         @NotNull(message = "Expired At is required")
         LocalDate expiredAt,

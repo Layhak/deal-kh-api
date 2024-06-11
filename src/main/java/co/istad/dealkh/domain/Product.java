@@ -51,4 +51,8 @@ public class Product extends Auditable {
 
     @ManyToMany(mappedBy = "products")
     private List<Order> orders;
+
+
+
+
 }

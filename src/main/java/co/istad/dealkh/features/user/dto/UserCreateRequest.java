@@ -22,6 +22,9 @@ public record UserCreateRequest(
         @NotBlank(message = "Password is required")
         String password,
 
+        @NotBlank(message = "Confirmed password is required")
+        String confirmedPassword,
+
         @NotBlank
         @Size(max = 6)
         String gender,

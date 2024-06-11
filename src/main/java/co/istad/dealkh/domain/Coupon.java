@@ -1,6 +1,5 @@
 package co.istad.dealkh.domain;
 
-import co.istad.dealkh.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,8 +14,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "dk_discounts")
-public class Discount extends Auditable {
+@Table(name = "dk_coupons")
+public class Coupon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +24,9 @@ public class Discount extends Auditable {
     @Column(length = 250)
     private String description;
 
+    @Column(nullable = false, unique = true, length = 10)
+    private String code;
+
     @Column(nullable = false)
     private BigDecimal value;
 
@@ -32,10 +34,9 @@ public class Discount extends Auditable {
     private Boolean isExpired;
 
     @ManyToOne
-    @JoinColumn(name = "discount_type_id", nullable = false)
-    private DiscountType discountType;
-
-    @ManyToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;
+
+    @ManyToMany(mappedBy = "coupons")
+    private List<User> users;
 }

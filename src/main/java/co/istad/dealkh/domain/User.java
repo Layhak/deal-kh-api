@@ -57,6 +57,13 @@ public class User extends Auditable {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles;
 
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "dk_users_coupons",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "coupon_id", referencedColumnName = "id"))
+    private List<Coupon> coupons;
+
     @ManyToMany(mappedBy = "users")
     private List<Shop> shops;
 

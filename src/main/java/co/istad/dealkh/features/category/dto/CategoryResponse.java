@@ -17,6 +17,7 @@ import java.time.LocalDate;
 public record CategoryResponse(
         Long id,
         String name,
+        String slash,
         String icon,
         String createdBy,
         LocalDate createdAt,

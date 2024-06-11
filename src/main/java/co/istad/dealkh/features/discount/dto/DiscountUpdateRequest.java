@@ -1,6 +1,6 @@
 package co.istad.dealkh.features.discount.dto;
 
-import co.istad.dealkh.validator.discount.OneOfDiscount;
+import co.istad.dealkh.validator.discount.DiscountRange;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ public record DiscountUpdateRequest(
         @NotNull(message = "Discount Type Id is required")
         Long discountTypeId,
         String description,
-        @OneOfDiscount(Values = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}, message = "Discount Percentage must be one of:{Values}")
+        @DiscountRange(min = 0, max = 100, message = "Discount must be between 0 and 100")
         Integer discountPercentage,
         LocalDate expiredAt
 

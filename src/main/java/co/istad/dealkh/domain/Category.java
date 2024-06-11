@@ -20,6 +20,8 @@ public class Category extends Auditable {
     @Column(nullable = false, unique = true)
     private String name;
 
+    private String slash;
+
     private String icon;
 
 

@@ -17,9 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.sql.Time;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -141,8 +142,8 @@ public class DataInit {
                 shop.setDescription("Shop description");
                 shop.setPhoneNumber("0123456789");
                 shop.setEmail("layhakshop@gmail.com");
-                shop.setOpenAt(Time.valueOf("08:00:00"));
-                shop.setCloseAt(Time.valueOf("17:00:00"));
+                shop.setOpenAt(LocalTime.of(8, 0, 0));
+                shop.setCloseAt(LocalTime.of(5, 30, 0));
                 shop.setIsDeleted(false);
                 shop.setIsDisabled(false);
                 shop.setShopType(shopTypeRepository.findAll().get(0));
@@ -192,12 +193,14 @@ public class DataInit {
                 // Random 0-100 except for No Discount
                 if (!discountType.getName().equals("No Discount")) {
                     //random 0-100
-                    int random = new Random().nextInt(100);
-                    discount.setDiscountPercentage(random);
+
+                    BigDecimal random = BigDecimal.valueOf(Math.random() * 100);
+                    int intValue = random.intValue();
+                    discount.setValue(BigDecimal.valueOf(intValue));
                 } else {
-                    discount.setDiscountPercentage(0);
+                    discount.setValue(BigDecimal.valueOf(0));
                 }
-                discount.setExpiredAt(LocalDateTime.now().plusDays(30));
+                discount.setExpiredAt(LocalDate.now().plusDays(30));
                 discount.setDiscountType(discountType);
                 discountRepository.save(discount);
             });

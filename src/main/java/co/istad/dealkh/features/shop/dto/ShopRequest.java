@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -35,11 +36,10 @@ public record ShopRequest(
         @NotBlank(message = "Phone number is required")
         String phoneNumber,
 
-        @NotBlank(message = "Email is required")
         String email,
 
-        Time openAt,
-        Time closeAt,
+        LocalTime openAt,
+        LocalTime closeAt,
 
         @NotNull(message = "Shop type id is required")
         Long shopTypeId,

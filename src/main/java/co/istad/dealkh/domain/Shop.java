@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -26,10 +27,7 @@ public class Shop extends Auditable {
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
     private String location;
-
-    @Column(unique = true)
     private String address;
 
     @Column(length = 250)
@@ -38,7 +36,7 @@ public class Shop extends Auditable {
     @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
     @Convert(converter = SocialListConverter.class)
@@ -46,8 +44,8 @@ public class Shop extends Auditable {
 
     private Boolean isDeleted;
     private Boolean isDisabled;
-    private Time openAt;
-    private Time closeAt;
+    private LocalTime openAt;
+    private LocalTime closeAt;
     @ManyToOne
     @JoinColumn(name = "shop_type_id", nullable = false)
     private ShopType shopType;

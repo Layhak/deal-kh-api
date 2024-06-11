@@ -4,6 +4,7 @@ package co.istad.dealkh.features.shop.dto;
 import co.istad.dealkh.features.image.dto.ImageResponse;
 
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -34,8 +35,8 @@ public record ShopResponse(
         String email,
         Boolean isDeleted,
         Boolean isDisabled,
-        Time openAt,
-        Time closeAt,
+        LocalTime openAt,
+        LocalTime closeAt,
         String shopType,
         List<ImageResponse> images,
         List<String> users,

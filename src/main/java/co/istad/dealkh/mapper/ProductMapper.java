@@ -9,6 +9,8 @@ import co.istad.dealkh.features.product.dto.ProductResponse;
 import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
 import org.mapstruct.*;
 
+import java.math.BigDecimal;
+
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
@@ -35,8 +37,8 @@ public interface ProductMapper {
     }
 
     @Named("discountToDouble")
-    default Integer mapDiscount(Discount discount) {
-        return discount.getDiscountPercentage();
+    default BigDecimal mapDiscount(Discount discount) {
+        return discount.getValue();
     }
 
 
