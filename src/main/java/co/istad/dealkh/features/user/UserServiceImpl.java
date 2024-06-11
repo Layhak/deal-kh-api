@@ -26,10 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,10 +49,10 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateSortingParams(String field, String order) {
-        List<String> validFields = Arrays.asList("id", "username", "email", "dob", "createdAt", "updatedAt");
+        List<String> validFields = Arrays.asList("username", "username", "email", "dob", "createdAt", "updatedAt");
 
         if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, username, email, dob, createdAt, updatedAt");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be username, username, email, dob, createdAt, updatedAt");
         }
         if (order != null && !order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
@@ -63,8 +60,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse getById(Long id) {
-        User user = userRepository.findById(id)
+    public UserResponse getByUsername(String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
         return userMapper.mapToUserResponse(user);
     }
@@ -88,9 +85,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse createUser(UserCreateRequest userRequest) {
         if (userRepository.existsByUsername(userRequest.username())) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Username already exists! Try another one.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists: " + userRequest.username());
         }
         if (userRepository.existsByEmail(userRequest.email())) {
             throw new ResponseStatusException(
@@ -123,8 +118,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(Long id, UserUpdateRequest userUpdateRequest) {
-        User user = userRepository.findById(id)
+    public UserResponse updateUser(String username, UserUpdateRequest userUpdateRequest) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
         if (userRepository.existsByUsername(userUpdateRequest.username()) && !user.getUsername().equals(userUpdateRequest.username())) {
@@ -145,9 +140,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(String username) {
         // Check if user exists and delete
-        userRepository.findById(id)
+        userRepository.findByUsername(username)
                 .ifPresentOrElse(userRepository::delete,
                         () -> {
                             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!");
@@ -155,16 +150,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfileResponse getUserProfile(Long id) {
-        User user = userRepository.findById(id)
+    public UserProfileResponse getUserProfile(String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
         return userMapper.mapToUserProfileResponse(user);
     }
 
     @Override
-    public void deleteUserProfile(Long id, String imageUrl) {
-        // Fetch the user by ID
-        User user = userRepository.findById(id)
+    public void deleteUserProfile(String username, String imageUrl) {
+        // Fetch the user by username
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
         // Filter the images list to remove the image URL that matches the given imageUrl
@@ -180,14 +175,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfileResponse uploadUserProfile(Long id, UserProfileRequest userProfileRequest) {
-        // Fetch the user by ID
-        User user = userRepository.findById(id)
+    public UserProfileResponse uploadUserProfile(String username, UserProfileRequest userProfileRequest) {
+        // Fetch the user by username
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
         // Get the existing images
         List<Image> existingImages = user.getImages();
 
+        if (user.getImages().isEmpty()) {
+            user.setImages(new ArrayList<>());
+        }
         // Create a new Image object with the provided URL
         Image newImage = new Image(userProfileRequest.imageUrl());
 
@@ -205,9 +203,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(Long id, UserUpdatePasswordRequest userUpdatePasswordRequest) {
-        // Fetch the user by ID
-        User user = userRepository.findById(id)
+    public void updatePassword(String username, UserUpdatePasswordRequest userUpdatePasswordRequest) {
+        // Fetch the user by username
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
         // Validate the old password
@@ -228,9 +226,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPassword(Long id, UserResetPasswordRequest userResetPasswordRequest) {
-        // Fetch the user by ID
-        User user = userRepository.findById(id)
+    public void resetPassword(String username, UserResetPasswordRequest userResetPasswordRequest) {
+        // Fetch the user by username
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
         // Check that the new passwords match
@@ -247,8 +245,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserResponse disableUser(Long id) {
-        User user = userRepository.findById(id)
+    public UserResponse disableUser(String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
         user.setIsDisabled(true);
         userRepository.save(user);
@@ -256,8 +254,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse enableUser(Long id) {
-        User user = userRepository.findById(id)
+    public UserResponse enableUser(String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
         user.setIsDisabled(false);
         userRepository.save(user);
@@ -265,8 +263,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse addRole(Long id, UserRoleRequest userRoleRequest) {
-        User user = userRepository.findById(id)
+    public UserResponse addRole(String username, UserRoleRequest userRoleRequest) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
         // Fetch the role from the request and add it to the user
@@ -284,14 +282,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse removerRole(Long id, UserRoleRequest userRoleRequest) {
-        User user = userRepository.findById(id)
+    public UserResponse removerRole(String username, UserRoleRequest userRoleRequest) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
         // Fetch the role from the request and remove it from the user
         Role roleToRemove = roleRepository.findByName(userRoleRequest.role())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + userRoleRequest.role()));
-
+        //if user only have one role
+        if (user.getRoles().size() == 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User must have at least one role");
+        }
         // Remove the role from the user's existing roles
         user.getRoles().remove(roleToRemove);
 

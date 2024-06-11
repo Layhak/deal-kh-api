@@ -38,11 +38,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
         bearerFormat = "JWT",
         in = SecuritySchemeIn.HEADER
 )
-
 public class DealKhApiApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(DealKhApiApplication.class, args);
     }
-
 }
