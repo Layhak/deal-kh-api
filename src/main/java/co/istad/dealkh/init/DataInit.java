@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -49,8 +48,8 @@ public class DataInit {
             initShopTypes();
             initUsers();
             initShops();
-            initDiscountTypes();
-            initDiscounts();
+//            initDiscountTypes();
+//            initDiscounts();
             initCategories();
             logger.info("Data initialized successfully");
         } catch (Exception e) {
@@ -110,7 +109,7 @@ public class DataInit {
             user1.setLocation("Phnom Penh");
             user1.setIsDisabled(false);
             user1.setCreatedAt(LocalDateTime.now());
-            user1.setRoles(Set.of(roles.get(0), roles.get(1)));
+            user1.setRoles(Set.of(roles.get(0)));
             users.add(user1);
             userRepository.saveAll(users);
         }
@@ -164,6 +163,7 @@ public class DataInit {
                 Category category1 = new Category();
                 category1.setName(category);
                 category1.setIcon("icon.jpg");
+                category1.setSlug(category.toLowerCase().replace(" ", "-"));
                 category1.setCreatedAt(LocalDateTime.now());
                 category1.setUpdatedAt(LocalDateTime.now());
                 category1.setCreatedBy("Admin");
@@ -172,38 +172,7 @@ public class DataInit {
         }
     }
 
-    private void initDiscountTypes() {
-        List<String> discountTypes = List.of("No Discount", "Coupon", "Promotion", "Sale");
-        if (discountTypeRepository.findAll().isEmpty()) {
-            discountTypes.forEach(type -> {
-                DiscountType discountType = new DiscountType();
-                discountType.setName(type);
-                discountTypeRepository.save(discountType);
-            });
-        }
-    }
+//
 
-    private void initDiscounts() {
-        if (discountRepository.findAll().isEmpty()) {
-            List<DiscountType> discountTypes = discountTypeRepository.findAll();
-
-            discountTypes.forEach(discountType -> {
-                Discount discount = new Discount();
-                discount.setDescription("Discount Description");
-                // Random 0-100 except for No Discount
-                if (!discountType.getName().equals("No Discount")) {
-                    //random 0-100
-
-                    BigDecimal random = BigDecimal.valueOf(Math.random() * 100);
-                    int intValue = random.intValue();
-                    discount.setValue(BigDecimal.valueOf(intValue));
-                } else {
-                    discount.setValue(BigDecimal.valueOf(0));
-                }
-                discount.setExpiredAt(LocalDate.now().plusDays(30));
-                discount.setDiscountType(discountType);
-                discountRepository.save(discount);
-            });
-        }
-    }
+//
 }

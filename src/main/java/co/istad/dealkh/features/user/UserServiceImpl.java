@@ -277,16 +277,9 @@ public class UserServiceImpl implements UserService {
         // Fetch the role from the request and remove it from the user
         Role roleToRemove = roleRepository.findByName(userRoleRequest.role())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + userRoleRequest.role()));
-        //if user only have one role
-        if (user.getRoles().size() == 1) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User must have at least one role");
-        }
-        // Remove the role from the user's existing roles
+        //if user have only one role left throw exception else remove the role from the user
         user.getRoles().remove(roleToRemove);
-
-        // Save the updated user
         userRepository.save(user);
-
         // Return the updated user response
         return userMapper.mapToUserResponse(user);
     }
