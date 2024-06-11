@@ -164,8 +164,8 @@ public class DataInit {
             categories.forEach(category -> {
                 Category category1 = new Category();
                 category1.setName(category);
-                category1.setSlug(category);
                 category1.setIcon("icon.jpg");
+                category1.setSlug(category.toLowerCase().replace(" ", "-"));
                 category1.setCreatedAt(LocalDateTime.now());
                 category1.setUpdatedAt(LocalDateTime.now());
                 category1.setCreatedBy("Admin");
