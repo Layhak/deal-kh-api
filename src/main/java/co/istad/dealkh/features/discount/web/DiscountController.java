@@ -3,7 +3,7 @@ package co.istad.dealkh.features.discount.web;
 import co.istad.dealkh.base.BaseResponse;
 import co.istad.dealkh.features.discount.DiscountService;
 import co.istad.dealkh.features.discount.dto.DiscountCreateRequest;
-import co.istad.dealkh.features.discount.dto.DiscountTypeResponse;
+import co.istad.dealkh.features.discount.dto.DiscountResponseDetail;
 import co.istad.dealkh.features.discount.dto.DiscountUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
 import jakarta.validation.Valid;
@@ -36,11 +36,11 @@ public class DiscountController {
      * Creates a new discount based on the provided request.
      *
      * @param discountCreateRequest the request containing the details for the new discount
-     * @return a {@link DiscountTypeResponse} containing the details of the created discount
+     * @return a {@link DiscountResponseDetail} containing the details of the created discount
      */
     @PostMapping("")
-    BaseResponse<DiscountTypeResponse> createDiscount(@RequestBody @Valid DiscountCreateRequest discountCreateRequest) {
-        return BaseResponse.<DiscountTypeResponse>createSuccess("Created new discount!")
+    BaseResponse<DiscountResponseDetail> createDiscount(@RequestBody @Valid DiscountCreateRequest discountCreateRequest) {
+        return BaseResponse.<DiscountResponseDetail>createSuccess("Created new discount!")
                 .setPayload(discountService.createDiscount(discountCreateRequest));
     }
 
@@ -51,8 +51,8 @@ public class DiscountController {
      * @return
      */
     @GetMapping("/{id}")
-    BaseResponse<Optional<DiscountTypeResponse>> getDiscountById(@PathVariable Long id) {
-        return BaseResponse.<Optional<DiscountTypeResponse>>ok("Retrieved discount with id " + id + " successfully!")
+    BaseResponse<Optional<DiscountResponseDetail>> getDiscountById(@PathVariable Long id) {
+        return BaseResponse.<Optional<DiscountResponseDetail>>ok("Retrieved discount with id " + id + " successfully!")
                 .setPayload(discountService.getDiscountById(id));
     }
 
@@ -63,8 +63,8 @@ public class DiscountController {
 //    }
 
     //    @GetMapping("/")
-//    BaseResponse<List<DiscountTypeResponse>> getAllDiscount() {
-//        return BaseResponse.<List<DiscountTypeResponse>>ok("Successfully retrieved discounts!")
+//    BaseResponse<List<DiscountResponseDetail>> getAllDiscount() {
+//        return BaseResponse.<List<DiscountResponseDetail>>ok("Successfully retrieved discounts!")
 //                .setPayload(discountService.getAllDiscounts());
 //    }
 //
@@ -80,13 +80,13 @@ public class DiscountController {
      * @return
      */
     @GetMapping()
-    BaseResponse<PageResponse<DiscountTypeResponse>> filterDiscount(
+    BaseResponse<PageResponse<DiscountResponseDetail>> filterDiscount(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "2") int size,
             @RequestParam(defaultValue = "id") String field,
             @RequestParam(defaultValue = "asc") String order,
             @RequestParam Map<String, String> params) {
-        return BaseResponse.<PageResponse<DiscountTypeResponse>>ok("Retrieves all discounts successfully!")
+        return BaseResponse.<PageResponse<DiscountResponseDetail>>ok("Retrieves all discounts successfully!")
                 .setPayload(discountService.getAllDiscounts(page, size, field, order, params));
     }
 
@@ -95,11 +95,11 @@ public class DiscountController {
      *
      * @param id                    the ID of the discount to update
      * @param discountUpdateRequest the request containing the updated details for the discount
-     * @return a {@link DiscountTypeResponse} containing the details of the updated discount
+     * @return a {@link DiscountResponseDetail} containing the details of the updated discount
      */
     @PutMapping("/{id}")
-    BaseResponse<DiscountTypeResponse> updateDiscountById(@PathVariable Long id, @RequestBody DiscountUpdateRequest discountUpdateRequest) {
-        return BaseResponse.<DiscountTypeResponse>ok("Discount has been updated!")
+    BaseResponse<DiscountResponseDetail> updateDiscountById(@PathVariable Long id, @RequestBody DiscountUpdateRequest discountUpdateRequest) {
+        return BaseResponse.<DiscountResponseDetail>ok("Discount has been updated!")
                 .setPayload(discountService.updateDiscountById(id, discountUpdateRequest));
     }
 

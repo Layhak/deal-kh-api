@@ -21,6 +21,8 @@ public class DiscountType {
     @Column(nullable = false)
     private String name;
 
+    private String slug;
+
     @OneToMany(mappedBy = "discountType")
     private List<Discount> discounts;
 }

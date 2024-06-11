@@ -27,6 +27,7 @@ public class Shop extends Auditable {
     @Column(nullable = false)
     private String name;
 
+    private String slug;
     private String location;
     private String address;
 

@@ -29,6 +29,7 @@ import java.util.List;
 public record ShopResponse(
         Long id,
         String name,
+        String slug,
         String address,
         String description,
         String phoneNumber,

@@ -1,5 +1,6 @@
 package co.istad.dealkh.features.productfeedback.dto;
 
+import co.istad.dealkh.features.image.dto.ImageRequest;
 import co.istad.dealkh.features.image.dto.ImageResponse;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,6 +16,8 @@ import java.util.List;
  * @param images
  */
 public record ProductFeedbackRequest(
+
+        @NotNull(message = "Description is required")
         String description,
 
         @NotNull(message = "Product id is required")
@@ -23,8 +26,8 @@ public record ProductFeedbackRequest(
         @NotNull(message = "User id is required")
         Long userId,
 
-        @NotNull(message = "Images is required")
-        List<ImageResponse> images
+        @NotNull(message = "Images are required")
+        List<ImageRequest> images
 
 ) {
 }

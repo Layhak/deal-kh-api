@@ -10,13 +10,14 @@ import java.util.List;
 import java.util.Set;
 
 public record UserRequest(
-        @NotBlank
+
+        @NotBlank(message = "First name is required")
         String firstName,
 
-        @NotBlank
+        @NotBlank(message = "Last name is required")
         String lastName,
 
-        @NotBlank
+        @NotBlank(message = "Username is required")
         String username,
 
         @NotBlank(message = "Email is required")
@@ -25,7 +26,7 @@ public record UserRequest(
         @NotBlank(message = "Password is required")
         String password,
 
-        @NotBlank
+        @NotBlank(message = "Gender is required")
         @Size(max = 6)
         String gender,
 
@@ -33,13 +34,13 @@ public record UserRequest(
         @Size(max = 20, message = "Phone number must less than 20 characters")
         String phoneNumber,
 
-        @NotNull
+        @NotNull(message = "Date of birth is required")
         LocalDate dob,
 
         List<Image> images,
 
-        @NotBlank
         String location,
+
         Set<String> roles
 //        List<UserShopResponse> shops
 ) {

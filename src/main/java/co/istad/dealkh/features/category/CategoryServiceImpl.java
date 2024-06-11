@@ -5,6 +5,7 @@ import co.istad.dealkh.features.category.dto.CategoryCreateRequest;
 import co.istad.dealkh.features.category.dto.CategoryResponse;
 import co.istad.dealkh.features.category.dto.CategoryUpdateRequest;
 import co.istad.dealkh.mapper.CategoryMapper;
+import co.istad.dealkh.validator.category.SlugFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -41,14 +42,29 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public CategoryResponse createCategory(CategoryCreateRequest categoryCreateRequest) {
-
         if (categoryRepository.existsByName(categoryCreateRequest.name())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Category name already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Category name already exists!");
+        }
+
+        String slug = SlugFormatter.formatSlug(categoryCreateRequest.name());
+
+        if (categoryRepository.existsBySlug(slug)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Slug already exists!");
         }
 
         Category newCategory = categoryMapper.mapCategoryRequestToCategory(categoryCreateRequest);
+
+        newCategory.setSlug(slug);
         newCategory.setIcon("icon.png");
+
         return categoryMapper.mapCategoryToCategoryResponse(categoryRepository.save(newCategory));
+    }
+
+    private String formattedName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+        return name.toLowerCase().replaceAll("\\s*-\\s*", "-").replaceAll("\\s+", "-").trim();
     }
 
     /**

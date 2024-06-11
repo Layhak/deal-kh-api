@@ -8,16 +8,17 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record UserUpdateRequest(
-        @NotBlank
+
+        @NotBlank(message = "First name is required")
         String firstName,
 
-        @NotBlank
+        @NotBlank(message = "Last name is required")
         String lastName,
 
-        @NotBlank
+        @NotBlank(message = "Username is required")
         String username,
 
-        @NotBlank
+        @NotBlank(message = "Gender is required")
         @Size(max = 6)
         String gender,
 
@@ -25,10 +26,9 @@ public record UserUpdateRequest(
         @Size(max = 20, message = "Phone number must less than 20 characters")
         String phoneNumber,
 
-        @NotNull
+        @NotNull(message = "Date of birth is required")
         LocalDate dob,
 
-        @NotBlank
         String location,
 
         List<Long> shopId

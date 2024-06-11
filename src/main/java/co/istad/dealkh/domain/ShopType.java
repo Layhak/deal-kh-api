@@ -19,5 +19,6 @@ public class ShopType {
     @Column(nullable = false, unique = true)
     private String name;
 
+    private String slug;
     private String icon;
 }

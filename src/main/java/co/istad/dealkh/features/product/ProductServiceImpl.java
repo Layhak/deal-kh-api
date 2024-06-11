@@ -16,6 +16,7 @@ import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
 import co.istad.dealkh.specification.filter.ProductFilter;
 import co.istad.dealkh.specification.filter.ProductSpecification;
+import co.istad.dealkh.validator.category.SlugFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -69,6 +70,9 @@ public class ProductServiceImpl implements ProductService {
 
         Shop shop = shopRepository.findById(productCreateRequest.shopId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop with id %d not found! ", productCreateRequest.shopId())));
 
+        String slug = SlugFormatter.formatSlug(productCreateRequest.name());
+
+        newProduct.setSlug(slug);
         newProduct.setDiscount(discount);
         newProduct.setCategory(category);
         newProduct.setShop(shop);

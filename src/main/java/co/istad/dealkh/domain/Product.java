@@ -24,7 +24,10 @@ public class Product extends Auditable {
 
     @Column(nullable = false)
     private String name;
+
+    private String slug;
     private double ratingAvg;
+
     @Column(nullable = false)
     private double price;
 

@@ -22,7 +22,7 @@ public record DiscountCreateRequest(
         String description,
 
         @DiscountRange(min = 0, max = 100, message = "Discount must be between 0 and 100")
-        BigDecimal discountPercentage,
+        BigDecimal value,
 
         @NotNull(message = "Expired At is required")
         LocalDate expiredAt,

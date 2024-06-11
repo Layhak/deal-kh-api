@@ -3,6 +3,7 @@ package co.istad.dealkh.features.discount.dto;
 import co.istad.dealkh.validator.discount.DiscountRange;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -21,7 +22,7 @@ public record DiscountUpdateRequest(
         Long discountTypeId,
         String description,
         @DiscountRange(min = 0, max = 100, message = "Discount must be between 0 and 100")
-        Integer discountPercentage,
+        BigDecimal value,
         LocalDate expiredAt
 
 ) {

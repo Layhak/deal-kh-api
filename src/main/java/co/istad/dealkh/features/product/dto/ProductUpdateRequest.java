@@ -19,8 +19,10 @@ public record ProductUpdateRequest(
 
         @NotBlank(message = "Name is required")
         String name,
-        @NotNull(message = "Price and discount price are required")
+
+        @NotNull(message = "Price is required")
         double price,
+
         String description,
         Long shopId,
         Long discountId,
