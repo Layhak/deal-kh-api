@@ -134,6 +134,7 @@ public class UserController {
     @Operation(summary = "Delete user profile image")
     public BaseResponse<Void> deleteUserProfileImage(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam String imageUrl) {
         String username = customUserDetails.getUsername();
+        System.out.println(username);
         userService.deleteUserProfile(username, imageUrl);
         return BaseResponse.ok("Successfully delete user profile image");
 

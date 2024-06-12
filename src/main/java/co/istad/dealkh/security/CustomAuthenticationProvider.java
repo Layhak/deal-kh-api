@@ -10,7 +10,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * CustomAuthenticationProvider is an implementation of {@link AuthenticationProvider} that provides custom authentication logic.
@@ -84,7 +87,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         UserDetails userDetails = userDetailsService.loadUserByEmail(email);
 
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-            Map<String, Object> error = new HashMap<>();
+            Map<String, Object> error = new TreeMap<>();
             error.put("field", "password");
             error.put("reason", "Password is not correct");
             errors.add(error);
@@ -95,13 +98,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     }
 
     private boolean isValidEmail(String email) {
-        // Implement your email validation logic here
-        return email.contains("@");
+        //return Email with the valid format follow this pattern: ^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$
+        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
     }
 
     private boolean isValidPassword(String password) {
-        // Implement your password validation logic here
-        return password.length() >= 6;
+        return password.length() >= 8 && password.length() <= 20;
     }
 
     /**

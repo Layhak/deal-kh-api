@@ -1,15 +1,10 @@
 package co.istad.dealkh.features.user;
 
-import co.istad.dealkh.domain.Coupon;
 import co.istad.dealkh.domain.Role;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.domain.json.Image;
-import co.istad.dealkh.features.coupon.dto.CouponCreateRequest;
-import co.istad.dealkh.features.coupon.dto.CouponResponse;
-import co.istad.dealkh.features.coupon.web.CouponRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.user.dto.*;
-import co.istad.dealkh.mapper.CouponMapper;
 import co.istad.dealkh.mapper.UserMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
@@ -170,11 +165,13 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
+        System.out.println(user.toString());
         List<Image> filteredImages = user.getImages().stream()
                 .filter(image -> !image.getUrl().equals(imageUrl))
                 .collect(Collectors.toList());
 
-        user.setImages(filteredImages);
+        System.out.println(filteredImages);
+//        user.setImages(filteredImages);
 
         userRepository.save(user);
     }

@@ -5,6 +5,7 @@ import co.istad.dealkh.base.BasedErrorResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -66,6 +67,19 @@ public class GlobalRestControllerAdviser {
                 .build();
 
         return BasedErrorResponse.<List<Map<String, Object>>>builder()
+                .error(basedError)
+                .build();
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public BasedErrorResponse<String> handleUserNotFoundException(UsernameNotFoundException ex) {
+        BasedError<String> basedError = BasedError.<String>builder()
+                .code(HttpStatus.NOT_FOUND.toString())
+                .description("User not found")
+                .build();
+
+        return BasedErrorResponse.<String>builder()
                 .error(basedError)
                 .build();
     }
