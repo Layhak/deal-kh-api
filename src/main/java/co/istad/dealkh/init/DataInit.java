@@ -46,9 +46,9 @@ public class DataInit {
         try {
             initAuthorities();
             initRoles();
-            initShopTypes();
+//            initShopTypes();
             initUsers();
-            initShops();
+//            initShops();
             initDiscountTypes();
             initDiscounts();
             initCategories();
@@ -110,7 +110,7 @@ public class DataInit {
             user1.setLocation("Phnom Penh");
             user1.setIsDisabled(false);
             user1.setCreatedAt(LocalDateTime.now());
-            user1.setRoles(Set.of(roles.get(0), roles.get(1)));
+            user1.setRoles(Set.of(roles.get(0)));
             users.add(user1);
             userRepository.saveAll(users);
         }

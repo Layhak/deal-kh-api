@@ -166,84 +166,67 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
-        // Filter the images list to remove the image URL that matches the given imageUrl
         List<Image> filteredImages = user.getImages().stream()
                 .filter(image -> !image.getUrl().equals(imageUrl))
                 .collect(Collectors.toList());
 
-        // Update the user's images list
         user.setImages(filteredImages);
 
-        // Save the updated user
         userRepository.save(user);
     }
 
     @Override
     public UserProfileResponse uploadUserProfile(String username, UserProfileRequest userProfileRequest) {
-        // Fetch the user by username
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
-        // Get the existing images
         List<Image> existingImages = user.getImages();
 
         if (user.getImages().isEmpty()) {
             user.setImages(new ArrayList<>());
         }
-        // Create a new Image object with the provided URL
         Image newImage = new Image(userProfileRequest.imageUrl());
 
-        // Append the new image to the existing list
         existingImages.add(newImage);
 
-        // Set the updated image list to the user
         user.setImages(existingImages);
 
-        // Save the updated user
         userRepository.save(user);
 
-        // Map the updated user entity to UserProfileResponse and return it
         return userMapper.mapToUserProfileResponse(user);
     }
 
     @Override
     public void updatePassword(String username, UserUpdatePasswordRequest userUpdatePasswordRequest) {
-        // Fetch the user by username
+
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
-        // Validate the old password
         if (!passwordEncoder.matches(userUpdatePasswordRequest.oldPassword(), user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Old password is incorrect.");
         }
 
-        // Check that the new passwords match
         if (!userUpdatePasswordRequest.newPassword().equals(userUpdatePasswordRequest.newPasswordConfirmation())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "New passwords do not match.");
         }
 
-        // Update the password
         user.setPassword(passwordEncoder.encode(userUpdatePasswordRequest.newPassword()));
 
-        // Save the updated user
         userRepository.save(user);
     }
 
     @Override
     public void resetPassword(String username, UserResetPasswordRequest userResetPasswordRequest) {
-        // Fetch the user by username
+
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
-        // Check that the new passwords match
         if (!userResetPasswordRequest.newPassword().equals(userResetPasswordRequest.newPasswordConfirmation())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "New passwords do not match.");
         }
 
-        // Update the password
         user.setPassword(passwordEncoder.encode(userResetPasswordRequest.newPassword()));
 
-        // Save the updated user
         userRepository.save(user);
     }
 
@@ -271,26 +254,25 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
-        // Fetch the role from the request and add it to the user
         Role newRole = roleRepository.findByName(userRoleRequest.role())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + userRoleRequest.role()));
 
-        // Validate if the user is trying to promote themselves to SUPER_ADMIN
         if (userRoleRequest.role().equals("SUPER_ADMIN") && user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User with ADMIN role cannot promote themselves to SUPER_ADMIN");
         }
 
-        // if user has role not admin or super admin then throw exception
+        if (user.getRoles().stream().anyMatch(role -> role.getName().equals(userRoleRequest.role()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Role already exist");
+        }
+
         if (user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("SUPER_ADMIN"))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have admin or super admin role");
         }
 
         user.getRoles().add(newRole);
 
-        // Save the updated user
         userRepository.save(user);
 
-        // Return the updated user response
         return userMapper.mapToUserResponse(user);
     }
 
@@ -299,17 +281,26 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
-        // Fetch the role from the request and remove it from the user
         Role roleToRemove = roleRepository.findByName(userRoleRequest.role())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role has not been found!"));
-        //if he is not admin or super admin then throw exception
+
         if (user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("SUPER_ADMIN"))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have admin or super admin role");
         }
+
+        //user don't have the request role
+        if (!user.getRoles().stream().anyMatch(role -> role.getName().equals(userRoleRequest.role()))) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found");
+        }
+
         //if user have only one role left throw exception else remove the role from the user
+        if (user.getRoles().size() == 1) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User has only one role");
+        }
+
         user.getRoles().remove(roleToRemove);
         userRepository.save(user);
-        // Return the updated user response
+
         return userMapper.mapToUserResponse(user);
     }
 
@@ -319,7 +310,9 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
 
         Page<UserResponse> buyers = userRepository.findAllUserByRoles_Name("BUYER", pageable).map(userMapper::mapToUserResponse);
-
+        if (buyers.getContent().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No buyers found");
+        }
         return new PageResponse<>(buyers);
     }
 
@@ -328,9 +321,11 @@ public class UserServiceImpl implements UserService {
 
         Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
 
-        Page<UserResponse> buyers = userRepository.findAllUserByRoles_Name("SELLER", pageable).map(userMapper::mapToUserResponse);
-
-        return new PageResponse<>(buyers);
+        Page<UserResponse> sellers = userRepository.findAllUserByRoles_Name("SELLER", pageable).map(userMapper::mapToUserResponse);
+        if (sellers.getContent().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No buyers found");
+        }
+        return new PageResponse<>(sellers);
     }
 
 

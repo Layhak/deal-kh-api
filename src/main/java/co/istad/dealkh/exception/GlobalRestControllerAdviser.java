@@ -8,7 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,62 +18,33 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalRestControllerAdviser {
 
-    @ExceptionHandler(SingleRoleException.class)
-    public ResponseEntity<BasedErrorResponse<String>> handleSingleRoleException(SingleRoleException ex) {
-        BasedError<String> basedError = BasedError.<String>builder()
-                .code(HttpStatus.BAD_REQUEST.toString())
-                .description(ex.getReason())
-                .build();
-
-        BasedErrorResponse<String> basedErrorResponse = BasedErrorResponse.<String>builder()
-                .error(basedError)
-                .build();
-
-        return new ResponseEntity<>(basedErrorResponse, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<BasedErrorResponse<List<Map<String, Object>>>> handleCustomException(CustomException ex) {
+    @ExceptionHandler(CustomAuthException.class)
+    public ResponseEntity<BasedErrorResponse<List<Map<String, Object>>>> handleCustomAuthException(CustomAuthException ex) {
         BasedError<List<Map<String, Object>>> basedError = BasedError.<List<Map<String, Object>>>builder()
                 .code(ex.getStatusCode().toString())
                 .description(ex.getErrors())
                 .build();
 
-        BasedErrorResponse<List<Map<String, Object>>> basedErrorResponse = BasedErrorResponse.<List<Map<String, Object>>>builder()
+        BasedErrorResponse<List<Map<String, Object>>> errorResponse = BasedErrorResponse.<List<Map<String, Object>>>builder()
                 .error(basedError)
                 .build();
 
-        return ResponseEntity.status(ex.getStatusCode()).body(basedErrorResponse);
+        return new ResponseEntity<>(errorResponse, ex.getStatusCode());
     }
 
-    @ExceptionHandler(HttpClientErrorException.Unauthorized.class)
-    public ResponseEntity<BasedErrorResponse<String>> handleUnauthorizedException(HttpClientErrorException.Unauthorized ex) {
-        BasedError<String> basedError = BasedError.<String>builder()
-                .code(HttpStatus.UNAUTHORIZED.toString())
-                .description(ex.getResponseBodyAsString())
-                .build();
+    @ExceptionHandler(ResponseStatusException.class)
+    ResponseEntity<?> handleServiceErrors(ResponseStatusException ex) {
 
-        BasedErrorResponse<String> basedErrorResponse = BasedErrorResponse.<String>builder()
-                .error(basedError)
-                .build();
+        BasedError<String> basedError = new BasedError<>();
+        basedError.setCode(ex.getStatusCode().toString());
+        basedError.setDescription(ex.getReason());
 
-        return new ResponseEntity<>(basedErrorResponse, HttpStatus.UNAUTHORIZED);
+        BasedErrorResponse<String> basedErrorResponse = new BasedErrorResponse();
+        basedErrorResponse.setError(basedError);
+
+        return ResponseEntity.status(ex.getStatusCode())
+                .body(basedErrorResponse);
     }
-
-    @ExceptionHandler(HttpClientErrorException.Forbidden.class)
-    public ResponseEntity<BasedErrorResponse<String>> handleForbiddenException(HttpClientErrorException.Forbidden ex) {
-        BasedError<String> basedError = BasedError.<String>builder()
-                .code(HttpStatus.FORBIDDEN.toString())
-                .description(ex.getResponseBodyAsString())
-                .build();
-
-        BasedErrorResponse<String> basedErrorResponse = BasedErrorResponse.<String>builder()
-                .error(basedError)
-                .build();
-
-        return new ResponseEntity<>(basedErrorResponse, HttpStatus.FORBIDDEN);
-    }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -97,26 +68,12 @@ public class GlobalRestControllerAdviser {
                 .build();
     }
 
-    //
-//    @ExceptionHandler(NullPointerException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public BasedErrorResponse<String> handleNullPointerException() {
-//        BasedError<String> basedError = BasedError.<String>builder()
-//                .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
-//                .description("Field cannot be null")
-//                .build();
-//
-//        return BasedErrorResponse.<String>builder()
-//                .error(basedError)
-//                .build();
-//    }
-//
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public BasedErrorResponse<String> handleAllExceptions() {
+    public BasedErrorResponse<String> handleBadRequestException(Exception ex) {
         BasedError<String> basedError = BasedError.<String>builder()
-                .code(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .description("An unexpected error occurred: you might input the wrong field/value or please checking you syntax.")
+                .code(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                .description(ex.getMessage())
                 .build();
 
         return BasedErrorResponse.<String>builder()
