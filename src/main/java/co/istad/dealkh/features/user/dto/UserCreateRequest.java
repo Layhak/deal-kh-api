@@ -1,6 +1,7 @@
 package co.istad.dealkh.features.user.dto;
 
 import co.istad.dealkh.validator.dateofbirth.ValidDOB;
+import co.istad.dealkh.validator.email.ValidEmail;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,6 +19,7 @@ public record UserCreateRequest(
         String username,
 
         @NotBlank(message = "Email is required")
+        @ValidEmail
         String email,
 
         @NotBlank(message = "Password is required")

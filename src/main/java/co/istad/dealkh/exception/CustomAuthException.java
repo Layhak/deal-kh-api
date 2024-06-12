@@ -8,12 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-public class CustomException extends ResponseStatusException {
+public class CustomAuthException extends ResponseStatusException {
     private final List<Map<String, Object>> errors;
 
-    public CustomException(HttpStatus status, List<Map<String, Object>> errors) {
+    public CustomAuthException(HttpStatus status, List<Map<String, Object>> errors) {
         super(status, null);
         this.errors = errors;
     }
-
 }
