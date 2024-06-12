@@ -1,6 +1,6 @@
 package co.istad.dealkh.security;
 
-import co.istad.dealkh.exception.CustomException;
+import co.istad.dealkh.exception.CustomAuthException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -78,7 +78,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
 
         if (!errors.isEmpty()) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, errors);
+            throw new CustomAuthException(HttpStatus.BAD_REQUEST, errors);
         }
 
         UserDetails userDetails = userDetailsService.loadUserByEmail(email);
@@ -88,7 +88,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             error.put("field", "password");
             error.put("reason", "Password is not correct");
             errors.add(error);
-            throw new CustomException(HttpStatus.BAD_REQUEST, errors);
+            throw new CustomAuthException(HttpStatus.BAD_REQUEST, errors);
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());

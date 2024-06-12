@@ -46,9 +46,9 @@ public class DataInit {
         try {
             initAuthorities();
             initRoles();
-            initShopTypes();
+//            initShopTypes();
             initUsers();
-            initShops();
+//            initShops();
             initDiscountTypes();
             initDiscounts();
             initCategories();
@@ -110,7 +110,7 @@ public class DataInit {
             user1.setLocation("Phnom Penh");
             user1.setIsDisabled(false);
             user1.setCreatedAt(LocalDateTime.now());
-            user1.setRoles(Set.of(roles.get(0), roles.get(1)));
+            user1.setRoles(Set.of(roles.get(0)));
             users.add(user1);
             userRepository.saveAll(users);
         }
@@ -164,8 +164,8 @@ public class DataInit {
             categories.forEach(category -> {
                 Category category1 = new Category();
                 category1.setName(category);
-                category1.setSlug(category);
                 category1.setIcon("icon.jpg");
+                category1.setSlug(category.toLowerCase().replace(" ", "-"));
                 category1.setCreatedAt(LocalDateTime.now());
                 category1.setUpdatedAt(LocalDateTime.now());
                 category1.setCreatedBy("Admin");

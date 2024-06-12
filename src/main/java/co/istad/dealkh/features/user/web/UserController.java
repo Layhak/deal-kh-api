@@ -155,17 +155,16 @@ public class UserController {
         return BaseResponse.ok("Successfully reset user password");
     }
 
-    @PostMapping("/addRole")
+    @PostMapping("/addRole/{username}")
     @Operation(summary = "Add role to user")
-    public BaseResponse<UserResponse> addRole(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserRoleRequest userRoleRequest) {
-        String username = customUserDetails.getUsername();
+    public BaseResponse<UserResponse> addRole(@PathVariable String username, @RequestBody UserRoleRequest userRoleRequest) {
+        //if user has  role admin or super admin
         return BaseResponse.<UserResponse>ok("Successfully add role to user").setPayload(userService.addRole(username, userRoleRequest));
     }
 
-    @DeleteMapping("/removeRole")
+    @DeleteMapping("/removeRole/{username}")
     @Operation(summary = "Remove role from user")
-    public BaseResponse<UserResponse> removeRole(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserRoleRequest userRoleRequest) {
-        String username = customUserDetails.getUsername();
+    public BaseResponse<UserResponse> removeRole(@PathVariable String username, @RequestBody UserRoleRequest userRoleRequest) {
         return BaseResponse.<UserResponse>ok("Successfully remove role from user").setPayload(userService.removerRole(username, userRoleRequest));
     }
 
@@ -188,8 +187,7 @@ public class UserController {
                     description = "Sort order",
                     in = ParameterIn.QUERY,
                     schema = @Schema(defaultValue = "asc")) @RequestParam(defaultValue = "asc") String order
-            )
-    {
+    ) {
         return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieve all buyers!")
                 .setPayload(userService.getAllBuyer(page, size, field, order));
     }
@@ -213,8 +211,7 @@ public class UserController {
                     description = "Sort order",
                     in = ParameterIn.QUERY,
                     schema = @Schema(defaultValue = "asc")) @RequestParam(defaultValue = "asc") String order
-            )
-    {
+    ) {
         return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieve all sellers!")
                 .setPayload(userService.getAllSeller(page, size, field, order));
     }

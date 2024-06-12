@@ -1,11 +1,10 @@
 package co.istad.dealkh.features.user.dto;
 
 import co.istad.dealkh.domain.json.Image;
+import co.istad.dealkh.validator.dateofbirth.ValidDOB;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +23,8 @@ public record UserRequest(
         String email,
 
         @NotBlank(message = "Password is required")
+        @Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
+
         String password,
 
         @NotBlank(message = "Gender is required")
@@ -34,8 +35,8 @@ public record UserRequest(
         @Size(max = 20, message = "Phone number must less than 20 characters")
         String phoneNumber,
 
-        @NotNull(message = "Date of birth is required")
-        LocalDate dob,
+        @ValidDOB
+        String dob,
 
         List<Image> images,
 

@@ -2,78 +2,51 @@ package co.istad.dealkh.exception;
 
 import co.istad.dealkh.base.BasedError;
 import co.istad.dealkh.base.BasedErrorResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 @RestControllerAdvice
 public class GlobalRestControllerAdviser {
 
-    @ExceptionHandler(SingleRoleException.class)
-    public ResponseEntity<BasedErrorResponse<String>> handleSingleRoleException(SingleRoleException ex) {
-        BasedError<String> basedError = BasedError.<String>builder()
-                .code(HttpStatus.BAD_REQUEST.toString())
-                .description(ex.getReason())
-                .build();
-
-        BasedErrorResponse<String> basedErrorResponse = BasedErrorResponse.<String>builder()
-                .error(basedError)
-                .build();
-
-        return new ResponseEntity<>(basedErrorResponse, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<BasedErrorResponse<List<Map<String, Object>>>> handleCustomException(CustomException ex) {
+    @ExceptionHandler(CustomAuthException.class)
+    public ResponseEntity<BasedErrorResponse<List<Map<String, Object>>>> handleCustomAuthException(CustomAuthException ex) {
         BasedError<List<Map<String, Object>>> basedError = BasedError.<List<Map<String, Object>>>builder()
                 .code(ex.getStatusCode().toString())
                 .description(ex.getErrors())
                 .build();
 
-        BasedErrorResponse<List<Map<String, Object>>> basedErrorResponse = BasedErrorResponse.<List<Map<String, Object>>>builder()
+        BasedErrorResponse<List<Map<String, Object>>> errorResponse = BasedErrorResponse.<List<Map<String, Object>>>builder()
                 .error(basedError)
                 .build();
 
-        return ResponseEntity.status(ex.getStatusCode()).body(basedErrorResponse);
+        return new ResponseEntity<>(errorResponse, ex.getStatusCode());
     }
 
-    @ExceptionHandler(HttpClientErrorException.Unauthorized.class)
-    public ResponseEntity<BasedErrorResponse<String>> handleUnauthorizedException(HttpClientErrorException.Unauthorized ex) {
-        BasedError<String> basedError = BasedError.<String>builder()
-                .code(HttpStatus.UNAUTHORIZED.toString())
-                .description(ex.getResponseBodyAsString())
-                .build();
+    @ExceptionHandler(ResponseStatusException.class)
+    ResponseEntity<?> handleServiceErrors(ResponseStatusException ex) {
 
-        BasedErrorResponse<String> basedErrorResponse = BasedErrorResponse.<String>builder()
-                .error(basedError)
-                .build();
+        BasedError<String> basedError = new BasedError<>();
+        basedError.setCode(ex.getStatusCode().toString());
+        basedError.setDescription(ex.getReason());
 
-        return new ResponseEntity<>(basedErrorResponse, HttpStatus.UNAUTHORIZED);
+        BasedErrorResponse<String> basedErrorResponse = new BasedErrorResponse();
+        basedErrorResponse.setError(basedError);
+
+        return ResponseEntity.status(ex.getStatusCode())
+                .body(basedErrorResponse);
     }
-
-    @ExceptionHandler(HttpClientErrorException.Forbidden.class)
-    public ResponseEntity<BasedErrorResponse<String>> handleForbiddenException(HttpClientErrorException.Forbidden ex) {
-        BasedError<String> basedError = BasedError.<String>builder()
-                .code(HttpStatus.FORBIDDEN.toString())
-                .description(ex.getResponseBodyAsString())
-                .build();
-
-        BasedErrorResponse<String> basedErrorResponse = BasedErrorResponse.<String>builder()
-                .error(basedError)
-                .build();
-
-        return new ResponseEntity<>(basedErrorResponse, HttpStatus.FORBIDDEN);
-    }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -81,7 +54,7 @@ public class GlobalRestControllerAdviser {
         List<Map<String, Object>> errors = new ArrayList<>();
 
         ex.getBindingResult().getFieldErrors().forEach(fieldError -> {
-            Map<String, Object> error = new HashMap<>();
+            Map<String, Object> error = new TreeMap<>();
             error.put("field", fieldError.getField());
             error.put("reason", fieldError.getDefaultMessage());
             errors.add(error);
@@ -97,12 +70,12 @@ public class GlobalRestControllerAdviser {
                 .build();
     }
 
-    @ExceptionHandler(NullPointerException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public BasedErrorResponse<String> handleNullPointerException() {
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public BasedErrorResponse<String> handleBadRequestException(Exception ex) {
         BasedError<String> basedError = BasedError.<String>builder()
-                .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .description("Field cannot be null")
+                .code(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                .description(ex.getMessage())
                 .build();
 
         return BasedErrorResponse.<String>builder()
@@ -110,16 +83,18 @@ public class GlobalRestControllerAdviser {
                 .build();
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public BasedErrorResponse<String> handleAllExceptions() {
+    @Value("${spring.servlet.multipart.max-request-size}")
+    private String maxSize;
+
+    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    BasedErrorResponse<String> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+
         BasedError<String> basedError = BasedError.<String>builder()
-                .code(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .description("An unexpected error occurred: you might input the wrong field/value or please checking you syntax.")
+                .code(HttpStatus.PAYLOAD_TOO_LARGE.getReasonPhrase())
+                .description("Media upload size maximum is " + maxSize)
                 .build();
 
-        return BasedErrorResponse.<String>builder()
-                .error(basedError)
-                .build();
+        return new BasedErrorResponse<>(basedError);
     }
 }
