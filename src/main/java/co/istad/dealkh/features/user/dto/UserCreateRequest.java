@@ -1,5 +1,6 @@
 package co.istad.dealkh.features.user.dto;
 
+import co.istad.dealkh.validator.dateofbirth.ValidDOB;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -34,6 +35,7 @@ public record UserCreateRequest(
         String phoneNumber,
 
         @NotNull
+        @ValidDOB
         LocalDate dob,
 
         @NotBlank

@@ -97,19 +97,20 @@ public class GlobalRestControllerAdviser {
                 .build();
     }
 
-    @ExceptionHandler(NullPointerException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public BasedErrorResponse<String> handleNullPointerException() {
-        BasedError<String> basedError = BasedError.<String>builder()
-                .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .description("Field cannot be null")
-                .build();
-
-        return BasedErrorResponse.<String>builder()
-                .error(basedError)
-                .build();
-    }
-
+    //
+//    @ExceptionHandler(NullPointerException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public BasedErrorResponse<String> handleNullPointerException() {
+//        BasedError<String> basedError = BasedError.<String>builder()
+//                .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
+//                .description("Field cannot be null")
+//                .build();
+//
+//        return BasedErrorResponse.<String>builder()
+//                .error(basedError)
+//                .build();
+//    }
+//
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public BasedErrorResponse<String> handleAllExceptions() {

@@ -271,7 +271,16 @@ public class UserServiceImpl implements UserService {
         Role newRole = roleRepository.findByName(userRoleRequest.role())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + userRoleRequest.role()));
 
-        // Add the new role to the user's existing roles if not already present
+        // Validate if the user is trying to promote themselves to SUPER_ADMIN
+        if (userRoleRequest.role().equals("SUPER_ADMIN") && user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User with ADMIN role cannot promote themselves to SUPER_ADMIN");
+        }
+
+        // if user has role not admin or super admin then throw exception
+        if (user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("SUPER_ADMIN"))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have admin or super admin role");
+        }
+
         user.getRoles().add(newRole);
 
         // Save the updated user
@@ -288,7 +297,11 @@ public class UserServiceImpl implements UserService {
 
         // Fetch the role from the request and remove it from the user
         Role roleToRemove = roleRepository.findByName(userRoleRequest.role())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + userRoleRequest.role()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role has not been found!"));
+        //if he is not admin or super admin then throw exception
+        if (user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("SUPER_ADMIN"))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have admin or super admin role");
+        }
         //if user have only one role left throw exception else remove the role from the user
         user.getRoles().remove(roleToRemove);
         userRepository.save(user);
