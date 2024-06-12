@@ -3,6 +3,22 @@ file:
   storage-dir: "filestorage/images/"
   client-dir: "/images/**"
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: layhak.garu@gmail.com
+    password: 'hvhdsfakwkhawmwk'
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
   servlet: # this is for file upload
     multipart:
       max-file-size: 5MB
@@ -15,7 +31,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     generate-ddl: true
     properties:
       hibernate:
@@ -24,12 +40,13 @@ springdoc:
   swagger-ui:
     path: /
 
-#logging:
-#  level:
-#    org.springframework.security: DEBUG
-#    org.springframework.orm.jpa: DEBUG
-#    org.hibernate.SQL: DEBUG  # To log SQL statements
-#    org.hibernate.type: TRACE  # To log bound parameters
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.orm.jpa: DEBUG
+    org.hibernate.SQL: DEBUG  # To log SQL statements
+    org.hibernate.type: TRACE  # To log bound parameters
 
 # This is for the access token
 ACCESS_TOKEN_PRIVATE_KEY_PATH: access-refresh-token-keys/access-token-private.key

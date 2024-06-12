@@ -80,4 +80,8 @@ public class BaseResponse<T> {
     public static <T> BaseResponse<T> badRequest(String message) {
         return new BaseResponse<T>().setStatus(HttpStatus.BAD_REQUEST.value()).setMessage(message);
     }
+
+    public static BaseResponse<?> internalServerError(String message) {
+        return new BaseResponse<>().setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value()).setMessage(message);
+    }
 }

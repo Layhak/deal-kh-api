@@ -66,20 +66,20 @@ public class UserController {
         return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieved users!").setPayload(userService.getAllUsers(page, size, field, order, params));
     }
 
-    @GetMapping("/{id}")
-    BaseResponse<UserResponse> getUserById(@PathVariable Long id) {
-        return BaseResponse.<UserResponse>ok("Successfully retrieve user with id:" + id).setPayload(userService.getById(id));
+    @GetMapping("/{username}")
+    BaseResponse<UserResponse> getUserById(@PathVariable String username) {
+        return BaseResponse.<UserResponse>ok("Successfully retrieve user with username:" + username).setPayload(userService.getByUsername(username));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{username}")
     @Operation(summary = "Delete user")
-    BaseResponse<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    BaseResponse<Void> deleteUser(@PathVariable String username) {
+        userService.deleteUser(username);
         return BaseResponse.<Void>ok("Delete user success");
     }
 
-    @PutMapping("/{id}")
-    @Operation(summary = "Update user", description = "Update user with id", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = UserUpdateRequest.class), examples = @ExampleObject(value = """
+    @PutMapping("/{username}")
+    @Operation(summary = "Update user", description = "Update user with username", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = UserUpdateRequest.class), examples = @ExampleObject(value = """
                          {
                            "dob": "2001-07-01",
                            "firstName": "Hom",
@@ -93,48 +93,48 @@ public class UserController {
                            ]
                          }
             """))))
-    BaseResponse<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequest updateRequest) {
-        return BaseResponse.<UserResponse>ok("update success").setPayload(userService.updateUser(id, updateRequest));
+    BaseResponse<UserResponse> updateUser(@PathVariable String username, @RequestBody UserUpdateRequest updateRequest) {
+        return BaseResponse.<UserResponse>ok("update success").setPayload(userService.updateUser(username, updateRequest));
     }
 
-    @PatchMapping("/{id}/disable")
+    @PatchMapping("/{username}/disable")
     @Operation(summary = "Disable user")
-    BaseResponse<UserResponse> disableUser(@PathVariable Long id) {
-        return BaseResponse.<UserResponse>ok("Successfully disable user").setPayload(userService.disableUser(id));
+    BaseResponse<UserResponse> disableUser(@PathVariable String username) {
+        return BaseResponse.<UserResponse>ok("Successfully disable user").setPayload(userService.disableUser(username));
     }
 
-    @PatchMapping("/{id}/enable")
+    @PatchMapping("/{username}/enable")
     @Operation(summary = "Enable user")
-    BaseResponse<UserResponse> enableUser(@PathVariable Long id) {
-        return BaseResponse.<UserResponse>ok("Successfully enable user").setPayload(userService.enableUser(id));
+    BaseResponse<UserResponse> enableUser(@PathVariable String username) {
+        return BaseResponse.<UserResponse>ok("Successfully enable user").setPayload(userService.enableUser(username));
     }
 
     @GetMapping("/me")
     @Operation(summary = "Get current user info")
     public BaseResponse<UserResponse> getCurrentUserInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long userId = customUserDetails.getUserId();
-        return BaseResponse.<UserResponse>ok("Success get current user info").setPayload(userService.getById(userId));
+        String username = customUserDetails.getUsername();
+        return BaseResponse.<UserResponse>ok("Success get current user info").setPayload(userService.getByUsername(username));
     }
 
     @GetMapping("/profile")
     @Operation(summary = "Get user profile")
     public BaseResponse<UserProfileResponse> getUserProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long userId = customUserDetails.getUserId();
-        return BaseResponse.<UserProfileResponse>ok("Success get user profile").setPayload(userService.getUserProfile(userId));
+        String username = customUserDetails.getUsername();
+        return BaseResponse.<UserProfileResponse>ok("Success get user profile").setPayload(userService.getUserProfile(username));
     }
 
     @PostMapping("/profile")
     @Operation(summary = "Upload user profile")
     public BaseResponse<UserProfileResponse> uploadUserProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserProfileRequest userProfileRequest) {
-        Long userId = customUserDetails.getUserId();
-        return BaseResponse.<UserProfileResponse>ok("Success update user profile").setPayload(userService.uploadUserProfile(userId, userProfileRequest));
+        String username = customUserDetails.getUsername();
+        return BaseResponse.<UserProfileResponse>ok("Success update user profile").setPayload(userService.uploadUserProfile(username, userProfileRequest));
     }
 
     @DeleteMapping("/profile/deleteImage")
     @Operation(summary = "Delete user profile image")
     public BaseResponse<Void> deleteUserProfileImage(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam String imageUrl) {
-        Long userId = customUserDetails.getUserId();
-        userService.deleteUserProfile(userId, imageUrl);
+        String username = customUserDetails.getUsername();
+        userService.deleteUserProfile(username, imageUrl);
         return BaseResponse.ok("Successfully delete user profile image");
 
     }
@@ -142,31 +142,31 @@ public class UserController {
     @PutMapping("/updatePassword")
     @Operation(summary = "Update user password")
     public BaseResponse<Void> updatePassword(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserUpdatePasswordRequest updatePasswordRequest) {
-        Long userId = customUserDetails.getUserId();
-        userService.updatePassword(userId, updatePasswordRequest);
+        String username = customUserDetails.getUsername();
+        userService.updatePassword(username, updatePasswordRequest);
         return BaseResponse.ok("Successfully update user password");
     }
 
     @PutMapping("/resetPassword")
     @Operation(summary = "Reset user password")
     public BaseResponse<Void> resetPassword(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserResetPasswordRequest userResetPasswordRequest) {
-        Long userId = customUserDetails.getUserId();
-        userService.resetPassword(userId, userResetPasswordRequest);
+        String username = customUserDetails.getUsername();
+        userService.resetPassword(username, userResetPasswordRequest);
         return BaseResponse.ok("Successfully reset user password");
     }
 
     @PostMapping("/addRole")
     @Operation(summary = "Add role to user")
     public BaseResponse<UserResponse> addRole(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserRoleRequest userRoleRequest) {
-        Long userId = customUserDetails.getUserId();
-        return BaseResponse.<UserResponse>ok("Successfully add role to user").setPayload(userService.addRole(userId, userRoleRequest));
+        String username = customUserDetails.getUsername();
+        return BaseResponse.<UserResponse>ok("Successfully add role to user").setPayload(userService.addRole(username, userRoleRequest));
     }
 
     @DeleteMapping("/removeRole")
     @Operation(summary = "Remove role from user")
     public BaseResponse<UserResponse> removeRole(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserRoleRequest userRoleRequest) {
-        Long userId = customUserDetails.getUserId();
-        return BaseResponse.<UserResponse>ok("Successfully remove role from user").setPayload(userService.removerRole(userId, userRoleRequest));
+        String username = customUserDetails.getUsername();
+        return BaseResponse.<UserResponse>ok("Successfully remove role from user").setPayload(userService.removerRole(username, userRoleRequest));
     }
 
     @GetMapping("/buyers)")
