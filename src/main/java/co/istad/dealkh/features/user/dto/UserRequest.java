@@ -1,8 +1,8 @@
 package co.istad.dealkh.features.user.dto;
 
 import co.istad.dealkh.domain.json.Image;
+import co.istad.dealkh.validator.dateofbirth.ValidDOB;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
@@ -34,7 +34,7 @@ public record UserRequest(
         @Size(max = 20, message = "Phone number must less than 20 characters")
         String phoneNumber,
 
-        @NotNull(message = "Date of birth is required")
+        @ValidDOB
         LocalDate dob,
 
         List<Image> images,

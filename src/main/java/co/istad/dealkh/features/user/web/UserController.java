@@ -157,8 +157,8 @@ public class UserController {
 
     @PostMapping("/addRole")
     @Operation(summary = "Add role to user")
-    public BaseResponse<UserResponse> addRole(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserRoleRequest userRoleRequest) {
-        String username = customUserDetails.getUsername();
+    public BaseResponse<UserResponse> addRole(@PathVariable String username, @RequestBody UserRoleRequest userRoleRequest) {
+        //if user has  role admin or super admin
         return BaseResponse.<UserResponse>ok("Successfully add role to user").setPayload(userService.addRole(username, userRoleRequest));
     }
 
