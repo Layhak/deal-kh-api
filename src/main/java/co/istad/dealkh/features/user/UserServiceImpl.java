@@ -15,7 +15,6 @@ import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
 import co.istad.dealkh.specification.filter.UserFilter;
 import co.istad.dealkh.specification.filter.UserSpecification;
-import co.istad.dealkh.validator.user.PasswordValidator;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -29,7 +28,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -97,19 +99,21 @@ public class UserServiceImpl implements UserService {
                     "Email already taken! Try another one.");
         }
 
-        if (!PasswordValidator.isValid(userRequest.password())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Password is not strong enough! It must contain at least one digit, one lowercase letter, one uppercase letter, one special character, and be between 8 to 20 characters long.");
-        }
-
         if (!userRequest.confirmedPassword().equals(userRequest.password())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password does not match!");
         }
 
         User newUser = userMapper.mapCreateRequestToUser(userRequest);
+        // Convert the dob string to LocalDate
+        LocalDate dob;
+        try {
+            dob = LocalDate.parse(userRequest.dob(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        } catch (DateTimeParseException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format for dob");
+        }
         newUser.setIsDisabled(false);
         newUser.setEmail(userRequest.email());
+        newUser.setDob(dob);
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setUpdatedAt(LocalDateTime.now());
         newUser.setRoles(Set.of(roleRepository.findByName("BUYER").orElseThrow(

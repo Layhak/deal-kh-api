@@ -1,8 +1,11 @@
-package co.istad.dealkh.validator.user;
+package co.istad.dealkh.validator.password;
+
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.regex.Pattern;
 
-public class PasswordValidator {
+public class PasswordValidator implements ConstraintValidator<ValidPassword, String> {
 
     private static final String PASSWORD_PATTERN =
             "^(?=.*[0-9])" +           // At least one digit
@@ -13,7 +16,16 @@ public class PasswordValidator {
 
     private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 
-    public static boolean isValid(String password) {
+    @Override
+    public void initialize(ValidPassword constraintAnnotation) {
+        // Initialization code if needed
+    }
+
+    @Override
+    public boolean isValid(String password, ConstraintValidatorContext context) {
+        if (password == null || password.isEmpty()) {
+            return false; // Consider empty password as invalid
+        }
         return pattern.matcher(password).matches();
     }
 }

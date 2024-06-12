@@ -2,18 +2,20 @@ package co.istad.dealkh.exception;
 
 import co.istad.dealkh.base.BasedError;
 import co.istad.dealkh.base.BasedErrorResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 @RestControllerAdvice
 public class GlobalRestControllerAdviser {
@@ -52,7 +54,7 @@ public class GlobalRestControllerAdviser {
         List<Map<String, Object>> errors = new ArrayList<>();
 
         ex.getBindingResult().getFieldErrors().forEach(fieldError -> {
-            Map<String, Object> error = new HashMap<>();
+            Map<String, Object> error = new TreeMap<>();
             error.put("field", fieldError.getField());
             error.put("reason", fieldError.getDefaultMessage());
             errors.add(error);
@@ -79,5 +81,20 @@ public class GlobalRestControllerAdviser {
         return BasedErrorResponse.<String>builder()
                 .error(basedError)
                 .build();
+    }
+
+    @Value("${spring.servlet.multipart.max-request-size}")
+    private String maxSize;
+
+    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    BasedErrorResponse<String> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+
+        BasedError<String> basedError = BasedError.<String>builder()
+                .code(HttpStatus.PAYLOAD_TOO_LARGE.getReasonPhrase())
+                .description("Media upload size maximum is " + maxSize)
+                .build();
+
+        return new BasedErrorResponse<>(basedError);
     }
 }

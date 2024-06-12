@@ -5,7 +5,6 @@ import co.istad.dealkh.validator.dateofbirth.ValidDOB;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +23,8 @@ public record UserRequest(
         String email,
 
         @NotBlank(message = "Password is required")
+        @Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
+
         String password,
 
         @NotBlank(message = "Gender is required")
@@ -35,7 +36,7 @@ public record UserRequest(
         String phoneNumber,
 
         @ValidDOB
-        LocalDate dob,
+        String dob,
 
         List<Image> images,
 
