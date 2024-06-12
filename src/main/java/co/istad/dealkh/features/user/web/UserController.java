@@ -47,7 +47,7 @@ public class UserController {
             @Parameter(name = "size",
                     description = "Page size",
                     in = ParameterIn.QUERY,
-                    schema = @Schema(defaultValue = "10")) @RequestParam(defaultValue = "10") int size,
+                    schema = @Schema(defaultValue = "25")) @RequestParam(defaultValue = "10") int size,
             @Parameter(name = "field",
                     description = "Sort field",
                     in = ParameterIn.QUERY,
@@ -168,4 +168,56 @@ public class UserController {
         Long userId = customUserDetails.getUserId();
         return BaseResponse.<UserResponse>ok("Successfully remove role from user").setPayload(userService.removerRole(userId, userRoleRequest));
     }
+
+    @GetMapping("/buyers)")
+    @Operation(summary = "Get all buyers")
+    public BaseResponse<PageResponse<UserResponse>> getAllBuyer(
+            @Parameter(name = "page",
+                    description = "Page number",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "1")) @RequestParam(defaultValue = "1") int page,
+            @Parameter(name = "size",
+                    description = "Page size",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "25")) @RequestParam(defaultValue = "25") int size,
+            @Parameter(name = "field",
+                    description = "Sort field",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "username")) @RequestParam(defaultValue = "username") String field,
+            @Parameter(name = "order",
+                    description = "Sort order",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "asc")) @RequestParam(defaultValue = "asc") String order
+            )
+    {
+        return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieve all buyers!")
+                .setPayload(userService.getAllBuyer(page, size, field, order));
+    }
+
+    @GetMapping("/sellers)")
+    @Operation(summary = "Get all sellers")
+    public BaseResponse<PageResponse<UserResponse>> getAllSeller(
+            @Parameter(name = "page",
+                    description = "Page number",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "1")) @RequestParam(defaultValue = "1") int page,
+            @Parameter(name = "size",
+                    description = "Page size",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "25")) @RequestParam(defaultValue = "25") int size,
+            @Parameter(name = "field",
+                    description = "Sort field",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "username")) @RequestParam(defaultValue = "username") String field,
+            @Parameter(name = "order",
+                    description = "Sort order",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "asc")) @RequestParam(defaultValue = "asc") String order
+            )
+    {
+        return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieve all sellers!")
+                .setPayload(userService.getAllSeller(page, size, field, order));
+    }
+
+
 }

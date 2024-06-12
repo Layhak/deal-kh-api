@@ -36,4 +36,6 @@ public interface UserService {
 
     UserResponse removerRole(Long id, UserRoleRequest userRoleRequest);
 
+    PageResponse<UserResponse> getAllBuyer(int page, int size, String field, String order);
+    PageResponse<UserResponse> getAllSeller(int page, int size, String field, String order);
 }

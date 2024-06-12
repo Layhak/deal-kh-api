@@ -10,11 +10,13 @@ import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
 import co.istad.dealkh.specification.filter.UserFilter;
 import co.istad.dealkh.specification.filter.UserSpecification;
+import co.istad.dealkh.validator.user.PasswordValidator;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -94,6 +96,16 @@ public class UserServiceImpl implements UserService {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
                     "Email already taken! Try another one.");
+        }
+
+        if (!PasswordValidator.isValid(userRequest.password())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Password is not strong enough! It must contain at least one digit, one lowercase letter, one uppercase letter, one special character, and be between 8 to 20 characters long.");
+        }
+
+        if (!userRequest.confirmedPassword().equals(userRequest.password())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password does not match!");
         }
 
         User newUser = userMapper.mapCreateRequestToUser(userRequest);
@@ -289,5 +301,26 @@ public class UserServiceImpl implements UserService {
         // Return the updated user response
         return userMapper.mapToUserResponse(user);
     }
+
+    @Override
+    public PageResponse<UserResponse> getAllBuyer(int page, int size, String field, String order) {
+
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+
+        Page<UserResponse> buyers = userRepository.findAllUserByRoles_Name("BUYER", pageable).map(userMapper::mapToUserResponse);
+
+        return new PageResponse<>(buyers);
+    }
+
+    @Override
+    public PageResponse<UserResponse> getAllSeller(int page, int size, String field, String order) {
+
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+
+        Page<UserResponse> buyers = userRepository.findAllUserByRoles_Name("SELLER", pageable).map(userMapper::mapToUserResponse);
+
+        return new PageResponse<>(buyers);
+    }
+
 
 }

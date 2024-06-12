@@ -70,7 +70,7 @@ public class ProductController {
     @GetMapping("")
     PageResponse<ProductResponse> filterProduct(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(defaultValue = "25") int size,
             @RequestParam(defaultValue = "name") String field,
             @RequestParam(defaultValue = "asc") String order,
             @RequestParam Map<String, String> params

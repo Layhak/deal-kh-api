@@ -72,28 +72,25 @@ public class AuthController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(
-            summary = "Register new user",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = @Content(schema = @Schema(implementation = UserCreateRequest.class),
-                            examples = @ExampleObject(value = """
-                                            {
-                                                "firstName": "panda",
-                                                "lastName": "panda",
-                                                "username": "panda",
-                                                "email": "panda@gmail.com",
-                                                "password": "panda",
-                                                "confirmedPassword": "panda",
-                                                "gender": "male",
-                                                "phoneNumber": "0987654321",
-                                                "dob": "2001-01-01",
-                                                "location": "phnom penh",
-                                                "roles": [
-                                                  "BUYER"
-                                                ]
-                                              }
-                                    """)
-                    )
+        summary = "Register new user",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(schema = @Schema(implementation = UserCreateRequest.class),
+                examples = @ExampleObject(value = """
+                    {
+                         "firstName": "panda",
+                         "lastName": "panda",
+                         "username": "panda",
+                         "email": "panda@gmail.com",
+                         "password": "Panda@123",
+                         "confirmedPassword": "Panda@123",
+                         "gender": "male",
+                         "phoneNumber": "0987654321",
+                         "dob": "2001-01-01",
+                         "location": "phnom penh"
+                    }
+                """)
             )
+        )
     )
     public BaseResponse<UserResponse> registerUser(
             @Valid @RequestBody UserCreateRequest userRequest) {
