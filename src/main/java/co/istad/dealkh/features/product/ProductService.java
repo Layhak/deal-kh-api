@@ -28,7 +28,7 @@ public interface ProductService {
      * @param id
      * @return
      */
-    Optional<ProductResponse> getProductById(Long id);
+    Optional<ProductResponse> getProductByName(String name);
 
     /**
      * Retrieves all products.
@@ -50,7 +50,7 @@ public interface ProductService {
      * @param productUpdateRequest
      * @return
      */
-    ProductResponse updateProductById(Long id, ProductUpdateRequest productUpdateRequest);
+    ProductResponse updateProductByName(String name, ProductUpdateRequest productUpdateRequest);
 
     /**
      * Deletes a product based on its ID.
@@ -58,7 +58,7 @@ public interface ProductService {
      * @param id
      * @return
      */
-    void deleteProduct(Long id);
+    void deleteProduct(String name);
 
     /**
      * Retrieves a product rating average based on its ID.

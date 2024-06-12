@@ -122,6 +122,7 @@ public class DataInit {
             shopTypes.forEach(type -> {
                 ShopType shopType = new ShopType();
                 shopType.setName(type);
+                shopType.setSlug(type);
                 shopTypeRepository.save(shopType);
             });
         }

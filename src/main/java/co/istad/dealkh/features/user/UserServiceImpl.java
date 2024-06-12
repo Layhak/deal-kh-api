@@ -1,10 +1,15 @@
 package co.istad.dealkh.features.user;
 
+import co.istad.dealkh.domain.Coupon;
 import co.istad.dealkh.domain.Role;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.domain.json.Image;
+import co.istad.dealkh.features.coupon.dto.CouponCreateRequest;
+import co.istad.dealkh.features.coupon.dto.CouponResponse;
+import co.istad.dealkh.features.coupon.web.CouponRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.user.dto.*;
+import co.istad.dealkh.mapper.CouponMapper;
 import co.istad.dealkh.mapper.UserMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
@@ -16,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;

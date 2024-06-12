@@ -1,9 +1,13 @@
 package co.istad.dealkh.features.user;
 
+import co.istad.dealkh.features.coupon.dto.CouponCreateRequest;
+import co.istad.dealkh.features.coupon.dto.CouponResponse;
 import co.istad.dealkh.features.user.dto.*;
 import co.istad.dealkh.paging.PageResponse;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface UserService {
 
@@ -38,4 +42,5 @@ public interface UserService {
 
     PageResponse<UserResponse> getAllBuyer(int page, int size, String field, String order);
     PageResponse<UserResponse> getAllSeller(int page, int size, String field, String order);
+
 }

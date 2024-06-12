@@ -38,22 +38,22 @@ public class ProductController {
      * @param productCreateRequest
      * @return
      */
-    @PostMapping("")
+    @PostMapping
     BaseResponse<ProductResponse> createProduct(@RequestBody @Valid ProductCreateRequest productCreateRequest) {
         return BaseResponse.<ProductResponse>createSuccess("Successfully created product!")
                 .setPayload(productService.createProduct(productCreateRequest));
     }
 
     /**
-     * Retrieves a product based on its ID.
+     * Retrieves a product based on its Name.
      *
-     * @param id
+     * @param name
      * @return
      */
-    @GetMapping("/{id}")
-    BaseResponse<Optional<ProductResponse>> getProductById(@PathVariable Long id) {
+    @GetMapping("/{name}")
+    BaseResponse<Optional<ProductResponse>> getProductByName(@PathVariable String name) {
         return BaseResponse.<Optional<ProductResponse>>ok("Successfully retrieved product!")
-                .setPayload(productService.getProductById(id));
+                .setPayload(productService.getProductByName(name));
     }
 
     /**
@@ -67,7 +67,7 @@ public class ProductController {
      * @param params
      * @return
      */
-    @GetMapping("")
+    @GetMapping
     PageResponse<ProductResponse> filterProduct(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int size,
@@ -79,27 +79,27 @@ public class ProductController {
     }
 
     /**
-     * Updates a product based on its ID.
+     * Updates a product based on its NAME.
      *
-     * @param id
+     * @param name
      * @param productUpdateRequest
      * @return
      */
-    @PutMapping("/{id}")
-    BaseResponse<ProductResponse> updateProductById(@PathVariable Long id, @RequestBody ProductUpdateRequest productUpdateRequest) {
+    @PutMapping("/{name}")
+    BaseResponse<ProductResponse> updateProductById(@PathVariable String name, @RequestBody ProductUpdateRequest productUpdateRequest) {
         return BaseResponse.<ProductResponse>ok("Update product successfully!")
-                .setPayload(productService.updateProductById(id, productUpdateRequest));
+                .setPayload(productService.updateProductByName(name, productUpdateRequest));
     }
 
     /**
-     * Deletes a product based on its ID.
+     * Deletes a product based on its NAME.
      *
-     * @param id
+     * @param name
      * @return
      */
-    @DeleteMapping("/{id}")
-    BaseResponse<?> deleteProductById(@PathVariable Long id) {
-        productService.deleteProduct(id);
+    @DeleteMapping("/{name}")
+    BaseResponse<?> deleteProductByName(@PathVariable String name) {
+        productService.deleteProduct(name);
         return BaseResponse.ok("Delete product successfully!");
     }
 

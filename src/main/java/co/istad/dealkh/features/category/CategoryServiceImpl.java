@@ -5,6 +5,7 @@ import co.istad.dealkh.features.category.dto.CategoryCreateRequest;
 import co.istad.dealkh.features.category.dto.CategoryResponse;
 import co.istad.dealkh.features.category.dto.CategoryUpdateRequest;
 import co.istad.dealkh.mapper.CategoryMapper;
+import co.istad.dealkh.validator.category.NameFormatter;
 import co.istad.dealkh.validator.category.SlugFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,8 @@ public class CategoryServiceImpl implements CategoryService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Category name already exists!");
         }
 
+        String name = NameFormatter.formatName(categoryCreateRequest.name());
+
         String slug = SlugFormatter.formatSlug(categoryCreateRequest.name());
 
         if (categoryRepository.existsBySlug(slug)) {
@@ -54,6 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category newCategory = categoryMapper.mapCategoryRequestToCategory(categoryCreateRequest);
 
+        newCategory.setName(name);
         newCategory.setSlug(slug);
         newCategory.setIcon("icon.png");
 
@@ -84,8 +88,13 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Optional<CategoryResponse> getCategoryByName(String name) {
-        Category category = categoryRepository.findBySlug(name)
+
+        // Check format name request
+        name = NameFormatter.formatName(name);
+
+        Category category = categoryRepository.findByName(name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found!"));
+
 
         CategoryResponse categoryResponse = categoryMapper.mapCategoryToCategoryResponse(category);
         return Optional.of(categoryResponse);
@@ -115,8 +124,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse updateCategoryByName(String name, CategoryUpdateRequest categoryUpdateRequest) {
 
-        Category category = categoryRepository.findBySlug(name)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found!"));
+        // Check format name request
+        String nameRequest = NameFormatter.formatName(name);
+
+        Category category = categoryRepository.findByName(nameRequest)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with name %s not found! ", nameRequest)));
 
         category.setUpdatedAt(LocalDateTime.now());
 
@@ -135,8 +147,12 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public void deleteCategoryByName(String name) {
-        Category category = categoryRepository.findBySlug(name)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found!"));
+
+        // Check format name request
+        String nameRequest = NameFormatter.formatName(name);
+
+        Category category = categoryRepository.findByName(nameRequest)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with name %s not found! ", nameRequest)));
         categoryRepository.delete(category);
     }
 }

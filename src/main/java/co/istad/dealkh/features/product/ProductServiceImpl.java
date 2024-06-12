@@ -16,6 +16,7 @@ import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
 import co.istad.dealkh.specification.filter.ProductFilter;
 import co.istad.dealkh.specification.filter.ProductSpecification;
+import co.istad.dealkh.validator.category.NameFormatter;
 import co.istad.dealkh.validator.category.SlugFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -70,8 +71,10 @@ public class ProductServiceImpl implements ProductService {
 
         Shop shop = shopRepository.findById(productCreateRequest.shopId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop with id %d not found! ", productCreateRequest.shopId())));
 
+        String name = NameFormatter.formatName(productCreateRequest.name());
         String slug = SlugFormatter.formatSlug(productCreateRequest.name());
 
+        newProduct.setName(name);
         newProduct.setSlug(slug);
         newProduct.setDiscount(discount);
         newProduct.setCategory(category);
@@ -85,16 +88,19 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Retrieves a product by its ID.
      *
-     * @param id
+     * @param name
      * @return
      */
     @Override
-    public Optional<ProductResponse> getProductById(Long id) {
+    public Optional<ProductResponse> getProductByName(String name) {
 
-        Product product = productRepository.findById(id)
+        // Check format name request
+        String nameRequest = NameFormatter.formatName(name);
+
+        Product product = productRepository.findByName(nameRequest)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("Product with id %d not found! ", id)
+                        String.format("Product with id %s not found! ", nameRequest)
                 ));
 
         ProductResponse productResponseDetail = productMapper.mapProductToProductResponseDetail(product);
@@ -152,13 +158,17 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Updates a product based on its ID.
      *
-     * @param id
+     * @param name
      * @param productUpdateRequest
      * @return
      */
     @Override
-    public ProductResponse updateProductById(Long id, ProductUpdateRequest productUpdateRequest) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with id %d not found! ", id)));
+    public ProductResponse updateProductByName(String name, ProductUpdateRequest productUpdateRequest) {
+
+        // Check format name request
+        String nameRequest = NameFormatter.formatName(name);
+
+        Product product = productRepository.findByName(nameRequest).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with id %s not found! ", nameRequest)));
 
         product.setUpdatedAt(LocalDateTime.now());
 //        product.setUpdatedBy(product.getCreatedBy());
@@ -171,11 +181,15 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Deletes a product based on its ID.
      *
-     * @param id
+     * @param name
      */
     @Override
-    public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with id %d not found! ", id)));
+    public void deleteProduct(String name) {
+
+        // Check format name request
+        String nameRequest = NameFormatter.formatName(name);
+
+        Product product = productRepository.findByName(nameRequest).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with id %s not found! ", nameRequest)));
 
         productRepository.delete(product);
     }
