@@ -46,9 +46,9 @@ public class DataInit {
         try {
             initAuthorities();
             initRoles();
-//            initShopTypes();
+            initShopTypes();
             initUsers();
-//            initShops();
+            initShops();
             initDiscountTypes();
             initDiscounts();
             initCategories();

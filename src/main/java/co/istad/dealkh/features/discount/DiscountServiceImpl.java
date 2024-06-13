@@ -2,10 +2,13 @@ package co.istad.dealkh.features.discount;
 
 
 import co.istad.dealkh.domain.Discount;
+import co.istad.dealkh.domain.DiscountType;
+import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.features.discount.dto.DiscountCreateRequest;
 import co.istad.dealkh.features.discount.dto.DiscountResponseDetail;
 import co.istad.dealkh.features.discount.dto.DiscountUpdateRequest;
 import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
+import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.mapper.DiscountMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
@@ -19,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +47,7 @@ public class DiscountServiceImpl implements DiscountService {
     private final DiscountRepository discountRepository;
     private final DiscountMapper discountMapper;
     private final DiscountTypeRepository discountTypeRepository;
+    private final ShopRepository shopRepository;
 
     /**
      * Creates a new discount based on the provided request.
@@ -54,11 +59,30 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public DiscountResponseDetail createDiscount(DiscountCreateRequest discountCreateRequest) {
 
-        if (discountRepository.existsByDiscountValueAndDiscountTypeId(discountCreateRequest.value(), discountCreateRequest.discountTypeId())) {
+        if (discountRepository.existsByDiscountValueAndDiscountTypeId(discountCreateRequest.discountValue(), discountCreateRequest.discountTypeId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Discount percentage already exists for this discount type");
         }
 
+        DiscountType discountType = discountTypeRepository.findById(discountCreateRequest.discountTypeId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Discount type with id %d not found! ", discountCreateRequest.discountTypeId())));
+
+        Shop shop = shopRepository.findById(discountCreateRequest.shopId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Shop with id %d not found! ", discountCreateRequest.shopId())));
+
         Discount newDiscount = discountMapper.mapDiscountRequestToDiscount(discountCreateRequest);
+
+        newDiscount.setDiscountType(discountType);
+        newDiscount.setShop(shop);
+        newDiscount.setIsExpired(false);
+        if (discountCreateRequest.expiredAt().isBefore(LocalDate.now())) {
+            newDiscount.setIsExpired(true);
+        }
+        newDiscount.setCreatedAt(LocalDateTime.now());
+
         return discountMapper.mapDiscountToResponseDetail(discountRepository.save(newDiscount));
     }
 

@@ -33,7 +33,7 @@ public class Coupon {
     private LocalDate expiredAt;
     private Boolean isExpired;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "shop_id")
     private Shop shop;
 

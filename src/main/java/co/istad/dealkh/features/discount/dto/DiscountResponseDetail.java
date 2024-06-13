@@ -22,6 +22,7 @@ public record DiscountResponseDetail(
         BigDecimal value,
         LocalDate expiredAt,
         LocalDate createdAt,
-        LocalDate updatedAt
+        LocalDate updatedAt,
+        String shopName
 ) {
 }

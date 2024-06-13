@@ -132,11 +132,12 @@ public class UserController {
 
     @DeleteMapping("/profile/deleteImage")
     @Operation(summary = "Delete user profile image")
-    public BaseResponse<Void> deleteUserProfileImage(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam String imageUrl) {
+    public BaseResponse<?> deleteUserProfileImage(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam String imageUrl) {
         String username = customUserDetails.getUsername();
         System.out.println(username);
         userService.deleteUserProfile(username, imageUrl);
-        return BaseResponse.ok("Successfully delete user profile image");
+        return BaseResponse.ok("Successfully delete user profile image")
+                .setPayload("No content");
 
     }
 
@@ -169,7 +170,7 @@ public class UserController {
         return BaseResponse.<UserResponse>ok("Successfully remove role from user").setPayload(userService.removerRole(username, userRoleRequest));
     }
 
-    @GetMapping("/buyers)")
+    @GetMapping("/buyers")
     @Operation(summary = "Get all buyers")
     public BaseResponse<PageResponse<UserResponse>> getAllBuyer(
             @Parameter(name = "page",
@@ -193,7 +194,7 @@ public class UserController {
                 .setPayload(userService.getAllBuyer(page, size, field, order));
     }
 
-    @GetMapping("/sellers)")
+    @GetMapping("/sellers")
     @Operation(summary = "Get all sellers")
     public BaseResponse<PageResponse<UserResponse>> getAllSeller(
             @Parameter(name = "page",

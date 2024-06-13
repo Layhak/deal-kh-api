@@ -112,7 +112,8 @@ public class DiscountController {
     @DeleteMapping("/{id}")
     BaseResponse<?> deleteDiscountById(@PathVariable Long id) {
         discountService.deleteDiscountById(id);
-        return BaseResponse.ok("Discount has been deleted!");
+        return BaseResponse.ok("Discount has been deleted!")
+                .setPayload("No content");
     }
 
 }

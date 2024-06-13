@@ -100,7 +100,8 @@ public class ProductController {
     @DeleteMapping("/{name}")
     BaseResponse<?> deleteProductByName(@PathVariable String name) {
         productService.deleteProduct(name);
-        return BaseResponse.ok("Delete product successfully!");
+        return BaseResponse.ok("Delete product successfully!")
+                .setPayload("No content");
     }
 
 }

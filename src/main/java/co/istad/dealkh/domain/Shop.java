@@ -27,14 +27,16 @@ public class Shop extends Auditable {
     @Column(nullable = false)
     private String name;
 
+    @Column(unique = true)
     private String slug;
+
     private String location;
     private String address;
 
     @Column(length = 250)
     private String description;
 
-    @Column(name = "phone_number", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
     @Column(unique = true)

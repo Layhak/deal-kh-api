@@ -38,6 +38,8 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     Page<User> findAllUserByRoles_Name(String role, Pageable pageable);
 
+    Optional<User> findUserByUsername(String username);
+
 
 //    boolean existsByPhone(String s);
 //

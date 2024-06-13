@@ -4,6 +4,7 @@ import co.istad.dealkh.domain.*;
 import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.ShopRepository;
+import co.istad.dealkh.features.shop.dto.ShopResponse;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
@@ -50,4 +51,7 @@ public class CustomMapper {
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
+
+
+
 }

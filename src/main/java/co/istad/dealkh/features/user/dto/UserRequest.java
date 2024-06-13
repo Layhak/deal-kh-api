@@ -2,6 +2,8 @@ package co.istad.dealkh.features.user.dto;
 
 import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.validator.dateofbirth.ValidDOB;
+import co.istad.dealkh.validator.password.ValidPassword;
+import co.istad.dealkh.validator.phonenumber.ValidPhoneNumber;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -23,8 +25,7 @@ public record UserRequest(
         String email,
 
         @NotBlank(message = "Password is required")
-        @Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
-
+        @ValidPassword(message = "Password is not strong enough! It must contain at least one digit, one lowercase letter, one uppercase letter, one special character, and be between 8 to 20 characters long.")
         String password,
 
         @NotBlank(message = "Gender is required")
@@ -32,7 +33,7 @@ public record UserRequest(
         String gender,
 
         @NotBlank(message = "Phone number is required")
-        @Size(max = 20, message = "Phone number must less than 20 characters")
+        @ValidPhoneNumber(message = "Phone number must be 10 digits long")
         String phoneNumber,
 
         @ValidDOB

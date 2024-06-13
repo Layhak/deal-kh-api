@@ -1,5 +1,6 @@
 package co.istad.dealkh.features.user.dto;
 
+import co.istad.dealkh.validator.phonenumber.ValidPhoneNumber;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -23,7 +24,7 @@ public record UserUpdateRequest(
         String gender,
 
         @NotBlank(message = "Phone number is required")
-        @Size(max = 20, message = "Phone number must less than 20 characters")
+        @ValidPhoneNumber(message = "Phone number must be 10 digits long")
         String phoneNumber,
 
         @NotNull(message = "Date of birth is required")

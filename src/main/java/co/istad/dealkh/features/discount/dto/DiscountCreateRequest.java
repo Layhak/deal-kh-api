@@ -22,12 +22,15 @@ public record DiscountCreateRequest(
         String description,
 
         @DiscountRange(min = 0, max = 100, message = "Discount must be between 0 and 100")
-        BigDecimal value,
+        BigDecimal discountValue,
 
         @NotNull(message = "Expired At is required")
         LocalDate expiredAt,
 
         @NotNull(message = "Discount Type Id is required")
-        Long discountTypeId
+        Long discountTypeId,
+
+        @NotNull(message = "Shop Id is required")
+        Long shopId
 ) {
 }

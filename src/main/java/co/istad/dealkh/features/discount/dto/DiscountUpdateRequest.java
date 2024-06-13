@@ -18,11 +18,16 @@ import java.time.LocalDate;
  */
 public record DiscountUpdateRequest(
 
+        String name,
+
         @NotNull(message = "Discount Type Id is required")
         Long discountTypeId,
+
         String description,
+
         @DiscountRange(min = 0, max = 100, message = "Discount must be between 0 and 100")
         BigDecimal value,
+
         LocalDate expiredAt
 
 ) {

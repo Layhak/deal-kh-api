@@ -92,7 +92,8 @@ public class CategoryController {
     @DeleteMapping("/{name}")
     BaseResponse<?> deleteCategory(@PathVariable String name) {
         categoryService.deleteCategoryByName(name);
-        return BaseResponse.ok("Delete category successfully!");
+        return BaseResponse.ok("Delete category successfully!")
+                .setPayload("No content");
     }
 
 }

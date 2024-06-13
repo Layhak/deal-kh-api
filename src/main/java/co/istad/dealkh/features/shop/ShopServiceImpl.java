@@ -7,11 +7,14 @@ import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.dto.ShopRequest;
 import co.istad.dealkh.features.shop.dto.ShopResponse;
+import co.istad.dealkh.features.shop.dto.ShopUpdateRequest;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
 import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.mapper.ShopMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
+import co.istad.dealkh.validator.category.NameFormatter;
+import co.istad.dealkh.validator.category.SlugFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,93 +59,151 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public ShopResponse getShopById(Long id) {
-        Shop shop = shopRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
+    public ShopResponse getShopByName(String name) {
+
+        // Check format name request
+        String nameRequest = SlugFormatter.formatSlug(name);
+
+        Shop shop = shopRepository.findBySlug(nameRequest)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop with name %s not found! ", nameRequest)));
         return shopMapper.toShopResponse(shop);
     }
 
     @Override
     public ShopResponse createShop(ShopRequest shopRequest) {
-        if (shopRepository.existsByName(shopRequest.name())) {
-            throw new RuntimeException("Shop already exists");
+
+        String slug = "";
+
+        // Handle null, empty, or blank slug
+        if (shopRequest.slug() == null || shopRequest.slug().isEmpty() || shopRequest.slug().isBlank()) {
+            slug = SlugFormatter.formatSlug(shopRequest.name() + " - " + shopRequest.address());
+        } else {
+            slug = shopRequest.slug();
         }
+
+        if (shopRepository.existsBySlug(shopRequest.slug())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("Slug %s is taken", shopRequest.slug()));
+        }
+
+        if (shopRepository.existsByName(shopRequest.name())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("Name %s already exists", shopRequest.name()));
+        }
+
+        if (shopRepository.existsByPhoneNumber(shopRequest.phoneNumber())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("Phone number %s already exists", shopRequest.phoneNumber()));
+        }
+
         if (shopRepository.existsByEmail(shopRequest.email())) {
-            throw new RuntimeException("Email already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("Email %s already exists", shopRequest.email()));
         }
 
         Shop shop = shopMapper.toShop(shopRequest);
+        shop.setSlug(slug);
 
         List<User> users = shopRequest.userIds().stream()
                 .map(userId -> userRepository.findById(userId)
-                        .orElseThrow(() -> new RuntimeException("User not found")))
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                String.format("User with id %d not found! ", userId)
+                        ))
+                )
                 .toList();
         shop.setUsers(users);
 
         ShopType shopType = shopTypeRepository.findById(shopRequest.shopTypeId())
-                .orElseThrow(() -> new RuntimeException("Shop type not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("ShopType with id %d not found! ", shopRequest.shopTypeId())));
         shop.setShopType(shopType);
 
         shop.setIsDeleted(false);
         shop.setIsDisabled(false);
 
-        Shop savedShop = shopRepository.save(shop);
 
-        users.stream().filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals("BUYER"))).forEach(user -> {
-            user.getRoles()
-                    .add(roleRepository.findByName("SELLER")
-                            .orElseThrow(() -> new RuntimeException("Role not found")));
+
+        users.stream().filter(user -> user.getRoles()
+                .stream()
+                .anyMatch(role -> role.getName().equals("BUYER")))
+                .forEach(user -> {
+                    user.getRoles().add(roleRepository.findByName("SELLER")
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Role with name %s not found! ", "SELLER"))));
+
             userRepository.save(user);
         });
+        shopRepository.save(shop);
 
-
-        return shopMapper.toShopResponse(savedShop);
+        return shopMapper.toShopResponse(shop);
     }
 
 
     @Override
-    public ShopResponse updateShop(Long id, ShopRequest shopRequest) {
-        Shop shop = shopRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
-        shop.setName(shopRequest.name());
-        shop.setAddress(shopRequest.address());
-        shop.setDescription(shopRequest.description());
-        shop.setPhoneNumber(shopRequest.phoneNumber());
-        shop.setEmail(shopRequest.email());
-        shop.setOpenAt(shopRequest.openAt());
-        shop.setCloseAt(shopRequest.closeAt());
-//        shop.setImages(shopRequest.images());
-        shop.setLocation(shopRequest.location());
-        List<User> users = shopRequest.userIds().stream().map(userId -> userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"))).toList();
+    public ShopResponse updateShop(String name, ShopUpdateRequest shopUpdateRequest) {
+
+        // Check format name request
+        String nameRequest = SlugFormatter.formatSlug(name);
+
+        Shop shop = shopRepository.findBySlug(nameRequest)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop with name %s not found! ", nameRequest)));
+
+        shop.setUpdatedAt(LocalDateTime.now());
+
+        shopMapper.mapShopToUpdateRequest(shop, shopUpdateRequest);
+
+        shopRepository.save(shop);
+
+        List<User> users = shopUpdateRequest.userIds().stream().map(userId -> userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("User with id %d not found! ", userId))
+                ))
+                .toList();
+
         shop.setUsers(users);
-        ShopType shopType = shopTypeRepository.findById(shopRequest.shopTypeId())
-                .orElseThrow(() -> new RuntimeException("Shop type not found"));
+
+        ShopType shopType = shopTypeRepository.findById(shopUpdateRequest.shopTypeId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("ShopType with id %d not found! ", shopUpdateRequest.shopTypeId())));
+
         shop.setShopType(shopType);
-        Shop updatedShop = shopRepository.save(shop);
-        return shopMapper.toShopResponse(updatedShop);
+        shopRepository.save(shop);
+        return shopMapper.toShopResponse(shop);
     }
 
     @Override
-    public void deleteShop(Long id) {
-        Shop shop = shopRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
+    public void deleteShop(String name) {
+
+        String nameRequest = SlugFormatter.formatSlug(name);
+
+        Shop shop = shopRepository.findBySlug(nameRequest)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Shop with name %s not found! ", nameRequest)));
+
         shopRepository.delete(shop);
     }
 
     @Override
-    public ShopResponse disableShop(Long id) {
-        Shop shop = shopRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
+    public ShopResponse disableShop(String name) {
+
+        String nameRequest = SlugFormatter.formatSlug(name);
+
+        Shop shop = shopRepository.findBySlug(nameRequest)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Shop with name %s not found! ", nameRequest)));
+
         shop.setIsDisabled(true);
         Shop updatedShop = shopRepository.save(shop);
         return shopMapper.toShopResponse(updatedShop);
     }
 
     @Override
-    public ShopResponse enableShop(Long id) {
-        Shop shop = shopRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
+    public ShopResponse enableShop(String name) {
+
+        Shop shop = shopRepository.findByName(name)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Shop with name %s not found! ", name)));
+
         shop.setIsDisabled(false);
         Shop updatedShop = shopRepository.save(shop);
         return shopMapper.toShopResponse(updatedShop);
@@ -151,7 +213,10 @@ public class ShopServiceImpl implements ShopService {
     public List<ShopResponse> getShopByUserId(Long userId) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("User with id %d not found! ", userId)));
+
         List<Shop> shops = user.getShops();
         return shops.stream().map(shopMapper::toShopResponse).toList();
     }
@@ -200,8 +265,8 @@ public class ShopServiceImpl implements ShopService {
 
 
     @Override
-    public List<ShopResponse> getShopByName(String name) {
-        List<Shop> shops = shopRepository.findByName(name);
+    public List<ShopResponse> getAllShopByName(String name) {
+        List<Shop> shops = shopRepository.findAllByName(name);
         return shops.stream().map(shopMapper::toShopResponse).toList();
     }
 }

@@ -66,9 +66,11 @@ public class SecurityConfiguration {
 
                         // users
                         .requestMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/sellers").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/buyers").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/**").hasAnyRole("ADMIN", "SUPPER_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAnyRole("ADMIN", "SUPPER_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAnyRole("ADMIN", "SUPPER_ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/users/**").hasAnyRole("ADMIN", "SUPPER_ADMIN")
 
                         // discounts

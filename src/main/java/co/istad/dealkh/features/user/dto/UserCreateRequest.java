@@ -3,22 +3,23 @@ package co.istad.dealkh.features.user.dto;
 import co.istad.dealkh.validator.email.ValidEmail;
 import co.istad.dealkh.validator.localDate.ValidLocalDate;
 import co.istad.dealkh.validator.password.ValidPassword;
+import co.istad.dealkh.validator.phonenumber.ValidPhoneNumber;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record UserCreateRequest(
-        @NotBlank
+        @NotBlank(message = "First name is required")
         String firstName,
 
-        @NotBlank
+        @NotBlank(message = "Last name is required")
         String lastName,
 
-        @NotBlank
+        @NotBlank(message = "Username is required")
         String username,
 
         @NotBlank(message = "Email is required")
-        @ValidEmail
+        @ValidEmail(message = "Email must be properly formatted")
         String email,
 
         @NotBlank(message = "Password is required")
@@ -28,19 +29,18 @@ public record UserCreateRequest(
         @NotBlank(message = "Confirmed password is required")
         String confirmedPassword,
 
-        @NotBlank
+        @NotBlank(message = "Gender is required")
         @Size(max = 6)
         String gender,
 
         @NotBlank(message = "Phone number is required")
-        @Size(max = 20, message = "Phone number must less than 20 characters")
+        @ValidPhoneNumber(message = "Phone number must be 10 digits long")
         String phoneNumber,
 
         @NotNull(message = "Date of birth is required")
         @ValidLocalDate(message = "Please provide a valid date")
         String dob,
 
-        @NotBlank
         String location
 //        List<UserShopResponse> shops
 ) {

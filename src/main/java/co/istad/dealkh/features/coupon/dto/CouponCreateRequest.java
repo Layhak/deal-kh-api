@@ -18,6 +18,7 @@ public record CouponCreateRequest(
         @NotBlank(message = "Expired At is required")
         LocalDate expiredAt,
 
-        Boolean isExpired
+        @NotBlank(message = "Shop id is required")
+        Long shopId
 ) {
 }
