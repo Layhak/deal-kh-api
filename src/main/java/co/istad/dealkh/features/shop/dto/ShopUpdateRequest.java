@@ -1,12 +1,11 @@
 package co.istad.dealkh.features.shop.dto;
 
 
+import co.istad.dealkh.validator.email.ValidEmail;
+import co.istad.dealkh.validator.localtime.ValidLocalTime;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
-import java.sql.Time;
-import java.time.LocalTime;
-import java.util.List;
+import jakarta.validation.constraints.Size;
 
 /**
  * ShopRequest is a request object for creating a new shop.
@@ -23,7 +22,7 @@ import java.util.List;
  * @param userIds
  * @param location
  */
-public record ShopRequest(
+public record ShopUpdateRequest(
 
         @NotBlank(message = "Name is required")
         String name,
@@ -34,18 +33,17 @@ public record ShopRequest(
         String description,
 
         @NotBlank(message = "Phone number is required")
+        @Size(min = 5, max = 20, message = "Phone number must be between 5 and 20 characters")
         String phoneNumber,
 
+        @ValidEmail
         String email,
 
-        LocalTime openAt,
-        LocalTime closeAt,
+        @ValidLocalTime(message = "Please provide a valid opening time in the format Example:08:00")
+        String openAt,
 
-        @NotNull(message = "Shop type id is required")
-        Long shopTypeId,
-
-        @NotNull(message = "User id is required")
-        List<Long> userIds,
+        @ValidLocalTime(message = "Please provide a valid closing time in the format Example:16:00")
+        String closeAt,
 
         @NotNull(message = "Location is required")
         String location

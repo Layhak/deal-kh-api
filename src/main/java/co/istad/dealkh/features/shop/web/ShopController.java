@@ -3,8 +3,9 @@ package co.istad.dealkh.features.shop.web;
 
 import co.istad.dealkh.base.BaseResponse;
 import co.istad.dealkh.features.shop.ShopService;
-import co.istad.dealkh.features.shop.dto.ShopRequest;
+import co.istad.dealkh.features.shop.dto.ShopCreateRequest;
 import co.istad.dealkh.features.shop.dto.ShopResponse;
+import co.istad.dealkh.features.shop.dto.ShopUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -44,26 +45,26 @@ public class ShopController {
 
     @PostMapping
     @Operation(summary = "Create new shop")
-    public BaseResponse<ShopResponse> createShop(@RequestBody @Valid ShopRequest shopRequest) {
+    public BaseResponse<ShopResponse> createShop(@RequestBody @Valid ShopCreateRequest shopRequest) {
         return BaseResponse.<ShopResponse>createSuccess("Created new shop").setPayload(shopService.createShop(shopRequest));
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{slug}")
     @Operation(summary = "Update shop")
-    public BaseResponse<ShopResponse> updateShop(@PathVariable Long id, @RequestBody ShopRequest shopRequest) {
-        return BaseResponse.<ShopResponse>ok("Updated shop").setPayload(shopService.updateShop(id, shopRequest));
+    public BaseResponse<ShopResponse> updateShop(@PathVariable String slug, @RequestBody ShopUpdateRequest shopRequest) {
+        return BaseResponse.<ShopResponse>ok("Updated shop").setPayload(shopService.updateShop(slug, shopRequest));
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get shop by id")
-    public BaseResponse<ShopResponse> getShopById(@PathVariable Long id) {
-        return BaseResponse.<ShopResponse>ok("Success").setPayload(shopService.getShopById(id));
+    @GetMapping("/{slug}")
+    @Operation(summary = "Get shop by slug")
+    public BaseResponse<ShopResponse> getShopById(@PathVariable String slug) {
+        return BaseResponse.<ShopResponse>ok("Success").setPayload(shopService.getShopById(slug));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{slug}")
     @Operation(summary = "Delete shop")
-    public BaseResponse<Void> deleteShop(@PathVariable Long id) {
-        shopService.deleteShop(id);
+    public BaseResponse<Void> deleteShop(@PathVariable String slug) {
+        shopService.deleteShop(slug);
         return BaseResponse.<Void>ok("Deleted shop");
     }
 
@@ -79,22 +80,22 @@ public class ShopController {
         return BaseResponse.<List<ShopResponse>>ok("Success").setPayload(shopService.getShopByShopType(shopType));
     }
 
-    @PatchMapping("/{id}/disable")
+    @PatchMapping("/{slug}/disable")
     @Operation(summary = "Disable shop")
-    public BaseResponse<ShopResponse> disableShop(@PathVariable Long id) {
-        return BaseResponse.<ShopResponse>ok("Disabled shop").setPayload(shopService.disableShop(id));
+    public BaseResponse<ShopResponse> disableShop(@PathVariable String slug) {
+        return BaseResponse.<ShopResponse>ok("Disabled shop").setPayload(shopService.disableShop(slug));
     }
 
-    @PatchMapping("/{id}/enable")
+    @PatchMapping("/{slug}/enable")
     @Operation(summary = "Enable shop")
-    public BaseResponse<ShopResponse> enableShop(@PathVariable Long id) {
-        return BaseResponse.<ShopResponse>ok("Enabled shop").setPayload(shopService.enableShop(id));
+    public BaseResponse<ShopResponse> enableShop(@PathVariable String slug) {
+        return BaseResponse.<ShopResponse>ok("Enabled shop").setPayload(shopService.enableShop(slug));
     }
 
-    @GetMapping("/user/{userId}")
-    @Operation(summary = "Get shops by user id")
-    public BaseResponse<List<ShopResponse>> getShopByUserId(@PathVariable Long userId) {
-        return BaseResponse.<List<ShopResponse>>ok("Success").setPayload(shopService.getShopByUserId(userId));
+    @GetMapping("/user/{username}")
+    @Operation(summary = "Get shops by user slug")
+    public BaseResponse<List<ShopResponse>> getShopByUsername(@PathVariable String username) {
+        return BaseResponse.<List<ShopResponse>>ok("Success").setPayload(shopService.getShopByUsername(username));
     }
 
     @GetMapping("/name")

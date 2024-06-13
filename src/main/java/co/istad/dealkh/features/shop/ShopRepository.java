@@ -1,12 +1,12 @@
 package co.istad.dealkh.features.shop;
 
 import co.istad.dealkh.domain.Shop;
-
 import co.istad.dealkh.domain.ShopType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ShopRepository extends JpaRepository<Shop, Long> {
@@ -18,4 +18,8 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     List<Shop> findByShopType(ShopType shopType1);
 
     List<Shop> findByName(String name);
+
+    boolean existsBySlug(String slug);
+
+    Optional<Shop> findBySlug(String slug);
 }

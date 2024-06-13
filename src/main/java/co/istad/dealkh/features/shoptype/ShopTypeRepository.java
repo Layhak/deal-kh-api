@@ -15,4 +15,5 @@ public interface ShopTypeRepository extends JpaRepository<ShopType, Long>, JpaSp
     boolean existsByName(String name);
 
     boolean existsBySlug(String slug);
+
 }

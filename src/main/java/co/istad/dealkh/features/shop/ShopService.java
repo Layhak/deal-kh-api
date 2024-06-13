@@ -1,7 +1,8 @@
 package co.istad.dealkh.features.shop;
 
-import co.istad.dealkh.features.shop.dto.ShopRequest;
+import co.istad.dealkh.features.shop.dto.ShopCreateRequest;
 import co.istad.dealkh.features.shop.dto.ShopResponse;
+import co.istad.dealkh.features.shop.dto.ShopUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
 
 import java.util.List;
@@ -9,19 +10,20 @@ import java.util.List;
 public interface ShopService {
     PageResponse<ShopResponse> getAllShop(int page, int size, String field, String order);
 
-    ShopResponse getShopById(Long id);
+    ShopResponse getShopById(String slug);
 
-    ShopResponse createShop(ShopRequest shopRequest);
+    ShopResponse createShop(ShopCreateRequest shopRequest);
 
-    ShopResponse updateShop(Long id, ShopRequest shopRequest);
+    ShopResponse updateShop(String slug, ShopUpdateRequest shopRequest);
 
-    void deleteShop(Long id);
+    void deleteShop(String slug);
 
-    ShopResponse disableShop(Long id);
+    ShopResponse disableShop(String slug);
 
-    ShopResponse enableShop(Long id);
+    ShopResponse enableShop(String slug);
 
-    List<ShopResponse> getShopByUserId(Long userId);
+    List<ShopResponse> getShopByUsername
+            (String username);
 
     List<ShopResponse> getShopByShopType(String shopType);
 

@@ -4,10 +4,15 @@ import co.istad.dealkh.domain.*;
 import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.ShopRepository;
+import co.istad.dealkh.features.shoptype.ShopTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +23,8 @@ public class CustomMapper {
     private final RoleRepository roleRepository;
     private final DiscountTypeRepository discountTypeRepository;
     private final ShopRepository shopRepository;
+    private final ShopTypeRepository shopTypeRepository;
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     @Named("stringToRole")
     public Role mapRole(String roleName) {
@@ -49,5 +56,20 @@ public class CustomMapper {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
+    }
+
+    @Named("stringToLocalTime")
+    public LocalTime stringToLocalTime(String time) {
+        if (time == null || time.isEmpty()) {
+            return null;
+        }
+        return LocalTime.parse(time, TIME_FORMATTER);
+    }
+
+    @Named("stringToShopType")
+    public ShopType stringToShopType(String shopTypeName) {
+        // Assuming you have a method in ShopTypeRepository to find by name
+        return shopTypeRepository.findByName(shopTypeName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop type not found: " + shopTypeName));
     }
 }
