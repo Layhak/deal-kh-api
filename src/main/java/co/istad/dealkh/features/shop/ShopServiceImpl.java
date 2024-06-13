@@ -12,7 +12,7 @@ import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.mapper.ShopMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
-import co.istad.dealkh.validator.category.SlugFormatter;
+import co.istad.dealkh.validator.formatter.SlugFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

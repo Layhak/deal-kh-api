@@ -72,7 +72,9 @@ public class CouponServiceImpl implements CouponService {
 
         CouponResponse couponResponse = couponRepository.findByCode(code)
                 .map(couponMapper::mapToCouponResponse)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coupon not found!"));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Coupon with code %s not found! ", code)));
 
         return Optional.of(couponResponse);
     }
@@ -81,7 +83,24 @@ public class CouponServiceImpl implements CouponService {
     public CouponResponse updateCouponByCode(String code, CouponUpdateRequest couponUpdateRequest) {
 
         Coupon coupon = couponRepository.findByCode(code)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coupon not found!"));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Coupon with code %s not found! ", code)));
+
+//        if(couponUpdateRequest.expiredAt() == null) {
+//            coupon.setExpiredAt(coupon.getExpiredAt());
+//        } else {
+//            coupon.setIsExpired(!couponUpdateRequest.expiredAt().isAfter(LocalDate.now()));
+//        }
+
+        if (couponUpdateRequest.expiredAt() == null) {
+            coupon.setExpiredAt(coupon.getExpiredAt());
+            coupon.setIsExpired(false);
+        } else {
+            coupon.setExpiredAt(couponUpdateRequest.expiredAt());
+            coupon.setIsExpired(!couponUpdateRequest.expiredAt().isAfter(LocalDate.now()));
+        }
+
 
         couponMapper.mapCouponUpdateRequest(coupon, couponUpdateRequest);
         coupon = couponRepository.save(coupon);
@@ -92,7 +111,9 @@ public class CouponServiceImpl implements CouponService {
     public void deleteCouponByCode(String code) {
 
         Coupon coupon = couponRepository.findByCode(code)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coupon not found!"));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Coupon with code %s not found! ", code)));
 
         couponRepository.delete(coupon);
     }
@@ -101,11 +122,18 @@ public class CouponServiceImpl implements CouponService {
     public CouponResponse claimCoupon(String code, String username) {
 
         User user = userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!"));
-        Long couponId = couponRepository.findIdByCode(code).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coupon not found!"));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("User with username %s not found! ", username)));
+
+        Long couponId = couponRepository.findIdByCode(code).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                String.format("Coupon with code %s not found! ", code)));
 
         Coupon coupon = couponRepository.findById(couponId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coupon not found!"));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Coupon with code %s not found! ", code)));
 
         coupon.setUsers(List.of(user));
         couponRepository.save(coupon);

@@ -12,7 +12,7 @@ import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
 import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.features.wishlist.WishListRepository;
-import co.istad.dealkh.validator.category.SlugFormatter;
+import co.istad.dealkh.validator.formatter.SlugFormatter;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

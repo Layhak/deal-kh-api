@@ -1,4 +1,4 @@
-package co.istad.dealkh.validator.category;
+package co.istad.dealkh.validator.formatter;
 
 public class SlugFormatter {
 

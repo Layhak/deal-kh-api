@@ -18,9 +18,10 @@ public class DiscountType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false, unique = true)
     private String slug;
 
     @OneToMany(mappedBy = "discountType")

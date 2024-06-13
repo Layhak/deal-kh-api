@@ -5,6 +5,7 @@ import co.istad.dealkh.features.coupon.CouponService;
 import co.istad.dealkh.features.coupon.dto.CouponCreateRequest;
 import co.istad.dealkh.features.coupon.dto.CouponResponse;
 import co.istad.dealkh.features.coupon.dto.CouponUpdateRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +41,8 @@ public class CouponController {
 
     // update by code
     @PutMapping("/{code}")
-    public BaseResponse<CouponResponse> updateCouponByCode(@PathVariable String code, @RequestBody CouponUpdateRequest couponUpdateRequest) {
-        return BaseResponse.<CouponResponse>createSuccess("Update coupon by code successfully!")
+    public BaseResponse<CouponResponse> updateCouponByCode(@PathVariable String code, @RequestBody @Valid CouponUpdateRequest couponUpdateRequest) {
+        return BaseResponse.<CouponResponse>ok("Update coupon by code successfully!")
                 .setPayload(couponService.updateCouponByCode(code, couponUpdateRequest));
     }
 
