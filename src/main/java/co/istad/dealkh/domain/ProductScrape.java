@@ -30,9 +30,6 @@ public class ProductScrape {
     private double price;
 
 
-    private double discountPrice;
-
-
     private String image;
 
     private BigDecimal discountPercentage;

@@ -7,7 +7,6 @@ public record ProductScrapeResponse(
         String name,
         String description,
         double price,
-        double discountPrice,
 
         String image,
         BigDecimal discountPercentage,
