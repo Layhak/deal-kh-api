@@ -11,7 +11,6 @@ public record ProductScrapeRequest(
         String name,
         String description,
         double price,
-        double discountPrice,
 
         String image,
         BigDecimal discountPercentage,

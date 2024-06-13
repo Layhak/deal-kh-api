@@ -28,7 +28,6 @@ public class ProductScrapeServiceImpl implements ProductScrapeService{
         product.setName(productScrapeRequest.name());
         product.setDescription(productScrapeRequest.description());
         product.setPrice(productScrapeRequest.price());
-        product.setDiscountPrice(productScrapeRequest.discountPrice());
         product.setImage(productScrapeRequest.image());
         product.setDiscountPercentage(productScrapeRequest.discountPercentage());
         product.setRating(productScrapeRequest.rating()) ;
