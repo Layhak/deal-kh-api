@@ -81,14 +81,11 @@ public class ShopServiceImpl implements ShopService {
                 .toList();
         shop.setUsers(users);
 
-        ShopType shopType = shopTypeRepository.findByName(shopRequest.shopType())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop type not found"));
         if (shopRepository.existsBySlug(shop.getSlug())) {
             shop.setSlug(SlugFormatter.formatSlug(shopRequest.name()) + shop.getAddress());
         } else {
             shop.setSlug(SlugFormatter.formatSlug(shopRequest.name()));
         }
-        shop.setShopType(shopType);
         shop.setIsDeleted(false);
         shop.setIsDisabled(false);
 

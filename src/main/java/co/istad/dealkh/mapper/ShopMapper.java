@@ -9,7 +9,7 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = {CustomMapper.class})
 public interface ShopMapper {
 
-    @Mapping(target = "users", source = "users", qualifiedByName = "userToString")
+    @Mapping(target = "owners", source = "users", qualifiedByName = "userToString")
     @Mapping(target = "shopType", source = "shopType", qualifiedByName = "shopTypeToString")
     @Mapping(target = "slug", source = "slug")
     ShopResponse toShopResponse(Shop shop);
