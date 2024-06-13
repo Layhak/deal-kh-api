@@ -66,11 +66,12 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public ShopResponse createShop(ShopCreateRequest shopRequest) {
-        if (shopRepository.existsByName(shopRequest.name())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Shop already exists");
-        }
         if (shopRepository.existsByEmail(shopRequest.email())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
+        }
+
+        if (shopRepository.existsByPhoneNumber(shopRequest.phoneNumber())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Phone number already exists");
         }
 
         Shop shop = shopMapper.toShop(shopRequest);
@@ -79,10 +80,11 @@ public class ShopServiceImpl implements ShopService {
                 .map(username -> userRepository.findByUsername(username)
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")))
                 .toList();
+
         shop.setUsers(users);
 
-        if (shopRepository.existsBySlug(shop.getSlug())) {
-            shop.setSlug(SlugFormatter.formatSlug(shopRequest.name()) + shop.getAddress());
+        if (shopRepository.existsByName(shop.getName())) {
+            shop.setSlug(String.format("%s-%s", SlugFormatter.formatSlug(shopRequest.name()), shop.getAddress()));
         } else {
             shop.setSlug(SlugFormatter.formatSlug(shopRequest.name()));
         }

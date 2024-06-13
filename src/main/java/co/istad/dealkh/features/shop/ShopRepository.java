@@ -22,4 +22,6 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     boolean existsBySlug(String slug);
 
     Optional<Shop> findBySlug(String slug);
+
+    boolean existsByPhoneNumber(String phoneNumber);
 }
