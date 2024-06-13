@@ -12,6 +12,7 @@ import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
 import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.features.wishlist.WishListRepository;
+import co.istad.dealkh.validator.category.SlugFormatter;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +22,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -49,6 +53,7 @@ public class DataInit {
             initShopTypes();
             initUsers();
             initShops();
+            initDiscounts();
             initDiscountTypes();
             initDiscounts();
             initCategories();
@@ -122,7 +127,7 @@ public class DataInit {
             shopTypes.forEach(type -> {
                 ShopType shopType = new ShopType();
                 shopType.setName(type);
-                shopType.setSlug(type);
+                shopType.setSlug(SlugFormatter.formatSlug(type));
                 shopTypeRepository.save(shopType);
             });
         }
@@ -130,33 +135,37 @@ public class DataInit {
 
     private void initShops() {
         if (shopRepository.findAll().isEmpty()) {
-            Optional<User> userOptional = userRepository.findByEmail("layhak@gmail.com");
-            if (userOptional.isPresent()) {
-                User user = userOptional.get();
 
-                // Ensure the user is managed by attaching it to the current session
-                user = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
 
-                Shop shop = new Shop();
-                shop.setName("Layhak Shop");
-                shop.setAddress("Phnom Penh");
-                shop.setDescription("Shop description");
-                shop.setPhoneNumber("0123456789");
-                shop.setEmail("layhakshop@gmail.com");
-                shop.setOpenAt(LocalTime.of(8, 0, 0));
-                shop.setCloseAt(LocalTime.of(5, 30, 0));
-                shop.setIsDeleted(false);
-                shop.setIsDisabled(false);
-                shop.setShopType(shopTypeRepository.findAll().get(0));
-//                shop.setUsers(List.of(user));
-
-                shopRepository.save(shop);
-            } else {
-                logger.severe("User with email 'layhak@gmail.com' not found");
-            }
+            Shop shop = new Shop();
+            shop.setName("Layhak Shop");
+            shop.setAddress("Phnom Penh");
+            shop.setDescription("Shop description");
+            shop.setPhoneNumber("0123456789");
+            shop.setEmail("layhakshop@gmail.com");
+            shop.setSlug(SlugFormatter.formatSlug(shop.getName()));
+            shop.setOpenAt(LocalTime.of(8, 0, 0));
+            shop.setCloseAt(LocalTime.of(17, 30, 0));
+            shop.setIsDeleted(false);
+            shop.setIsDisabled(false);
+            shop.setShopType(shopTypeRepository.findAll().get(0));
+//            shop.setUsers(List.of(userRepository.findByUsername("layhak").get()));
+            shopRepository.save(shop);
+        } else {
+            logger.severe("User with email 'layhak@gmail.com' not found");
         }
     }
 
+//    private void initUserShops() {
+//        if (userRepository.findByUsername("layhak").isPresent()) {
+//            User user = userRepository.findByUsername("layhak").get();
+//            List<Shop> shops = shopRepository.findAll();
+//            shops.forEach(shop -> {
+//                user.getShops().add(shop);
+//                userRepository.save(user);
+//            });
+//        }
+//    }
 
     private void initCategories() {
         List<String> categories = List.of("Electronics", "Fashion", "Health", "Books", "Food");

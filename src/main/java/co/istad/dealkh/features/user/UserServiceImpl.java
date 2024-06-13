@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
-        System.out.println(user.toString());
+
         List<Image> filteredImages = user.getImages().stream()
                 .filter(image -> !image.getUrl().equals(imageUrl))
                 .collect(Collectors.toList());

@@ -3,7 +3,6 @@ package co.istad.dealkh.features.shop.dto;
 
 import co.istad.dealkh.features.image.dto.ImageResponse;
 
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -27,7 +26,7 @@ import java.util.List;
  * @param location
  */
 public record ShopResponse(
-        Long id,
+//        Long id,
         String name,
         String slug,
         String address,
@@ -40,7 +39,7 @@ public record ShopResponse(
         LocalTime closeAt,
         String shopType,
         List<ImageResponse> images,
-        List<String> users,
+        List<String> owners,
         String location
 ) {
 }
