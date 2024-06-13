@@ -92,7 +92,6 @@ public class TokenGenerator {
             return AuthResponse.builder()
                     .refreshToken(refreshToken)
                     .accessToken(accessToken)
-                    .userId(customUserDetails.getUser().getId())
                     .build();
         }
         throw new BadCredentialsException("User is disabled");

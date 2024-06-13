@@ -52,8 +52,6 @@ public record ShopCreateRequest(
         @NotNull(message = "Shop type id is required")
         String shopType,
 
-        @NotNull(message = "User id is required")
-        List<String> usernames,
 
         @NotNull(message = "Location is required")
         String location,

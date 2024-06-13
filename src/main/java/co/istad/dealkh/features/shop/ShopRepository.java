@@ -2,6 +2,9 @@ package co.istad.dealkh.features.shop;
 
 import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.domain.ShopType;
+import co.istad.dealkh.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -24,4 +27,6 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     Optional<Shop> findBySlug(String slug);
 
     boolean existsByPhoneNumber(String phoneNumber);
+
+    Page<Shop> findByUsersContains(User user, Pageable pageable);
 }

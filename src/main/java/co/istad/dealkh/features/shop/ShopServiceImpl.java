@@ -37,6 +37,25 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public PageResponse<ShopResponse> getAllShop(int page, int size, String field, String order) {
+        validatePageAndSize(page, size, field, order);
+
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+        Page<ShopResponse> shops = shopRepository.findAll(pageable).map(shopMapper::toShopResponse);
+
+        return new PageResponse<>(shops);
+    }
+
+    @Override
+    public PageResponse<ShopResponse> getAllOwnerShop(int page, int size, String field, String order, String username) {
+        validatePageAndSize(page, size, field, order);
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        Page<Shop> shops = shopRepository.findByUsersContains(user, pageable);
+        return new PageResponse<>(shops.map(shopMapper::toShopResponse));
+    }
+
+    private void validatePageAndSize(int page, int size, String field, String order) {
         if (page < 0 || size <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page and size must be greater than 0");
         }
@@ -50,22 +69,29 @@ public class ShopServiceImpl implements ShopService {
         if (order != null && !order.equals("asc") && !order.equals("desc")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
         }
-
-        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
-        Page<ShopResponse> shops = shopRepository.findAll(pageable).map(shopMapper::toShopResponse);
-
-        return new PageResponse<>(shops);
     }
 
     @Override
-    public ShopResponse getShopById(String slug) {
+    public ShopResponse getOwnerShopBySlug(String slug, String username) {
+        Shop shop = shopRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        if (!shop.getUsers().contains(user)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of this shop");
+        }
+        return shopMapper.toShopResponse(shop);
+    }
+
+    @Override
+    public ShopResponse getShopBySlug(String slug) {
         Shop shop = shopRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
         return shopMapper.toShopResponse(shop);
     }
 
     @Override
-    public ShopResponse createShop(ShopCreateRequest shopRequest) {
+    public ShopResponse createShop(ShopCreateRequest shopRequest, List<String> usernames) {
         if (shopRepository.existsByEmail(shopRequest.email())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
         }
@@ -76,7 +102,7 @@ public class ShopServiceImpl implements ShopService {
 
         Shop shop = shopMapper.toShop(shopRequest);
 
-        List<User> users = shopRequest.usernames().stream()
+        List<User> users = usernames.stream()
                 .map(username -> userRepository.findByUsername(username)
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")))
                 .toList();
@@ -104,48 +130,52 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public ShopResponse updateShop(String slug, ShopUpdateRequest shopRequest) {
+    public ShopResponse updateShop(String slug, ShopUpdateRequest shopRequest, String username) {
         Shop shop = shopRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+        if (shop.getUsers().stream().noneMatch(user -> user.getUsername().equals(username))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to update this shop");
+        }
         shopMapper.mapUpdateShopToShop(shop, shopRequest);
         shopRepository.save(shop);
         return shopMapper.toShopResponse(shop);
     }
 
     @Override
-    public void deleteShop(String slug) {
+    public void deleteShop(String slug, String username) {
         Shop shop = shopRepository.findBySlug(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+        if (shop.getUsers().stream().noneMatch(user -> user.getUsername().equals(username))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to delete this shop");
+        }
         shopRepository.delete(shop);
     }
 
     @Override
-    public ShopResponse disableShop(String slug) {
+    public ShopResponse disableShop(String slug, String username) {
         Shop shop = shopRepository.findBySlug(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+        if (shop.getUsers().stream().noneMatch(user -> user.getUsername().equals(username))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to disable this shop");
+        }
         shop.setIsDisabled(true);
         Shop updatedShop = shopRepository.save(shop);
         return shopMapper.toShopResponse(updatedShop);
     }
 
     @Override
-    public ShopResponse enableShop(String slug) {
+    public ShopResponse enableShop(String slug, String username) {
         Shop shop = shopRepository.findBySlug(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+        if (shop.getUsers().stream().noneMatch(user -> user.getUsername().equals(username))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to enable this shop");
+        }
         shop.setIsDisabled(false);
         Shop updatedShop = shopRepository.save(shop);
         return shopMapper.toShopResponse(updatedShop);
     }
 
     @Override
-    public List<ShopResponse> getShopByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        List<Shop> shops = user.getShops();
-        return shops.stream().map(shopMapper::toShopResponse).toList();
-    }
-
-    @Override
     public List<ShopResponse> getShopByShopType(String shopType) {
         ShopType shopType1 = shopTypeRepository.findByName(shopType)
-                .orElseThrow(() -> new RuntimeException("Shop type not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop type not found"));
         List<Shop> shops = shopRepository.findByShopType(shopType1);
         return shops.stream().map(shopMapper::toShopResponse).toList();
     }
@@ -183,8 +213,14 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public List<ShopResponse> getShopByName(String name) {
-        List<Shop> shops = shopRepository.findByName(name);
-        return shops.stream().map(shopMapper::toShopResponse).toList();
+    public boolean isShopOwner(String slug, String username) {
+        Shop shop = shopRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        return shop.getUsers().contains(user);
     }
+
+
 }

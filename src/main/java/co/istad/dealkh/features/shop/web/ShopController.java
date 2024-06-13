@@ -7,11 +7,15 @@ import co.istad.dealkh.features.shop.dto.ShopCreateRequest;
 import co.istad.dealkh.features.shop.dto.ShopResponse;
 import co.istad.dealkh.features.shop.dto.ShopUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
+import co.istad.dealkh.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,75 +38,104 @@ public class ShopController {
 
     @GetMapping
     @Operation(summary = "Get all shops")
+    @ResponseStatus(HttpStatus.OK)
     public BaseResponse<PageResponse<ShopResponse>> getAllShop(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "2") int size,
             @RequestParam(defaultValue = "name") String field,
             @RequestParam(defaultValue = "asc") String order
     ) {
-        return BaseResponse.<PageResponse<ShopResponse>>ok("Success").setPayload(shopService.getAllShop(page, size, field, order));
+        return BaseResponse.<PageResponse<ShopResponse>>ok("Successfully retrieved all shops!")
+                .setPayload(shopService.getAllShop(page, size, field, order));
     }
 
     @PostMapping
     @Operation(summary = "Create new shop")
-    public BaseResponse<ShopResponse> createShop(@RequestBody @Valid ShopCreateRequest shopRequest) {
-        return BaseResponse.<ShopResponse>createSuccess("Created new shop").setPayload(shopService.createShop(shopRequest));
+    @ResponseStatus(HttpStatus.CREATED)
+    public BaseResponse<ShopResponse> createShop(@RequestBody @Valid ShopCreateRequest shopRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return BaseResponse.<ShopResponse>createSuccess("Successfully created new shop!")
+                .setPayload(shopService.createShop(shopRequest, List.of(customUserDetails.getUsername())));
     }
 
     @PatchMapping("/{slug}")
     @Operation(summary = "Update shop")
-    public BaseResponse<ShopResponse> updateShop(@PathVariable String slug, @RequestBody ShopUpdateRequest shopRequest) {
-        return BaseResponse.<ShopResponse>ok("Updated shop").setPayload(shopService.updateShop(slug, shopRequest));
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<ShopResponse> updateShop(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug, @RequestBody ShopUpdateRequest shopRequest) {
+        return BaseResponse.<ShopResponse>ok("Successfully updated shop!")
+                .setPayload(shopService.updateShop(slug, shopRequest, customUserDetails.getUsername()));
     }
 
     @GetMapping("/{slug}")
     @Operation(summary = "Get shop by slug")
+    @ResponseStatus(HttpStatus.OK)
     public BaseResponse<ShopResponse> getShopById(@PathVariable String slug) {
-        return BaseResponse.<ShopResponse>ok("Success").setPayload(shopService.getShopById(slug));
+        return BaseResponse.<ShopResponse>ok("Successfully retrieved shop!")
+                .setPayload(shopService.getShopBySlug(slug));
     }
 
     @DeleteMapping("/{slug}")
     @Operation(summary = "Delete shop")
-    public BaseResponse<Void> deleteShop(@PathVariable String slug) {
-        shopService.deleteShop(slug);
-        return BaseResponse.<Void>ok("Deleted shop");
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public BaseResponse<?> deleteShop(@PathVariable String slug, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        shopService.deleteShop(slug, customUserDetails.getUsername());
+        return BaseResponse.ok("Successfully deleted shop!").setPayload(new ArrayList<>());
     }
 
     @GetMapping("/nearby")
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get nearby shops")
     public BaseResponse<List<ShopResponse>> getNearbyShop(@RequestParam double latitude, @RequestParam double longitude) {
-        return BaseResponse.<List<ShopResponse>>ok("Success").setPayload(shopService.getNearbyShop(latitude, longitude));
+        return BaseResponse.<List<ShopResponse>>ok("Successfully retrieved nearby shops!")
+                .setPayload(shopService.getNearbyShop(latitude, longitude));
     }
 
     @GetMapping("/shop-type")
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get shops by shop type")
     public BaseResponse<List<ShopResponse>> getShopByShopType(@RequestParam String shopType) {
-        return BaseResponse.<List<ShopResponse>>ok("Success").setPayload(shopService.getShopByShopType(shopType));
+        return BaseResponse.<List<ShopResponse>>ok("Successfully retrieved shops by shop type!")
+                .setPayload(shopService.getShopByShopType(shopType));
+
     }
 
     @PatchMapping("/{slug}/disable")
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Disable shop")
-    public BaseResponse<ShopResponse> disableShop(@PathVariable String slug) {
-        return BaseResponse.<ShopResponse>ok("Disabled shop").setPayload(shopService.disableShop(slug));
+    public BaseResponse<ShopResponse> disableShop(@PathVariable String slug, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return BaseResponse.<ShopResponse>ok("Successfully disabled shop!")
+                .setPayload(shopService.disableShop(slug, customUserDetails.getUsername()));
     }
 
     @PatchMapping("/{slug}/enable")
     @Operation(summary = "Enable shop")
-    public BaseResponse<ShopResponse> enableShop(@PathVariable String slug) {
-        return BaseResponse.<ShopResponse>ok("Enabled shop").setPayload(shopService.enableShop(slug));
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<ShopResponse> enableShop(@PathVariable String slug, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return BaseResponse.<ShopResponse>ok("Successfully enabled shop!")
+                .setPayload(shopService.enableShop(slug, customUserDetails.getUsername()));
     }
 
-    @GetMapping("/user/{username}")
-    @Operation(summary = "Get shops by user slug")
-    public BaseResponse<List<ShopResponse>> getShopByUsername(@PathVariable String username) {
-        return BaseResponse.<List<ShopResponse>>ok("Success").setPayload(shopService.getShopByUsername(username));
+    @GetMapping("/owner")
+    @Operation(summary = "Get all shops created by the logged-in user")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<PageResponse<ShopResponse>> getAllOwnerShops(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(defaultValue = "name") String field,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        return BaseResponse.<PageResponse<ShopResponse>>ok("Successfully retrieved all shops created by the logged-in user!")
+                .setPayload(shopService.getAllOwnerShop(page, size, field, order, customUserDetails.getUsername()));
     }
 
-    @GetMapping("/name")
-    @Operation(summary = "Get shops by name")
-    public BaseResponse<List<ShopResponse>> getShopByName(@RequestParam String name) {
-        return BaseResponse.<List<ShopResponse>>ok("Success").setPayload(shopService.getShopByName(name));
+    @GetMapping("/{slug}/owner")
+    @Operation(summary = "Get all shops created by the logged-in user")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<ShopResponse> getOwnerShops(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable String slug
+    ) {
+        return BaseResponse.<ShopResponse>ok("Successfully retrieved all shops created by the logged-in user!")
+                .setPayload(shopService.getOwnerShopBySlug(slug, customUserDetails.getUsername()));
     }
-
-
 }
