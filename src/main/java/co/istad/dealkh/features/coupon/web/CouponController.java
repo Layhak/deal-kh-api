@@ -5,7 +5,9 @@ import co.istad.dealkh.features.coupon.CouponService;
 import co.istad.dealkh.features.coupon.dto.CouponCreateRequest;
 import co.istad.dealkh.features.coupon.dto.CouponResponse;
 import co.istad.dealkh.features.coupon.dto.CouponUpdateRequest;
+import co.istad.dealkh.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +29,7 @@ public class CouponController {
     // get all coupons
     @GetMapping
     public BaseResponse<List<CouponResponse>> getAllCoupons() {
-        return BaseResponse.<List<CouponResponse>>createSuccess("Get all coupons successfully!")
+        return BaseResponse.<List<CouponResponse>>ok("Get all coupons successfully!")
                 .setPayload(couponService.getAllCoupons());
     }
 
@@ -55,10 +57,9 @@ public class CouponController {
 
     // claim coupon
     @PostMapping("/{code}/claim")
-    public BaseResponse<?> claimCoupon(@PathVariable String code, @RequestParam String username) {
-        couponService.claimCoupon(code, username);
+    public BaseResponse<?> claimCoupon(@PathVariable String code, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        couponService.claimCoupon(code, customUserDetails.getUsername());
         return BaseResponse.ok("Claim coupon successfully!");
     }
-
 
 }

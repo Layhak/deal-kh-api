@@ -9,9 +9,6 @@ public record CouponCreateRequest(
 
         String description,
 
-        @NotBlank(message = "Code is required")
-        String code,
-
         @NotBlank(message = "Value is required")
         BigDecimal value,
 
@@ -19,6 +16,6 @@ public record CouponCreateRequest(
         LocalDate expiredAt,
 
         @NotBlank(message = "Shop id is required")
-        Long shopId
+        String slug
 ) {
 }

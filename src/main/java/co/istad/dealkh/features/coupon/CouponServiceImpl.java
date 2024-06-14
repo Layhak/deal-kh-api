@@ -31,31 +31,31 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public CouponResponse createCoupon(CouponCreateRequest couponCreateRequest) {
 
-        // Check if the coupon already exists
-        if (couponRepository.existsByCode(couponCreateRequest.code())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Coupon code already exists!");
-        }
-
-        Shop shop = shopRepository.findById(couponCreateRequest.shopId())
+        Shop shop = shopRepository.findBySlug(couponCreateRequest.slug())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("Shop with id %d not found! ", couponCreateRequest.shopId())));
+                        String.format("Shop with slug %s not found! ", couponCreateRequest.slug())));
 
         Coupon newCoupon = couponMapper.mapRequestCoupon(couponCreateRequest);
 
+        String couponCode;
         Random random = new Random();
-        StringBuilder sb = new StringBuilder(10);
+        StringBuilder sb;
 
-        for (int i = 0; i < 10; i++) {
-            sb.append((char) (random.nextInt(26) + 'A'));
-        }
-        newCoupon.setCode(sb.toString());
+// Generate a unique coupon code
+        do {
+            sb = new StringBuilder(10);
+            for (int i = 0; i < 10; i++) {
+                sb.append((char) (random.nextInt(26) + 'A'));
+            }
+            couponCode = sb.toString();
+        } while (couponRepository.existsByCode(couponCode));
+        newCoupon.setCode(couponCode);
         newCoupon.setIsExpired(false);
         newCoupon.setShop(shop);
         if (newCoupon.getExpiredAt().isBefore(LocalDate.now())) {
             newCoupon.setIsExpired(true);
         }
-
         return couponMapper.mapToCouponResponse(couponRepository.save(newCoupon));
     }
 
@@ -86,6 +86,7 @@ public class CouponServiceImpl implements CouponService {
         couponMapper.mapCouponUpdateRequest(coupon, couponUpdateRequest);
         coupon = couponRepository.save(coupon);
         return couponMapper.mapToCouponResponse(coupon);
+
     }
 
     @Override
