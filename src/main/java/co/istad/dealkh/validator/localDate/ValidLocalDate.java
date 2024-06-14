@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Documented
 @Constraint(validatedBy = LocalDateValidator.class)
 public @interface ValidLocalDate {
-    String message() default "Invalid date of birth";
+    String message() default "Invalid LocalDate value";
 
     Class<?>[] groups() default {};
 

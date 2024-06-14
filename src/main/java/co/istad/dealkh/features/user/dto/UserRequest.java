@@ -1,7 +1,7 @@
 package co.istad.dealkh.features.user.dto;
 
 import co.istad.dealkh.domain.json.Image;
-import co.istad.dealkh.validator.dateofbirth.ValidDOB;
+import co.istad.dealkh.validator.dateofbirth.ValidDob;
 import co.istad.dealkh.validator.password.ValidPassword;
 import co.istad.dealkh.validator.phonenumber.ValidPhoneNumber;
 import jakarta.validation.constraints.NotBlank;
@@ -36,7 +36,7 @@ public record UserRequest(
         @ValidPhoneNumber(message = "Phone number must be 10 digits long")
         String phoneNumber,
 
-        @ValidDOB
+        @ValidDob
         String dob,
 
         List<Image> images,
