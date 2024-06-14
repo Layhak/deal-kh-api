@@ -31,7 +31,7 @@ public class Discount extends Auditable {
     private LocalDate expiredAt;
     private Boolean isExpired;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "discount_type_id", nullable = false)
     private DiscountType discountType;
 

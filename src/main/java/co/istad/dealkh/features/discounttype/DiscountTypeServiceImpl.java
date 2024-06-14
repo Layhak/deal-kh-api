@@ -5,7 +5,9 @@ import co.istad.dealkh.domain.DiscountType;
 import co.istad.dealkh.features.discount.DiscountRepository;
 import co.istad.dealkh.features.discounttype.dto.DiscountTypeRequest;
 import co.istad.dealkh.features.discounttype.dto.DiscountTypeResponse;
+import co.istad.dealkh.features.discounttype.dto.DiscountTypeUpdateRequest;
 import co.istad.dealkh.mapper.DiscountTypeMapper;
+import co.istad.dealkh.validator.formatter.SlugFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,11 +30,11 @@ public class DiscountTypeServiceImpl implements DiscountTypeService{
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Discount type with name %s already exists", discountTypeRequest.name()));
         }
 
-        if (discountTypeRepository.existsBySlug(discountTypeRequest.slug())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Discount type with slug %s already exists", discountTypeRequest.slug()));
-        }
+        String slug = SlugFormatter.formatSlug(discountTypeRequest.name());
 
         DiscountType newDiscountType = discountTypeMapper.mapRequestToDiscountType(discountTypeRequest);
+
+        newDiscountType.setSlug(slug);
 
         return discountTypeMapper.mapToDiscountTypeResponse(discountTypeRepository.save(newDiscountType));
     }
@@ -54,12 +56,27 @@ public class DiscountTypeServiceImpl implements DiscountTypeService{
     }
 
     @Override
-    public DiscountTypeResponse updateDiscountType(String name, DiscountTypeRequest discountTypeRequest) {
-        return null;
+    public DiscountTypeResponse updateDiscountType(String name, DiscountTypeUpdateRequest discountTypeUpdateRequest) {
+
+        DiscountType discountType = discountTypeRepository.findByName(name)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Discount type with name %s not found", name)));
+
+        discountTypeMapper.mapDiscountToUpdateRequest(discountType, discountTypeUpdateRequest);
+
+        return discountTypeMapper.mapToDiscountTypeResponse(discountTypeRepository.save(discountType));
     }
 
     @Override
     public void deleteDiscountType(String name) {
 
+        DiscountType discountType = discountTypeRepository.findByName(name)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Discount type with name %s not found", name)));
+
+        // Find all discounts referencing this discount type
+        List<Discount> discounts = discountRepository.findByDiscountType(discountType);
+
+        discountTypeRepository.delete(discountType);
     }
 }

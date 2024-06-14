@@ -53,8 +53,8 @@ public class DataInit {
             initShopTypes();
             initUsers();
             initShops();
-            initDiscounts();
             initDiscountTypes();
+            initDiscounts();
             initDiscounts();
             initCategories();
             logger.info("Data initialized successfully");
@@ -188,6 +188,7 @@ public class DataInit {
         if (discountTypeRepository.findAll().isEmpty()) {
             discountTypes.forEach(type -> {
                 DiscountType discountType = new DiscountType();
+                discountType.setSlug(SlugFormatter.formatSlug(type));
                 discountType.setName(type);
                 discountTypeRepository.save(discountType);
             });

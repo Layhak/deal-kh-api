@@ -26,4 +26,5 @@ public class DiscountType {
 
     @OneToMany(mappedBy = "discountType")
     private List<Discount> discounts;
+
 }
