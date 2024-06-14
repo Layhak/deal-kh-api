@@ -10,25 +10,26 @@ import java.util.List;
 public interface ShopService {
     PageResponse<ShopResponse> getAllShop(int page, int size, String field, String order);
 
-    ShopResponse getShopById(String slug);
+    PageResponse<ShopResponse> getAllOwnerShop(int page, int size, String field, String order, String username);
 
-    ShopResponse createShop(ShopCreateRequest shopRequest);
+    ShopResponse getOwnerShopBySlug(String slug, String username);
 
-    ShopResponse updateShop(String slug, ShopUpdateRequest shopRequest);
+    ShopResponse getShopBySlug(String slug);
 
-    void deleteShop(String slug);
+    ShopResponse createShop(ShopCreateRequest shopRequest, List<String> usernames);
 
-    ShopResponse disableShop(String slug);
+    ShopResponse updateShop(String slug, ShopUpdateRequest shopRequest, String username);
 
-    ShopResponse enableShop(String slug);
+    void deleteShop(String slug, String username);
 
-    List<ShopResponse> getShopByUsername
-            (String username);
+    ShopResponse disableShop(String slug, String username);
+
+    ShopResponse enableShop(String slug, String username);
 
     List<ShopResponse> getShopByShopType(String shopType);
 
     List<ShopResponse> getNearbyShop(double latitute, double longtitute);
 
-    List<ShopResponse> getShopByName(String name);
+    boolean isShopOwner(String slug, String username);
 
 }

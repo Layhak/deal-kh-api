@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -73,9 +74,9 @@ public class UserController {
 
     @DeleteMapping("/{username}")
     @Operation(summary = "Delete user")
-    BaseResponse<Void> deleteUser(@PathVariable String username) {
+    BaseResponse<?> deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
-        return BaseResponse.<Void>ok("Delete user success");
+        return BaseResponse.ok("Delete user success").setPayload(new ArrayList<>());
     }
 
     @PutMapping("/{username}")
@@ -130,9 +131,9 @@ public class UserController {
         return BaseResponse.<UserProfileResponse>ok("Success update user profile").setPayload(userService.uploadUserProfile(username, userProfileRequest));
     }
 
-    @DeleteMapping("/profile/deleteImage")
+    @DeleteMapping("/profile")
     @Operation(summary = "Delete user profile image")
-    public BaseResponse<?> deleteUserProfileImage(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam String imageUrl) {
+    public BaseResponse<?> deleteUserProfileImage(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody String imageUrl) {
         String username = customUserDetails.getUsername();
         System.out.println(username);
         userService.deleteUserProfile(username, imageUrl);

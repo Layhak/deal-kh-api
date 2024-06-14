@@ -106,6 +106,8 @@ public class UserServiceImpl implements UserService {
         } catch (DateTimeParseException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format for dob");
         }
+        newUser.setImages(new ArrayList<>());
+        newUser.setSocialMedias(new ArrayList<>());
         newUser.setIsDisabled(false);
         newUser.setEmail(userRequest.email());
         newUser.setDob(dob);

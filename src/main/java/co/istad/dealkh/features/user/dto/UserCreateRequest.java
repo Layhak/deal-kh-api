@@ -1,7 +1,7 @@
 package co.istad.dealkh.features.user.dto;
 
+import co.istad.dealkh.validator.dateofbirth.ValidDob;
 import co.istad.dealkh.validator.email.ValidEmail;
-import co.istad.dealkh.validator.localDate.ValidLocalDate;
 import co.istad.dealkh.validator.password.ValidPassword;
 import co.istad.dealkh.validator.phonenumber.ValidPhoneNumber;
 import jakarta.validation.constraints.NotBlank;
@@ -38,7 +38,7 @@ public record UserCreateRequest(
         String phoneNumber,
 
         @NotNull(message = "Date of birth is required")
-        @ValidLocalDate(message = "Please provide a valid date")
+        @ValidDob(message = "You must be 18 year old or less than 100 year old to register")
         String dob,
 
         String location

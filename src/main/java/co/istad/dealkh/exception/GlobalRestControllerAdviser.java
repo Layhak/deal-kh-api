@@ -85,10 +85,10 @@ public class GlobalRestControllerAdviser {
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BasedErrorResponse<String> handleBadRequestException(Exception ex) {
         BasedError<String> basedError = BasedError.<String>builder()
-                .code(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                .code(HttpStatus.BAD_REQUEST.toString())
                 .description(ex.getMessage())
                 .build();
 

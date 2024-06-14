@@ -9,12 +9,11 @@ import java.time.format.DateTimeParseException;
 
 public class LocalDateValidator implements ConstraintValidator<ValidLocalDate, String> {
 
-    private static final String DATE_PATTERN = "yyyy-MM-dd";
-    private DateTimeFormatter dateFormatter;
+    private String pattern;
 
     @Override
     public void initialize(ValidLocalDate constraintAnnotation) {
-        dateFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
+        this.pattern = constraintAnnotation.pattern();
     }
 
     @Override
@@ -23,7 +22,7 @@ public class LocalDateValidator implements ConstraintValidator<ValidLocalDate, S
             return false; // Consider empty date as invalid
         }
         try {
-            LocalDate.parse(date, dateFormatter);
+            LocalDate.parse(date, DateTimeFormatter.ofPattern(this.pattern));
             return true;
         } catch (DateTimeParseException e) {
             return false;
