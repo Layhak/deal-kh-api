@@ -15,7 +15,6 @@ public class SlugValidator implements ConstraintValidator<ValidSlug, String> {
         if (slug == null || slug.isEmpty()) {
             return true;
         }
-
         // Regular expression to ensure slugs with numbers, lowercase letters, and single dashes
         String validSlugPattern = "^[a-z0-9]+(-[a-z0-9]+)*$";
 

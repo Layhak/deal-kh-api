@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public record UserUpdateRequest(
 
@@ -30,8 +29,8 @@ public record UserUpdateRequest(
         @NotNull(message = "Date of birth is required")
         LocalDate dob,
 
-        String location,
+        String location
 
-        List<Long> shopId
+//        List<String> shopSlug
 ) {
 }

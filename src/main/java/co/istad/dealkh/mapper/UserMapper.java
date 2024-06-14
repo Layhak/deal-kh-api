@@ -23,7 +23,7 @@ public interface UserMapper {
     User mapCreateRequestToUser(UserCreateRequest userCreateRequest);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "shops", source = "shopId", qualifiedByName = "mapShopIdsToShops")
+//    @Mapping(target = "shops", source = "shopSlug", qualifiedByName = "mapShopSlugsToShops")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void mapUpdateRequestToUser(@MappingTarget User user, UserUpdateRequest userUpdateRequest);
 

@@ -14,7 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -49,12 +48,11 @@ public class CustomMapper {
         return discountTypeRepository.findById(id).orElse(null);
     }
 
-    @Named("mapShopIdsToShops")
-    public List<Shop> mapShopIdsToShops(List<Long> shopIds) {
-        return shopIds.stream()
-                .map(shopRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+    @Named("mapShopSlugsToShops")
+    public List<Shop> mapShopSlugsToShops(List<String> shopSlugs) {
+        return shopSlugs.stream()
+                .map(slug -> shopRepository.findBySlug(slug)
+                        .orElseThrow(() -> new RuntimeException("Shop not found for slug: " + slug)))
                 .collect(Collectors.toList());
     }
 
