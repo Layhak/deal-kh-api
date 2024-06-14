@@ -1,6 +1,5 @@
 package co.istad.dealkh.features.shop.dto;
 
-import co.istad.dealkh.validator.email.ValidEmail;
 import co.istad.dealkh.validator.localtime.ValidLocalTime;
 import co.istad.dealkh.validator.name.ValidName;
 import co.istad.dealkh.validator.phonenumber.ValidPhoneNumber;
@@ -22,7 +21,7 @@ import jakarta.validation.constraints.Size;
  * @param closeAt
  * @param location
  */
-public record ShopUpdateRequest (
+public record ShopUpdateRequest(
 
         @NotBlank(message = "Name is required")
         @ValidName(message = "Name must be properly formatted and can contain letters, numbers, single spaces, and single dashes")
@@ -42,7 +41,7 @@ public record ShopUpdateRequest (
         @Size(min = 5, max = 20, message = "Phone number must be between 5 and 20 characters")
         String phoneNumber,
 
-        @ValidEmail(message = "Email must be properly formatted")
+//        @ValidEmail(message = "Email must be properly formatted")
         String email,
 
         @ValidLocalTime(message = "Please provide a valid opening time in the format Example:08:00")
@@ -53,5 +52,5 @@ public record ShopUpdateRequest (
 
         @NotNull(message = "Location is required")
         String location
-){
+) {
 }

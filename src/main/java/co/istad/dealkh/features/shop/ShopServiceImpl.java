@@ -35,6 +35,22 @@ public class ShopServiceImpl implements ShopService {
     private final ShopMapper shopMapper;
     private final RoleRepository roleRepository;
 
+    private void validatePageAndSize(int page, int size, String field, String order) {
+        if (page < 0 || size <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page and size must be greater than 0");
+        }
+
+        List<String> validFields = Arrays.asList("name", "email");
+
+        if (field == null || field.isEmpty() || !validFields.contains(field)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be name or email");
+        }
+
+        if (order != null && !order.equals("asc") && !order.equals("desc")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
+        }
+    }
+
     @Override
     public PageResponse<ShopResponse> getAllShop(int page, int size, String field, String order) {
         validatePageAndSize(page, size, field, order);
@@ -53,22 +69,6 @@ public class ShopServiceImpl implements ShopService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         Page<Shop> shops = shopRepository.findByUsersContains(user, pageable);
         return new PageResponse<>(shops.map(shopMapper::toShopResponse));
-    }
-
-    private void validatePageAndSize(int page, int size, String field, String order) {
-        if (page < 0 || size <= 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page and size must be greater than 0");
-        }
-
-        List<String> validFields = Arrays.asList("name", "email");
-
-        if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be name or email");
-        }
-
-        if (order != null && !order.equals("asc") && !order.equals("desc")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
-        }
     }
 
     @Override
@@ -92,12 +92,14 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public ShopResponse createShop(ShopCreateRequest shopRequest, List<String> usernames) {
-        if (shopRepository.existsByEmail(shopRequest.email())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
-        }
-
+//        if (shopRepository.existsByEmail(shopRequest.email())) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
+//        }
+//
         if (shopRepository.existsByPhoneNumber(shopRequest.phoneNumber())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Phone number already exists");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format("Phone number %s already exists",
+                            shopRequest.phoneNumber()));
         }
 
         Shop shop = shopMapper.toShop(shopRequest);
@@ -108,12 +110,19 @@ public class ShopServiceImpl implements ShopService {
                 .toList();
 
         shop.setUsers(users);
-
-        if (shopRepository.existsByName(shop.getName())) {
-            shop.setSlug(String.format("%s-%s", SlugFormatter.formatSlug(shopRequest.name()), shop.getAddress()));
+        // Generate a unique slug for the shop
+        // If the slug already exists, append a unique suffix to the slug
+        if (shopRequest.slug() != null && !shopRequest.slug().isEmpty() && !shopRequest.slug().isBlank()) {
+            String slug = SlugFormatter.formatSlug(shopRequest.slug());
+            if (shopRepository.existsBySlug(slug)) {
+                slug = String.format("%s-%s", SlugFormatter.formatSlug(shopRequest.slug()), shop.getAddress());
+            }
+            shop.setSlug(slug);
         } else {
+            // If the slug is not provided, generate a random slug
             shop.setSlug(SlugFormatter.formatSlug(shopRequest.name()));
         }
+
         shop.setIsDeleted(false);
         shop.setIsDisabled(false);
 
