@@ -14,6 +14,7 @@ import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.mapper.ProductMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
+import co.istad.dealkh.security.CustomUserDetails;
 import co.istad.dealkh.specification.filter.ProductFilter;
 import co.istad.dealkh.specification.filter.ProductSpecification;
 import co.istad.dealkh.validator.formatter.NameFormatter;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -158,17 +160,20 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Updates a product based on its ID.
      *
-     * @param name
+     * @param slug
      * @param productUpdateRequest
      * @return
      */
     @Override
-    public ProductResponse updateProductByName(String name, ProductUpdateRequest productUpdateRequest) {
+    public ProductResponse updateProductBySlug(String username, String slug, ProductUpdateRequest productUpdateRequest) {
 
-        // Check format name request
-        String nameRequest = NameFormatter.formatName(name);
+        Product product = productRepository.findByName(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found! ", slug)));
 
-        Product product = productRepository.findByName(nameRequest).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with id %s not found! ", nameRequest)));
+        if(productRepository.findByCreatedBy(username).isEmpty()){
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You're not this resource owner!");
+        }
 
         product.setUpdatedAt(LocalDateTime.now());
 //        product.setUpdatedBy(product.getCreatedBy());
@@ -181,15 +186,19 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Deletes a product based on its ID.
      *
-     * @param name
+     * @param slug
      */
     @Override
-    public void deleteProduct(String name) {
+    public void deleteProduct(String username, String slug) {
 
-        // Check format name request
-        String nameRequest = NameFormatter.formatName(name);
 
-        Product product = productRepository.findByName(nameRequest).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with id %s not found! ", nameRequest)));
+        Product product = productRepository.findBySlug(slug).orElseThrow(() -> new  ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found! ", slug)));
+
+        if(productRepository.findByCreatedBy(username).isEmpty()){
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You're not this resource owner!");
+        }
 
         productRepository.delete(product);
     }

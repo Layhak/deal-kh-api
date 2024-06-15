@@ -6,8 +6,10 @@ import co.istad.dealkh.features.discount.dto.DiscountCreateRequest;
 import co.istad.dealkh.features.discount.dto.DiscountResponseDetail;
 import co.istad.dealkh.features.discount.dto.DiscountUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
+import co.istad.dealkh.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -98,9 +100,13 @@ public class DiscountController {
      * @return a {@link DiscountResponseDetail} containing the details of the updated discount
      */
     @PutMapping("/{id}")
-    BaseResponse<DiscountResponseDetail> updateDiscountById(@PathVariable Long id, @RequestBody DiscountUpdateRequest discountUpdateRequest) {
+    BaseResponse<DiscountResponseDetail> updateDiscountById(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long id,
+            @RequestBody DiscountUpdateRequest discountUpdateRequest) {
+
         return BaseResponse.<DiscountResponseDetail>ok("Discount has been updated!")
-                .setPayload(discountService.updateDiscountById(id, discountUpdateRequest));
+                .setPayload(discountService.updateDiscountById(customUserDetails.getUsername(), id, discountUpdateRequest));
     }
 
     /**
@@ -110,8 +116,10 @@ public class DiscountController {
      * @return
      */
     @DeleteMapping("/{id}")
-    BaseResponse<?> deleteDiscountById(@PathVariable Long id) {
-        discountService.deleteDiscountById(id);
+    BaseResponse<?> deleteDiscountById(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long id) {
+        discountService.deleteDiscountById(customUserDetails.getUsername(), id);
         return BaseResponse.ok("Discount has been deleted!")
                 .setPayload("No content");
     }

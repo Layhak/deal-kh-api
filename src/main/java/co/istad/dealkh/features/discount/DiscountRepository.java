@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface DiscountRepository extends JpaRepository<Discount, Long>, JpaSpecificationExecutor<Discount> {
     boolean existsByDiscountValue(BigDecimal value);
@@ -21,4 +22,6 @@ public interface DiscountRepository extends JpaRepository<Discount, Long>, JpaSp
 
     List<Discount> findByDiscountType(DiscountType discountType);
 
+
+    List<Discount> findByCreatedBy(String username);
 }

@@ -6,8 +6,10 @@ import co.istad.dealkh.features.product.dto.ProductCreateRequest;
 import co.istad.dealkh.features.product.dto.ProductResponse;
 import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
+import co.istad.dealkh.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -81,25 +83,28 @@ public class ProductController {
     /**
      * Updates a product based on its NAME.
      *
-     * @param name
+     * @param slug
      * @param productUpdateRequest
      * @return
      */
-    @PutMapping("/{name}")
-    BaseResponse<ProductResponse> updateProductById(@PathVariable String name, @RequestBody ProductUpdateRequest productUpdateRequest) {
+    @PutMapping("/{slug}")
+    BaseResponse<ProductResponse> updateProductById(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable String slug,
+            @RequestBody ProductUpdateRequest productUpdateRequest) {
         return BaseResponse.<ProductResponse>ok("Update product successfully!")
-                .setPayload(productService.updateProductByName(name, productUpdateRequest));
+                .setPayload(productService.updateProductBySlug(customUserDetails.getUsername(), slug, productUpdateRequest));
     }
 
     /**
      * Deletes a product based on its NAME.
      *
-     * @param name
+     * @param slug
      * @return
      */
-    @DeleteMapping("/{name}")
-    BaseResponse<?> deleteProductByName(@PathVariable String name) {
-        productService.deleteProduct(name);
+    @DeleteMapping("/{slug}")
+    BaseResponse<?> deleteProductBySlug(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug) {
+        productService.deleteProduct(customUserDetails.getUsername(), slug);
         return BaseResponse.ok("Delete product successfully!")
                 .setPayload("No content");
     }

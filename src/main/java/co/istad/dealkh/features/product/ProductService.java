@@ -25,7 +25,7 @@ public interface ProductService {
     /**
      * Retrieves a product by its ID.
      *
-     * @param id
+     * @param name
      * @return
      */
     Optional<ProductResponse> getProductByName(String name);
@@ -45,20 +45,21 @@ public interface ProductService {
 
     /**
      * Updates a product based on its ID.
-     *
-     * @param id
+     * @param username
+     * @param slug
      * @param productUpdateRequest
      * @return
      */
-    ProductResponse updateProductByName(String name, ProductUpdateRequest productUpdateRequest);
+    ProductResponse updateProductBySlug(String username, String slug, ProductUpdateRequest productUpdateRequest);
 
     /**
      * Deletes a product based on its ID.
      *
-     * @param id
+     * @param username
+     * @param slug
      * @return
      */
-    void deleteProduct(String name);
+    void deleteProduct(String username, String slug);
 
     /**
      * Retrieves a product rating average based on its ID.

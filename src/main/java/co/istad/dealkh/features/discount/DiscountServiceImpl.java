@@ -166,9 +166,13 @@ public class DiscountServiceImpl implements DiscountService {
      * @return
      */
     @Override
-    public DiscountResponseDetail updateDiscountById(Long id, DiscountUpdateRequest discountUpdateRequest) {
+    public DiscountResponseDetail updateDiscountById(String username, Long id, DiscountUpdateRequest discountUpdateRequest) {
         Discount discount = discountRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount id not found!"));
+
+        if(discountRepository.findByCreatedBy(username).isEmpty()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
+        }
 
         discount.setUpdatedAt(LocalDateTime.now());
 
@@ -185,9 +189,14 @@ public class DiscountServiceImpl implements DiscountService {
      * @param id
      */
     @Override
-    public void deleteDiscountById(Long id) {
+    public void deleteDiscountById(String username, Long id) {
+
         Discount discount = discountRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount id not found!"));
+
+        if(discountRepository.findByCreatedBy(username).isEmpty()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
+        }
 
         discountRepository.delete(discount);
     }

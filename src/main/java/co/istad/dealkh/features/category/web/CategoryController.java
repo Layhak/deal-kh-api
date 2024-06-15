@@ -76,24 +76,27 @@ public class CategoryController {
     /**
      * Updates a category identified by its name based on the provided request.
      *
-     * @param name                  the name of the category to update
+     * @param slug                  the name of the category to update
      * @param categoryUpdateRequest the request containing the updated details for the category
      * @return a {@link CategoryResponse} containing the details of the updated category
      */
-    @PutMapping("/{name}")
-    BaseResponse<CategoryResponse> updateCategory(@PathVariable String name, @RequestBody CategoryUpdateRequest categoryUpdateRequest) {
+    @PutMapping("/{slug}")
+    BaseResponse<CategoryResponse> updateCategory(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable String slug,
+            @RequestBody CategoryUpdateRequest categoryUpdateRequest) {
         return BaseResponse.<CategoryResponse>ok("Update category successfully!")
-                .setPayload(categoryService.updateCategoryByName(name, categoryUpdateRequest));
+                .setPayload(categoryService.updateCategoryBySlug(customUserDetails.getUsername(), slug, categoryUpdateRequest));
     }
 
     /**
-     * Deletes a category identified by its name.
+     * Deletes a category identified by its slug.
      *
-     * @param name
+     * @param slug
      */
-    @DeleteMapping("/{name}")
-    BaseResponse<?> deleteCategory(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String name) {
-        categoryService.deleteCategoryByName(customUserDetails.getUsername(), name);
+    @DeleteMapping("/{slug}")
+    BaseResponse<?> deleteCategory(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug) {
+        categoryService.deleteCategoryBySlug(customUserDetails.getUsername(), slug);
         return BaseResponse.ok("Delete category successfully!")
                 .setPayload("No content");
     }

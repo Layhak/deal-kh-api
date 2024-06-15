@@ -119,19 +119,20 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * Updates a category identified by its name based on the provided request.
      *
-     * @param name                  the name of the category to update
+     * @param slug                  the name of the category to update
      * @param categoryUpdateRequest the request containing the updated details for the category
      * @return a {@link CategoryResponse} containing the details of the updated category
      * @throws ResponseStatusException if the category is not found
      */
     @Override
-    public CategoryResponse updateCategoryByName(String name, CategoryUpdateRequest categoryUpdateRequest) {
+    public CategoryResponse updateCategoryBySlug(String username, String slug, CategoryUpdateRequest categoryUpdateRequest) {
 
-        // Check format name request
-        String nameRequest = NameFormatter.formatName(name);
+        Category category = categoryRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with slug %s not found! ", slug)));
 
-        Category category = categoryRepository.findByName(nameRequest)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with name %s not found! ", nameRequest)));
+        if(categoryRepository.findByCreatedBy(username).isEmpty()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
+        }
 
         category.setUpdatedAt(LocalDateTime.now());
 
@@ -145,30 +146,18 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * Deletes a category identified by its name.
      *
-     * @param name the name of the category to delete
+     * @param slug the name of the category to delete
      * @throws ResponseStatusException if the category is not found
      */
     @Override
-    public void deleteCategoryByName(String username, String name) {
+    public void deleteCategoryBySlug(String username, String slug) {
 
-        System.out.println("username OWNER REQUEST: "+username);
+        Category category = categoryRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with slug %s not found! ", slug)));
 
         if(categoryRepository.findByCreatedBy(username).isEmpty()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
         }
-
-//      List<Category> owner = categoryRepository.findByCreatedBy(username)
-//                .orElseThrow(() -> new ResponseStatusException(
-//                        HttpStatus.FORBIDDEN, "You're not this resource owner!"))
-//           ;
-
-        System.out.println("username OWNER: ");;
-
-        // Check format name request
-        String nameRequest = NameFormatter.formatName(name);
-
-        Category category = categoryRepository.findByName(nameRequest)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with name %s not found! ", nameRequest)));
         categoryRepository.delete(category);
     }
 }

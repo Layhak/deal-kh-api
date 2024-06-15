@@ -50,12 +50,12 @@ public interface CategoryService {
      * @param categoryUpdateRequest the request containing the updated details for the category
      * @return a {@link CategoryResponse} containing the details of the updated category
      */
-    CategoryResponse updateCategoryByName(String name, CategoryUpdateRequest categoryUpdateRequest);
+    CategoryResponse updateCategoryBySlug(String username, String slug, CategoryUpdateRequest categoryUpdateRequest);
 
     /**
      * Deletes a category identified by its name.
      *
      * @param name the name of the category to delete
      */
-    void deleteCategoryByName(String username, String name);
+    void deleteCategoryBySlug(String username, String slug);
 }

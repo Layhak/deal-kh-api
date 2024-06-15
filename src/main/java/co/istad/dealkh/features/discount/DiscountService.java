@@ -52,12 +52,12 @@ public interface DiscountService {
      * @param discountUpdateRequest the request containing the updated details for the discount
      * @return a {@link DiscountResponseDetail} containing the details of the updated discount
      */
-    DiscountResponseDetail updateDiscountById(Long id, DiscountUpdateRequest discountUpdateRequest);
+    DiscountResponseDetail updateDiscountById(String username, Long id, DiscountUpdateRequest discountUpdateRequest);
 
     /**
      * Deletes a discount identified by its name.
      *
      * @param id
      */
-    void deleteDiscountById(Long id);
+    void deleteDiscountById(String username, Long id);
 }
