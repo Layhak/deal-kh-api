@@ -1,9 +1,11 @@
 package co.istad.dealkh.features.category;
 
 import co.istad.dealkh.domain.Category;
+import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.category.dto.CategoryCreateRequest;
 import co.istad.dealkh.features.category.dto.CategoryResponse;
 import co.istad.dealkh.features.category.dto.CategoryUpdateRequest;
+import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.mapper.CategoryMapper;
 import co.istad.dealkh.validator.formatter.NameFormatter;
 import co.istad.dealkh.validator.formatter.SlugFormatter;
@@ -33,6 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final UserRepository userRepository;
 
     /**
      * Creates a new category based on the provided request.
@@ -146,7 +149,20 @@ public class CategoryServiceImpl implements CategoryService {
      * @throws ResponseStatusException if the category is not found
      */
     @Override
-    public void deleteCategoryByName(String name) {
+    public void deleteCategoryByName(String username, String name) {
+
+        System.out.println("username OWNER REQUEST: "+username);
+
+        if(categoryRepository.findByCreatedBy(username).isEmpty()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
+        }
+
+//      List<Category> owner = categoryRepository.findByCreatedBy(username)
+//                .orElseThrow(() -> new ResponseStatusException(
+//                        HttpStatus.FORBIDDEN, "You're not this resource owner!"))
+//           ;
+
+        System.out.println("username OWNER: ");;
 
         // Check format name request
         String nameRequest = NameFormatter.formatName(name);

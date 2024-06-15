@@ -57,5 +57,5 @@ public interface CategoryService {
      *
      * @param name the name of the category to delete
      */
-    void deleteCategoryByName(String name);
+    void deleteCategoryByName(String username, String name);
 }

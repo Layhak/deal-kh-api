@@ -5,8 +5,10 @@ import co.istad.dealkh.features.category.CategoryService;
 import co.istad.dealkh.features.category.dto.CategoryCreateRequest;
 import co.istad.dealkh.features.category.dto.CategoryResponse;
 import co.istad.dealkh.features.category.dto.CategoryUpdateRequest;
+import co.istad.dealkh.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -90,8 +92,8 @@ public class CategoryController {
      * @param name
      */
     @DeleteMapping("/{name}")
-    BaseResponse<?> deleteCategory(@PathVariable String name) {
-        categoryService.deleteCategoryByName(name);
+    BaseResponse<?> deleteCategory(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String name) {
+        categoryService.deleteCategoryByName(customUserDetails.getUsername(), name);
         return BaseResponse.ok("Delete category successfully!")
                 .setPayload("No content");
     }
