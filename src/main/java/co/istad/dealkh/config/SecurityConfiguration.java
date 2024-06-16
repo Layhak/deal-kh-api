@@ -1,8 +1,6 @@
 package co.istad.dealkh.config;
 
-import co.istad.dealkh.security.CustomAuthenticationProvider;
-import co.istad.dealkh.security.JwtToUserConverter;
-import co.istad.dealkh.security.KeyUtils;
+import co.istad.dealkh.security.*;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -23,8 +21,6 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
-import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
-import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -48,6 +44,8 @@ public class SecurityConfiguration {
     private final JwtToUserConverter jwtToUserConverter;
     private final KeyUtils keyUtils;
     private final CustomAuthenticationProvider customAuthenticationProvider;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     /**
      * Configures the security filter chain.
@@ -133,8 +131,8 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler))
                 .authenticationProvider(customAuthenticationProvider);
         return http.build();
     }
