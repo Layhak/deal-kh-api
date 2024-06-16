@@ -112,10 +112,6 @@ public class KeyUtils {
                 throw new RuntimeException(ex);
             }
 
-        } else {
-            if (Arrays.asList(environment.getActiveProfiles()).contains("prod")) {
-                throw new RuntimeException("Public and private key doesn't exist!");
-            }
         }
 
         File directory = new File("access-refresh-token-keys");
