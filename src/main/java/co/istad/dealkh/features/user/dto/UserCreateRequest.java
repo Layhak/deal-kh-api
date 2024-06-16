@@ -38,7 +38,7 @@ public record UserCreateRequest(
         String phoneNumber,
 
         @NotNull(message = "Date of birth is required")
-        @ValidDob(message = "You must be 18 year old or less than 100 year old to register")
+        @ValidDob
         String dob,
 
         String location
