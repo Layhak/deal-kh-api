@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 public record ProductRatingResponse(
         Long id,
         double ratingValue,
-        Long userId,
-        Long productId,
+        String username,
+        String productName,
         LocalDateTime createdAt
 ) {
 }

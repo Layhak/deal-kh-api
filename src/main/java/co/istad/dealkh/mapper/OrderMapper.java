@@ -21,8 +21,7 @@ public interface OrderMapper {
     @Mapping(target = "user.id", source = "userId")
     @Mapping(target = "products", ignore = true)
     Order toOrder(OrderRequest orderRequest);
-
-    @Mapping(target = "id", source = "id")
+    
     @Mapping(target = "name", source = "name")
     @Mapping(target = "shop", source = "shop.name")
     @Mapping(target = "category", source = "category.name")

@@ -3,8 +3,10 @@ package co.istad.dealkh.features.productrating.web;
 import co.istad.dealkh.features.productrating.ProductRatingService;
 import co.istad.dealkh.features.productrating.dto.ProductRatingRequest;
 import co.istad.dealkh.features.productrating.dto.ProductRatingResponse;
+import co.istad.dealkh.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,8 +37,8 @@ public class ProductRatingController {
      * @return
      */
     @PostMapping("")
-    ProductRatingResponse rateProduct(@RequestBody @Valid ProductRatingRequest productRatingRequest) {
-        return productRatingService.rateProduct(productRatingRequest);
+    ProductRatingResponse rateProduct(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody @Valid ProductRatingRequest productRatingRequest) {
+        return productRatingService.rateProduct(customUserDetails.getUsername(), productRatingRequest);
     }
 
     /**
