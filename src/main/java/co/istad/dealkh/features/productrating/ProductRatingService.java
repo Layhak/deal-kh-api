@@ -16,7 +16,7 @@ public interface ProductRatingService {
      * @param productRatingRequest
      * @return
      */
-    ProductRatingResponse rateProduct(ProductRatingRequest productRatingRequest);
+    ProductRatingResponse rateProduct(String username, ProductRatingRequest productRatingRequest);
 
     /**
      * Retrieves all product ratings.

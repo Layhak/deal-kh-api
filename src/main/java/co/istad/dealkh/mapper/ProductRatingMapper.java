@@ -10,8 +10,9 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = "spring")
 public interface ProductRatingMapper {
 
-    @Mapping(target = "userId", source = "user.id")
-    @Mapping(target = "productId", source = "product.id")
+//    @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "productName", source = "product.name")
+    @Mapping(target = "username", source = "user.username")
     ProductRatingResponse mapProductRatingToProductRatingResponse(ProductRating productRating);
 
     ProductRating mapProductRatingRequestToProductRating(ProductRatingRequest productRatingRequest);

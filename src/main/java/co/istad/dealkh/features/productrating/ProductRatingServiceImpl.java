@@ -45,18 +45,18 @@ public class ProductRatingServiceImpl implements ProductRatingService {
      * @return
      */
     @Override
-    public ProductRatingResponse rateProduct(ProductRatingRequest productRatingRequest) {
+    public ProductRatingResponse rateProduct(String username, ProductRatingRequest productRatingRequest) {
 
         ProductRating newProductRating = productRatingMapper.mapProductRatingRequestToProductRating(productRatingRequest);
 
-        User user = userRepository.findById(productRatingRequest.userId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "User not found!"
-                ));
-
-        Product product = productRepository.findById(productRatingRequest.productId())
+        Product product = productRepository.findBySlug(productRatingRequest.productSlug())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Product not found!"
+                ));
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found!"
                 ));
 
         if (productRatingRequest.ratingValue() < 0 || productRatingRequest.ratingValue() > 5) {
@@ -65,7 +65,7 @@ public class ProductRatingServiceImpl implements ProductRatingService {
             );
         }
 
-        if (productRatingRepository.findByUserIdAndProductId(productRatingRequest.userId(), productRatingRequest.productId()).isPresent()) {
+        if (productRatingRepository.findByUserUsernameAndProductSlug(username, productRatingRequest.productSlug()).isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "You have already rated this product!"
             );
