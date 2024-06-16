@@ -103,9 +103,9 @@ public class DataInit {
             user1.setFirstName("Heng");
             user1.setLastName("Layhak");
             user1.setUsername("layhak");
-            user1.setEmail("layhak@gmail.com");
+            user1.setEmail("layhakheng@gmail.com");
             user1.setGender("Male");
-            user1.setPassword(passwordEncoder.encode("Layhak123"));
+            user1.setPassword(passwordEncoder.encode("Layhak@123"));
             images.add(new Image("https://example.com/image1.jpg"));
             images.add(new Image("https://example.com/image2.jpg"));
             user1.setImages(images);

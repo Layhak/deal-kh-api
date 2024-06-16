@@ -5,6 +5,7 @@ import co.istad.dealkh.features.auth.AuthService;
 import co.istad.dealkh.features.auth.dto.AuthRequest;
 import co.istad.dealkh.features.auth.dto.AuthResponse;
 import co.istad.dealkh.features.auth.dto.RefreshTokenRequest;
+import co.istad.dealkh.features.resetpassword.ResetPasswordService;
 import co.istad.dealkh.features.user.UserService;
 import co.istad.dealkh.features.user.dto.UserCreateRequest;
 import co.istad.dealkh.features.user.dto.UserResponse;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
     private final UserService userService;
+    private final ResetPasswordService resetPasswordService;
 
     /**
      * Handles user login requests.
@@ -72,29 +74,49 @@ public class AuthController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(
-        summary = "Register new user",
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            content = @Content(schema = @Schema(implementation = UserCreateRequest.class),
-                examples = @ExampleObject(value = """
-                    {
-                         "firstName": "panda",
-                         "lastName": "panda",
-                         "username": "panda",
-                         "email": "panda@gmail.com",
-                         "password": "Panda@123",
-                         "confirmedPassword": "Panda@123",
-                         "gender": "male",
-                         "phoneNumber": "0987654321",
-                         "dob": "2001-01-01",
-                         "location": "phnom penh"
-                    }
-                """)
+            summary = "Register new user",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(schema = @Schema(implementation = UserCreateRequest.class),
+                            examples = @ExampleObject(value = """
+                                        {
+                                             "firstName": "panda",
+                                             "lastName": "panda",
+                                             "username": "panda",
+                                             "email": "panda@gmail.com",
+                                             "password": "Panda@123",
+                                             "confirmedPassword": "Panda@123",
+                                             "gender": "male",
+                                             "phoneNumber": "0987654321",
+                                             "dob": "2001-01-01",
+                                             "location": "phnom penh"
+                                        }
+                                    """)
+                    )
             )
-        )
     )
     public BaseResponse<UserResponse> registerUser(
             @Valid @RequestBody UserCreateRequest userRequest) {
         return BaseResponse.<UserResponse>createSuccess("Successfully create new user!")
                 .setPayload(userService.createUser(userRequest));
+    }
+
+
+    @PostMapping("/send-otp")
+    public BaseResponse<?> sendOtp(@RequestParam String email) {
+        return resetPasswordService.sendOtp(email);
+    }
+
+    @PostMapping("/confirm-otp")
+    public BaseResponse<?> confirmOtp(@RequestParam String email, @RequestParam Integer otp) {
+        return resetPasswordService.confirmOtp(email, otp);
+    }
+
+    @PostMapping("/update-password")
+    public BaseResponse<?> updatePassword(
+            @RequestParam String email,
+            @RequestParam Integer confirmationCode,
+            @RequestParam String newPassword,
+            @RequestParam String confirmPassword) {
+        return resetPasswordService.updatePassword(email, confirmationCode, newPassword, confirmPassword);
     }
 }

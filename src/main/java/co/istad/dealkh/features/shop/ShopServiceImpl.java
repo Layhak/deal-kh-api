@@ -255,7 +255,10 @@ public class ShopServiceImpl implements ShopService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User with username %s not found! ", username)));
         shop.getUsers().stream().filter(usr -> usr.getUsername().equals(owner)).findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of this shop"));
-
+        //owner can't remove himself from the shop
+        if (username.equals(owner)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can't remove yourself from the shop");
+        }
         if (shop.getUsers().stream().noneMatch(usr -> usr.getUsername().equals(username))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of this shop");
         }

@@ -75,7 +75,7 @@ public class ShopController {
 
     @DeleteMapping("/{slug}")
     @Operation(summary = "Delete shop")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public BaseResponse<?> deleteShop(@PathVariable String slug, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         shopService.deleteShop(slug, customUserDetails.getUsername());
         return BaseResponse.ok("Successfully deleted shop!").setPayload(new ArrayList<>());
