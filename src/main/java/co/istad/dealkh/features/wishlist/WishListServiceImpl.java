@@ -12,15 +12,19 @@ import co.istad.dealkh.features.wishlist.dto.WishListRequest;
 import co.istad.dealkh.features.wishlist.dto.WishListResponse;
 import co.istad.dealkh.mapper.WishListMapper;
 import co.istad.dealkh.paging.PageResponse;
-import co.istad.dealkh.specification.filter.PageFilter;
+import co.istad.dealkh.paging.Pagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +35,17 @@ public class WishListServiceImpl implements WishListService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final DiscountTypeRepository discountTypeRepository;
+
+    private void validateSortingParams(String field, String order) {
+        List<String> validFields = Arrays.asList("id", "discountTypeSlug", "productName", "username", "discountPercentage", "isGranted");
+
+        if (field == null || field.isEmpty() || !validFields.contains(field)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, discountTypeSlug, productName, username, discountPercentage, or isGranted");
+        }
+        if (order != null && !order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
+        }
+    }
 
     @Override
     public WishListResponse addWishList(String username, WishListRequest wishListRequest) {
@@ -60,24 +75,17 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public PageResponse<WishListResponse> getAllWishList(Map<String, String> params) {
+    public PageResponse<WishListResponse> getAllWishList(int page, int size, String field, String order, Map<String, String> params) {
 
-        int pageNumber = PageFilter.DEFAULT_PAGE_NUMBER;
-        if (params.containsKey(PageFilter.PAGE_NUMBER)) {
-            pageNumber = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
-        }
+        validateSortingParams(field, order);
 
-        int pageLimit = PageFilter.DEFAULT_PAGE_LIMIT;
-        if (params.containsKey(PageFilter.PAGE_LIMIT)) {
-            pageLimit = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
-        }
 
-        Pageable pageable = PageFilter.getPageable(pageNumber, pageLimit);
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
 
-        Page<WishListResponse> page = wishListRepository.findAll(pageable)
+        Page<WishListResponse> wishes = wishListRepository.findAll(pageable)
                 .map(wishListMapper::mapToWishListResponse);
 
-        return new PageResponse<>(page);
+        return new PageResponse<>(wishes);
 
     }
 
@@ -131,13 +139,32 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public WishListResponse getWishListByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new ResponseStatusException(
+    public PageResponse<WishListResponse> getWishListByUsername(int page, int size, String field, String order, Map<String, String> params, String username) {
+
+        validateSortingParams(field, order);
+
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         String.format("User with username %s not found! ", username)
-                )
+                ));
+        Page<WishList> wishesPage = wishListRepository.findByUser(user, pageable);
+
+        // Map WishList entities to WishListResponse objects
+        List<WishListResponse> wishListResponses = wishesPage.getContent().stream()
+                .map(wishListMapper::mapToWishListResponse)
+                .collect(Collectors.toList());
+
+        // Create and return PageResponse object with paginated data
+        return new PageResponse<>(
+                wishListResponses,
+                wishesPage.getNumber(),     // Current page number
+                wishesPage.getSize(),       // Page size
+                wishesPage.getTotalElements(),  // Total elements count
+                wishesPage.getTotalPages(),    // Total pages count
+                wishesPage.hasPrevious(),   // Whether there's a previous page
+                wishesPage.hasNext()        // Whether there's a next page
         );
-        return wishListMapper.mapToWishListResponse(wishListRepository.findByUser(user));
     }
 }

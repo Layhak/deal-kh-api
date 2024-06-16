@@ -10,7 +10,7 @@ public interface WishListService {
 
     WishListResponse addWishList(String username, WishListRequest wishListRequest);
 
-    PageResponse<WishListResponse> getAllWishList(Map<String, String> params);
+    PageResponse<WishListResponse> getAllWishList(int page, int size, String field, String order, Map<String, String> params);
 
     void deleteWishList(String uuid);
 
@@ -21,5 +21,5 @@ public interface WishListService {
 
     WishListResponse getWishListByUuid(String uuid);
 
-    WishListResponse getWishListByUsername(String username);
+    PageResponse<WishListResponse> getWishListByUsername(int page, int size, String field, String order, Map<String, String> params, String username);
 }
