@@ -30,6 +30,7 @@ public interface ShopService {
 
     List<ShopResponse> getNearbyShop(double latitute, double longtitute);
 
-    boolean isShopOwner(String slug, String username);
+    ShopResponse addOwnerToShop(String slug, String username, String owner);
 
+    ShopResponse removeOwnerFromShop(String slug, String username, String owner);
 }
