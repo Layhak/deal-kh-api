@@ -28,15 +28,7 @@ public interface DiscountService {
      * @param id the ID of the discount to retrieve
      * @return a {@link DiscountResponseDetail} containing the details of the retrieved discount
      */
-    Optional<DiscountResponseDetail> getDiscountById(Long id);
-
-    /**
-     * Retrieves a discount by its name.
-     *
-     * @param name the name of the discount to retrieve
-     * @return an {@link Optional} containing the {@link DiscountResponseDetail} if found, or empty if not found
-     */
-    Optional<DiscountResponseDetail> getDiscountByName(String name);
+    Optional<DiscountResponseDetail> getDiscountByUuid(String uuid);
 
     /**
      * Retrieves all discounts.
@@ -52,12 +44,12 @@ public interface DiscountService {
      * @param discountUpdateRequest the request containing the updated details for the discount
      * @return a {@link DiscountResponseDetail} containing the details of the updated discount
      */
-    DiscountResponseDetail updateDiscountById(String username, Long id, DiscountUpdateRequest discountUpdateRequest);
+    DiscountResponseDetail updateDiscountByUuid(String username, String uuid, DiscountUpdateRequest discountUpdateRequest);
 
     /**
      * Deletes a discount identified by its name.
      *
      * @param id
      */
-    void deleteDiscountById(String username, Long id);
+    void deleteDiscountByUuid(String username, String uuid);
 }

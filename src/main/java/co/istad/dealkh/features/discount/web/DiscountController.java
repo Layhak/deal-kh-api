@@ -47,15 +47,15 @@ public class DiscountController {
     }
 
     /**
-     * Retrieves a discount by its ID.
+     * Retrieves a discount by its uuid.
      *
-     * @param id
+     * @param uuid
      * @return
      */
-    @GetMapping("/{id}")
-    BaseResponse<Optional<DiscountResponseDetail>> getDiscountById(@PathVariable Long id) {
-        return BaseResponse.<Optional<DiscountResponseDetail>>ok("Retrieved discount with id " + id + " successfully!")
-                .setPayload(discountService.getDiscountById(id));
+    @GetMapping("/{uuid}")
+    BaseResponse<Optional<DiscountResponseDetail>> getDiscountByUuid(@PathVariable String uuid) {
+        return BaseResponse.<Optional<DiscountResponseDetail>>ok("Retrieved discount with uuid " + uuid + " successfully!")
+                .setPayload(discountService.getDiscountByUuid(uuid));
     }
 
 //    @GetMapping("/{name}")
@@ -85,7 +85,7 @@ public class DiscountController {
     BaseResponse<PageResponse<DiscountResponseDetail>> filterDiscount(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "2") int size,
-            @RequestParam(defaultValue = "id") String field,
+            @RequestParam(defaultValue = "uuid") String field,
             @RequestParam(defaultValue = "asc") String order,
             @RequestParam Map<String, String> params) {
         return BaseResponse.<PageResponse<DiscountResponseDetail>>ok("Retrieves all discounts successfully!")
@@ -95,31 +95,31 @@ public class DiscountController {
     /**
      * Updates a discount identified by its name based on the provided request.
      *
-     * @param id                    the ID of the discount to update
+     * @param uuid                  the uuid of the discount to update
      * @param discountUpdateRequest the request containing the updated details for the discount
      * @return a {@link DiscountResponseDetail} containing the details of the updated discount
      */
-    @PutMapping("/{id}")
+    @PutMapping("/{uuid}")
     BaseResponse<DiscountResponseDetail> updateDiscountById(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @PathVariable Long id,
+            @PathVariable String uuid,
             @RequestBody DiscountUpdateRequest discountUpdateRequest) {
 
         return BaseResponse.<DiscountResponseDetail>ok("Discount has been updated!")
-                .setPayload(discountService.updateDiscountById(customUserDetails.getUsername(), id, discountUpdateRequest));
+                .setPayload(discountService.updateDiscountByUuid(customUserDetails.getUsername(), uuid, discountUpdateRequest));
     }
 
     /**
      * Deletes a discount identified by its name.
      *
-     * @param id
+     * @param uuid
      * @return
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{uuid}")
     BaseResponse<?> deleteDiscountById(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @PathVariable Long id) {
-        discountService.deleteDiscountById(customUserDetails.getUsername(), id);
+            @PathVariable String uuid) {
+        discountService.deleteDiscountByUuid(customUserDetails.getUsername(), uuid);
         return BaseResponse.ok("Discount has been deleted!")
                 .setPayload("No content");
     }

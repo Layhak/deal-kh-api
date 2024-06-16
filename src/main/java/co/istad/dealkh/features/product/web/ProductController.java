@@ -88,7 +88,7 @@ public class ProductController {
      * @return
      */
     @PutMapping("/{slug}")
-    BaseResponse<ProductResponse> updateProductById(
+    BaseResponse<ProductResponse> updateProductBySlug(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable String slug,
             @RequestBody ProductUpdateRequest productUpdateRequest) {

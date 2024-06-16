@@ -8,8 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -35,7 +34,17 @@ public class Discount extends Auditable {
     @JoinColumn(name = "discount_type_id", nullable = false)
     private DiscountType discountType;
 
+    @Column(name = "uuid", unique = true, nullable = false, updatable = false)
+    private String uuid;
+
     @ManyToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;
+
+    @PrePersist
+    protected void onCreate() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID().toString();
+        }
+    }
 }
