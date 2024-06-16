@@ -66,12 +66,12 @@ public class DiscountServiceImpl implements DiscountService {
         DiscountType discountType = discountTypeRepository.findById(discountCreateRequest.discountTypeId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("Discount type with id %d not found! ", discountCreateRequest.discountTypeId())));
+                        String.format("Discount type with uuid %d not found! ", discountCreateRequest.discountTypeId())));
 
         Shop shop = shopRepository.findById(discountCreateRequest.shopId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("Shop with id %d not found! ", discountCreateRequest.shopId())));
+                        String.format("Shop with uuid %d not found! ", discountCreateRequest.shopId())));
 
         Discount newDiscount = discountMapper.mapDiscountRequestToDiscount(discountCreateRequest);
 
@@ -87,38 +87,21 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     /**
-     * Retrieves a discount by its ID.
+     * Retrieves a discount by its uuid.
      *
-     * @param id the ID of the discount to retrieve
+     * @param uuid the uuid of the discount to retrieve
      * @return a {@link DiscountResponseDetail} containing the details of the retrieved discount
      * @throws ResponseStatusException if the discount is not found
      */
     @Override
-    public Optional<DiscountResponseDetail> getDiscountById(Long id) {
+    public Optional<DiscountResponseDetail> getDiscountByUuid(String uuid) {
 
-        Discount discount = discountRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount id not found!"));
+        Discount discount = discountRepository.findByUuid(uuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Discount with uuid %s not found!", uuid)));
 
         DiscountResponseDetail discountResponse = discountMapper.mapDiscountToResponseDetail(discount);
         return Optional.of(discountResponse);
     }
 
-    /**
-     * Retrieves a discount by its name.
-     *
-     * @param name the name of the discount to retrieve
-     * @return
-     */
-    @Override
-    public Optional<DiscountResponseDetail> getDiscountByName(String name) {
-
-//        Discount discount = discountRepository.findByName(name)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount name not found!"));
-//
-//        DiscountResponseDetail discountResponseDetail = discountMapper.mapDiscountToResponseDetail(discount);
-//        return Optional.of(discountResponseDetail);
-        return null;
-    }
 
     /**
      * Retrieves all discounts.
@@ -141,9 +124,9 @@ public class DiscountServiceImpl implements DiscountService {
             String discountPercentage = params.get("discountPercentage");
             discountFilter.setDiscountPercentage(Double.parseDouble(discountPercentage));
         }
-        List<String> validFields = Arrays.asList("id", "discountPercentage", "createdAt", "updatedAt");
+        List<String> validFields = Arrays.asList("uuid", "discountPercentage", "createdAt", "updatedAt");
         if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, discountPercentage, or createdAt");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be uuid, discountPercentage, or createdAt");
         }
         if (order != null && !order.equals("asc") && !order.equals("desc")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
@@ -161,16 +144,15 @@ public class DiscountServiceImpl implements DiscountService {
     /**
      * Updates a discount identified by its name based on the provided request.
      *
-     * @param id                    the ID of the discount to update
+     * @param uuid                  the uuid of the discount to update
      * @param discountUpdateRequest the request containing the updated details for the discount
      * @return
      */
     @Override
-    public DiscountResponseDetail updateDiscountById(String username, Long id, DiscountUpdateRequest discountUpdateRequest) {
-        Discount discount = discountRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount id not found!"));
-
-        if(discountRepository.findByCreatedBy(username).isEmpty()){
+    public DiscountResponseDetail updateDiscountByUuid(String username, String uuid, DiscountUpdateRequest discountUpdateRequest) {
+        Discount discount = discountRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Discount with uuid %s not found!", uuid)));
+        if (discountRepository.findByCreatedBy(username).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
         }
 
@@ -183,21 +165,17 @@ public class DiscountServiceImpl implements DiscountService {
         return discountMapper.mapDiscountToResponseDetail(discount);
     }
 
-    /**
-     * Deletes a discount identified by its name.
-     *
-     * @param id
-     */
     @Override
-    public void deleteDiscountById(String username, Long id) {
+    public void deleteDiscountByUuid(String username, String uuid) {
 
-        Discount discount = discountRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount id not found!"));
 
-        if(discountRepository.findByCreatedBy(username).isEmpty()){
+        Discount discount = discountRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Discount with uuid %s not found!", uuid)));
+        if (discountRepository.findByCreatedBy(username).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
         }
 
         discountRepository.delete(discount);
     }
+
 }

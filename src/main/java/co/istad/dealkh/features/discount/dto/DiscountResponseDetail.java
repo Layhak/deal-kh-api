@@ -16,7 +16,7 @@ import java.time.LocalDate;
  * @param updatedAt
  */
 public record DiscountResponseDetail(
-        Long id,
+        String uuid,
         String discountType,
         String description,
         BigDecimal value,
