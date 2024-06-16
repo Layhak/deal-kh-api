@@ -14,9 +14,10 @@ import java.math.BigDecimal;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
+    @Mapping(target = "seller", source = "product.createdBy")
     @Mapping(target = "category", source = "category", qualifiedByName = "categoryToString")
     @Mapping(target = "shop", source = "shop", qualifiedByName = "shopToString")
-    @Mapping(target = "discountPercentage", source = "discount", qualifiedByName = "discountToDouble")
+    @Mapping(target = "discountValue", source = "discount", qualifiedByName = "discountToDouble")
     @Mapping(target = "images", source = "images")
     ProductResponse mapProductToProductResponseDetail(Product product);
 
