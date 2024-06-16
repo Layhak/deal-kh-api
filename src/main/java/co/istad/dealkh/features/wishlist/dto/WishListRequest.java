@@ -1,19 +1,19 @@
 package co.istad.dealkh.features.wishlist.dto;
 
-import co.istad.dealkh.validator.discount.DiscountRange;
+import co.istad.dealkh.validator.slug.ValidSlug;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record WishListRequest(
 
-        @NotNull(message = "Discount id is required")
-        Long discountTypeId,
+        @NotNull(message = "Discount Type Slug is required")
+        @ValidSlug
+        String discountTypeSlug,
 
-        @DiscountRange(min = 0, max = 100, message = "Discount must be between 0 and 100")
-        Integer discountPercentage,
-        @NotNull(message = "User id is required")
-        Long userId,
+        Double discountPercentage,
 
         @NotNull(message = "Product id is required")
-        Long productId
+        @Size(max = 100, message = "Product slug must be less than 100 characters")
+        String productSlug
 ) {
 }

@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class Shop extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String name;
 
     @Column(unique = true)
@@ -33,13 +32,13 @@ public class Shop extends Auditable {
     private String location;
     private String address;
 
-    @Column(length = 250)
+    @Column(length = 500)
     private String description;
 
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-    @Column(unique = true)
+    @Column
     private String email;
 
     @Convert(converter = SocialListConverter.class)

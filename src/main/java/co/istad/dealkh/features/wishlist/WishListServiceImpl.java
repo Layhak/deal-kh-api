@@ -4,6 +4,7 @@ import co.istad.dealkh.domain.DiscountType;
 import co.istad.dealkh.domain.Product;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.domain.WishList;
+import co.istad.dealkh.domain.enumType.GrantStatus;
 import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
 import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.user.UserRepository;
@@ -32,22 +33,22 @@ public class WishListServiceImpl implements WishListService {
     private final DiscountTypeRepository discountTypeRepository;
 
     @Override
-    public WishListResponse addWishList(WishListRequest wishListRequest) {
+    public WishListResponse addWishList(String username, WishListRequest wishListRequest) {
 
         WishList newWishList = wishListMapper.mapRequestToWishList(wishListRequest);
 
-        User user = userRepository.findById(wishListRequest.userId()).orElseThrow(() -> new ResponseStatusException(
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("User with username %s not found! ", username)
+                ));
+        Product product = productRepository.findBySlug(wishListRequest.productSlug()).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                String.format("User with id %d not found! ", wishListRequest.userId())
+                String.format("Product with slug %s not found! ", wishListRequest.productSlug())
         ));
-        Product product = productRepository.findById(wishListRequest.productId()).orElseThrow(() -> new ResponseStatusException(
+        DiscountType discountType = discountTypeRepository.findBySlug(wishListRequest.discountTypeSlug()).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                String.format("Product with id %d not found! ", wishListRequest.productId())
-        ));
-
-        DiscountType discountType = discountTypeRepository.findById(wishListRequest.discountTypeId()).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                String.format("DiscountType with id %d not found! ", wishListRequest.discountTypeId())
+                String.format("DiscountType with uuid %s not found! ", wishListRequest.discountTypeSlug())
         ));
 
         newWishList.setUser(user);
@@ -81,38 +82,62 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public void deleteWishList(Long id) {
+    public void deleteWishList(String uuid) {
 
-        wishListRepository.findById(id)
+        wishListRepository.findByUuid(uuid)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("WishList with id %d not found! ", id)
+                        String.format("WishList with id %d not found! ", uuid)
                 ));
 
-        wishListRepository.deleteById(id);
+        wishListRepository.deleteByUuid(uuid);
     }
 
     @Override
-    public WishListResponse grantWishList(Long id) {
-        WishList wishList = wishListRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
+    public WishListResponse grantWishListByUuid(String uuid) {
+        WishList wishList = wishListRepository.findByUuid(uuid).orElseThrow(
+                () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("WishList with id %d not found! ", id)
-                ));
-        wishList.setIsGranted(true);
+                        String.format("WishList with uuid %s not found! ", uuid)
+                )
+        );
+        wishList.setIsGranted(GrantStatus.GRANTED);
         wishListRepository.save(wishList);
         return wishListMapper.mapToWishListResponse(wishList);
     }
 
     @Override
-    public WishListResponse denyWishList(Long id) {
-        WishList wishList = wishListRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
+    public WishListResponse denyWishListByUuid(String uuid) {
+        WishList wishList = wishListRepository.findByUuid(uuid).orElseThrow(
+                () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("WishList with id %d not found! ", id)
-                ));
-        wishList.setIsGranted(false);
+                        String.format("WishList with uuid %s not found! ", uuid)
+                )
+        );
+        wishList.setIsGranted(GrantStatus.DENIED);
         wishListRepository.save(wishList);
         return wishListMapper.mapToWishListResponse(wishList);
+    }
+
+    @Override
+    public WishListResponse getWishListByUuid(String uuid) {
+        WishList wishList = wishListRepository.findByUuid(uuid).orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("WishList with uuid %s not found! ", uuid)
+                )
+        );
+        return wishListMapper.mapToWishListResponse(wishList);
+    }
+
+    @Override
+    public WishListResponse getWishListByUsername(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("User with username %s not found! ", username)
+                )
+        );
+        return wishListMapper.mapToWishListResponse(wishListRepository.findByUser(user));
     }
 }

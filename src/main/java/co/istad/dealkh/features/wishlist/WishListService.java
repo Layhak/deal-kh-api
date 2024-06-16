@@ -8,14 +8,18 @@ import java.util.Map;
 
 public interface WishListService {
 
-    WishListResponse addWishList(WishListRequest wishListRequest);
+    WishListResponse addWishList(String username, WishListRequest wishListRequest);
 
     PageResponse<WishListResponse> getAllWishList(Map<String, String> params);
 
-    void deleteWishList(Long id);
+    void deleteWishList(String uuid);
 
 
-    WishListResponse grantWishList(Long id);
+    WishListResponse grantWishListByUuid(String uuid);
 
-    WishListResponse denyWishList(Long id);
+    WishListResponse denyWishListByUuid(String uuid);
+
+    WishListResponse getWishListByUuid(String uuid);
+
+    WishListResponse getWishListByUsername(String username);
 }

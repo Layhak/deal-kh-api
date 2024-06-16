@@ -25,15 +25,18 @@ public record ShopUpdateRequest(
 
         @NotBlank(message = "Name is required")
         @ValidName(message = "Name must be properly formatted and can contain letters, numbers, single spaces, and single dashes")
+        @Size(max = 100, message = "Name must be less than 100 characters")
         String name,
 
 
         @ValidSlug(message = "Slug must be properly formatted and can contain lowercase letters, numbers, and single dashes")
+        @Size(max = 100, message = "Slug must be less than 100 characters")
         String slug,
 
         @NotNull(message = "address is required")
         String address,
 
+        @Size(max = 500, message = "Description must be less than 500 characters")
         String description,
 
         @NotBlank(message = "Phone number is required")
@@ -42,6 +45,7 @@ public record ShopUpdateRequest(
         String phoneNumber,
 
 //        @ValidEmail(message = "Email must be properly formatted")
+        @Size(max = 100, message = "Email must be less than 100 characters")
         String email,
 
         @ValidLocalTime(message = "Please provide a valid opening time in the format Example:08:00")

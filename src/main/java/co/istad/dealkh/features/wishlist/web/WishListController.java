@@ -5,8 +5,10 @@ import co.istad.dealkh.features.wishlist.WishListService;
 import co.istad.dealkh.features.wishlist.dto.WishListRequest;
 import co.istad.dealkh.features.wishlist.dto.WishListResponse;
 import co.istad.dealkh.paging.PageResponse;
+import co.istad.dealkh.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -31,8 +33,8 @@ public class WishListController {
     private final WishListService wishListService;
 
     @PostMapping
-    public BaseResponse<WishListResponse> createWishList(@RequestBody @Valid WishListRequest wishListRequest) {
-        return BaseResponse.<WishListResponse>ok("Successfully create new wish list!!").setPayload(wishListService.addWishList(wishListRequest));
+    public BaseResponse<WishListResponse> createWishList(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody @Valid WishListRequest wishListRequest) {
+        return BaseResponse.<WishListResponse>ok("Successfully create new wish list!!").setPayload(wishListService.addWishList(customUserDetails.getUsername(), wishListRequest));
     }
 
     @GetMapping
@@ -41,23 +43,35 @@ public class WishListController {
     }
 
 
-    @DeleteMapping("/{id}")
-    BaseResponse<?> deleteWishList(@PathVariable Long id) {
-        wishListService.deleteWishList(id);
-        return BaseResponse.ok("Successfully delete wish list with id:" + id).setPayload("");
+    @DeleteMapping("/{uuid}")
+    BaseResponse<?> deleteWishList(@PathVariable String uuid) {
+        wishListService.deleteWishList(uuid);
+        return BaseResponse.ok("Successfully delete wish list with uuid:" + uuid).setPayload("");
     }
 
-    @PostMapping("/{id}/grant")
-    BaseResponse<WishListResponse> grantWishList(@PathVariable Long id) {
-        return BaseResponse.<WishListResponse>ok("Successfully grant wish list with id:" + id).setPayload(
-                wishListService.grantWishList(id)
+    @PostMapping("/{uuid}/grant")
+    BaseResponse<WishListResponse> grantWishList(@PathVariable String uuid) {
+        return BaseResponse.<WishListResponse>ok("Successfully grant wish list with uuid:" + uuid).setPayload(
+                wishListService.grantWishListByUuid(uuid)
         );
     }
 
-    @PostMapping("/{id}/deny")
-    BaseResponse<WishListResponse> denyWishList(@PathVariable Long id) {
-        return BaseResponse.<WishListResponse>ok("Successfully grant wish list with id:" + id).setPayload(
-                wishListService.denyWishList(id)
+    @PostMapping("/{uuid}/deny")
+    BaseResponse<WishListResponse> denyWishList(@PathVariable String uuid) {
+        return BaseResponse.<WishListResponse>ok("Successfully grant wish list with uuid:" + uuid).setPayload(
+                wishListService.denyWishListByUuid(uuid)
         );
+    }
+
+    @GetMapping("/{uuid}")
+    BaseResponse<WishListResponse> getWishListByUuid(@PathVariable String uuid) {
+        return BaseResponse.<WishListResponse>ok("Successfully get wish list with uuid:" + uuid).setPayload(
+                wishListService.getWishListByUuid(uuid)
+        );
+    }
+
+    @GetMapping("/{username}")
+    BaseResponse<WishListResponse> getWishListByUsername(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return BaseResponse.<WishListResponse>ok("Successfully get wish list with username:" + customUserDetails.getUsername()).setPayload(wishListService.getWishListByUsername(customUserDetails.getUsername()));
     }
 }
