@@ -67,15 +67,14 @@ public class ProductServiceImpl implements ProductService {
 
         Product newProduct = productMapper.mapProductRequestToProduct(productCreateRequest);
 
-        Discount discount = discountRepository.findById(productCreateRequest.discountId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Discount with id %d not found! ", productCreateRequest.discountId())));
+        Discount discount = discountRepository.findByUuid(productCreateRequest.discountUuid()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Discount with uuid %s not found! ", productCreateRequest.discountUuid())));
 
-        Category category = categoryRepository.findById(productCreateRequest.categoryId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with id %d not found! ", productCreateRequest.categoryId())));
+        Category category = categoryRepository.findBySlug(productCreateRequest.categorySlug()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with slug %s not found! ", productCreateRequest.categorySlug())));
 
-        Shop shop = shopRepository.findById(productCreateRequest.shopId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop with id %d not found! ", productCreateRequest.shopId())));
+        Shop shop = shopRepository.findBySlug(productCreateRequest.shopSlug()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop with slug %s not found! ", productCreateRequest.shopSlug())));
 
         String name = NameFormatter.formatName(productCreateRequest.name());
         String slug = SlugFormatter.formatSlug(productCreateRequest.name());
-
         newProduct.setName(name);
         newProduct.setSlug(slug);
         newProduct.setDiscount(discount);
