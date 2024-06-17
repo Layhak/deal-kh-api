@@ -10,6 +10,18 @@ services:
     environment:
       - TZ=Asia/Bangkok
     ports:
-      - '3101:8080'   #follow you port
+      - '3101:8080'   #follow your port
     volumes:
-      - '/home/dealkh/deal-kh-api/filestorage/images:/home/dealkh/filestorage/images'
+      - deal-kh-api:/home/dealkh/images
+      - /home/dealkh/dealkh-api/filestorage/images:/home/dealkh/images
+    networks:
+      - dealkh
+volumes:
+  deal-kh-api:
+    driver: local
+networks:
+  dealkh:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.82.0.0/16
