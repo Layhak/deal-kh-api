@@ -29,10 +29,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
                         url = "http://www.apache.org/licenses/LICENSE-2.0.html"
                 )
         ),
+        security = @SecurityRequirement(name = "bearerAuth"),
         servers = {
-                @Server(url = "https://dealkh-api.istad.co", description = ""),
-        },
-        security = @SecurityRequirement(name = "bearerAuth")
+                @Server(url = "https://dealkh-api.istad.co", description = "")
+        }
 )
 
 @SecurityScheme(
