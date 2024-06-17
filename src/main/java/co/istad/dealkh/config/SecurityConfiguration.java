@@ -21,6 +21,9 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  * SecurityConfiguration is a configuration class that defines beans and configurations for the security setup.
@@ -55,7 +58,8 @@ public class SecurityConfiguration {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authz -> authz
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(authz -> authz
                                 .anyRequest().permitAll()
 //                        // auth
 //                        .requestMatchers("/api/v1/auth/**").permitAll()
@@ -135,6 +139,18 @@ public class SecurityConfiguration {
                         .accessDeniedHandler(customAccessDeniedHandler))
                 .authenticationProvider(customAuthenticationProvider);
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOriginPattern("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
     /**
