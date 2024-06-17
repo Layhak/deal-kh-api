@@ -38,25 +38,25 @@ public class ImageServiceImpl implements ImageService {
 
     private static final Set<String> SUPPORTED_IMAGE_TYPES = Set.of(MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_GIF_VALUE);
 
-    private String generateImageUrl(HttpServletRequest request, String filename) {
+    private String getScheme(HttpServletRequest request) {
         String scheme = request.getHeader("X-Forwarded-Proto");
-        if (scheme == null) {
-            scheme = request.getScheme();
-        }
+        return (scheme != null) ? scheme : request.getScheme();
+    }
+
+    private String generateImageUrl(HttpServletRequest request, String filename) {
+        String scheme = getScheme(request);
         int port = request.getServerPort();
         String portPart = (scheme.equals("https") && port == 443) || (scheme.equals("http") && port == 80) ? "" : ":" + port;
         return String.format("%s://%s%s/images/%s", scheme, request.getServerName(), portPart, filename);
     }
 
     private String generateDownloadImageUrl(HttpServletRequest request, String filename) {
-        String scheme = request.getHeader("X-Forwarded-Proto");
-        if (scheme == null) {
-            scheme = request.getScheme();
-        }
+        String scheme = getScheme(request);
         int port = request.getServerPort();
         String portPart = (scheme.equals("https") && port == 443) || (scheme.equals("http") && port == 80) ? "" : ":" + port;
         return String.format("%s://%s%s/api/v1/files/download/%s", scheme, request.getServerName(), portPart, filename);
     }
+
 
     /**
      * Uploads an image and returns the filename.
