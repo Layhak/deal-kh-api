@@ -10,6 +10,8 @@ FROM openjdk:17-alpine
 WORKDIR /app
 EXPOSE 8080
 
+COPY --from=builder /app/build/libs/*0.0.1-SNAPSHOT.jar app.jar
+
 VOLUME /home/dealkh/filestorage/images
-VOLUME /keys   
+VOLUME /keys
 ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "app.jar"]
