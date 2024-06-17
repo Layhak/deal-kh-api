@@ -57,7 +57,7 @@ public record ShopCreateRequest(
         String closeAt,
 
         @NotNull(message = "Shop Type Slug  is required")
-        String shopTypeSlug,
+        String shopType,
 
 
         @NotNull(message = "Location is required")

@@ -2,14 +2,16 @@ package co.istad.dealkh.features.wishlist.dto;
 
 import co.istad.dealkh.validator.slug.ValidSlug;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public record WishListRequest(
 
         @NotNull(message = "Discount Type Slug is required")
-        @ValidSlug
+        @ValidSlug(message = "Discount Type Slug must be properly formatted and can contain lowercase letters, numbers, and single dashes")
         String discountTypeSlug,
 
+        @Positive(message = "Discount Percentage must be a positive number")
         Double discountPercentage,
 
         @NotNull(message = "Product id is required")

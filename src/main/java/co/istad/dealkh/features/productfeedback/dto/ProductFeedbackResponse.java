@@ -15,9 +15,10 @@ import java.util.List;
  * @param images
  */
 public record ProductFeedbackResponse(
+        String uuid,
         String description,
-        Long productId,
-        Long userId,
+        String productName,
+        String username,
         List<ImageResponse> images
 ) {
 }

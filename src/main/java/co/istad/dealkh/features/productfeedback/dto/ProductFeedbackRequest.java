@@ -20,13 +20,9 @@ public record ProductFeedbackRequest(
         @NotNull(message = "Description is required")
         String description,
 
-        @NotNull(message = "Product id is required")
-        Long productId,
+        @NotNull(message = "Product slug is required")
+        String productSlug,
 
-        @NotNull(message = "User id is required")
-        Long userId,
-
-        @NotNull(message = "Images are required")
         List<ImageRequest> images
 
 ) {

@@ -1,19 +1,25 @@
 package co.istad.dealkh.mapper;
 
+import co.istad.dealkh.domain.Category;
+import co.istad.dealkh.domain.Product;
 import co.istad.dealkh.domain.ProductFeedback;
+import co.istad.dealkh.features.category.dto.CategoryUpdateRequest;
 import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackRequest;
 import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackResponse;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackUpdate;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",uses = {CustomMapper.class})
 public interface ProductFeedbackMapper {
-    @Mapping(target = "productId", source = "product.id")
-    @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "productName", source = "product.name")
+    @Mapping(target = "username", source = "user.username")
     ProductFeedbackResponse toProductFeedbackResponse(ProductFeedback productFeedback);
 
-    @Mapping(target = "product.id", source = "productId")
-    @Mapping(target = "user.id", source = "userId")
+    @Mapping(target = "product.name", source = "productSlug")
     ProductFeedback toProductFeedback(ProductFeedbackRequest productFeedbackRequest);
+
+    @Mapping(target = "id", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void mapProductFeedbackUpdateRequest(@MappingTarget ProductFeedback productFeedback, ProductFeedbackUpdate productFeedbackUpdate);
 }

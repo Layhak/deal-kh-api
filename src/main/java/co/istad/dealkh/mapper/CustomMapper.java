@@ -38,9 +38,9 @@ public class CustomMapper {
                 .collect(Collectors.toList());
     }
 
-    @Named("shopTypeSlugToString")
+    @Named("shopTypeToString")
     public String mapShopTypeSLug(ShopType shopType) {
-        return shopType.getSlug();
+        return shopType.getName();
     }
 
     @Named("discountTypeToLong")

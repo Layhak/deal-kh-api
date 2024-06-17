@@ -1,8 +1,10 @@
 package co.istad.dealkh.features.product.dto;
 
 
+import co.istad.dealkh.validator.name.ValidName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -19,10 +21,11 @@ import jakarta.validation.constraints.Size;
 public record ProductUpdateRequest(
 
         @NotBlank(message = "Name is required")
-        @Size(max = 100, message = "Name must be less than 100 characters")
+        @ValidName(message = "Name must be properly formatted and can contain letters, numbers, single spaces, and single dashes")
         String name,
 
         @NotNull(message = "Price is required")
+        @Positive(message = "Price must be a positive number")
         double price,
 
         @Size(max = 500, message = "Description must be less than 500 characters")

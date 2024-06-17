@@ -1,6 +1,7 @@
 package co.istad.dealkh.features.product.dto;
 
 import co.istad.dealkh.features.image.dto.ImageResponse;
+import co.istad.dealkh.validator.name.ValidName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -22,6 +23,7 @@ import java.util.List;
 public record ProductCreateRequest(
 
         @NotBlank(message = "Name is required")
+        @ValidName(message = "Name must be properly formatted and can contain letters, numbers, single spaces, and single dashes")
         String name,
 
         @Positive(message = "Price must be a positive number")
