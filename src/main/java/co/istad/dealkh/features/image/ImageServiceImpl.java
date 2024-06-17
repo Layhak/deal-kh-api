@@ -38,25 +38,27 @@ public class ImageServiceImpl implements ImageService {
 
     private static final Set<String> SUPPORTED_IMAGE_TYPES = Set.of(MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_GIF_VALUE);
 
-    private String getScheme(HttpServletRequest request) {
-        String scheme = request.getHeader("X-Forwarded-Proto");
-        return (scheme != null) ? scheme : request.getScheme();
-    }
-
+    /**
+     * Generates a full URL for the uploaded image.
+     *
+     * @param request  the HTTP servlet request
+     * @param filename the filename of the uploaded image
+     * @return the full URL of the uploaded image
+     */
     private String generateImageUrl(HttpServletRequest request, String filename) {
-        String scheme = getScheme(request);
-        int port = request.getServerPort();
-        String portPart = (scheme.equals("https") && port == 443) || (scheme.equals("http") && port == 80) ? "" : ":" + port;
-        return String.format("%s://%s%s/images/%s", scheme, request.getServerName(), portPart, filename);
+        return String.format("%s://%s:%d/images/%s", request.getScheme(), request.getServerName(), request.getServerPort(), filename);
     }
 
+    /**
+     * Generates a download URL for the uploaded image.
+     *
+     * @param request  the HTTP servlet request
+     * @param filename the filename of the uploaded image
+     * @return the download URL of the uploaded image
+     */
     private String generateDownloadImageUrl(HttpServletRequest request, String filename) {
-        String scheme = getScheme(request);
-        int port = request.getServerPort();
-        String portPart = (scheme.equals("https") && port == 443) || (scheme.equals("http") && port == 80) ? "" : ":" + port;
-        return String.format("%s://%s%s/api/v1/files/download/%s", scheme, request.getServerName(), portPart, filename);
+        return String.format("%s://%s:%d/api/v1/files/download/%s", request.getScheme(), request.getServerName(), request.getServerPort(), filename);
     }
-
 
     /**
      * Uploads an image and returns the filename.
