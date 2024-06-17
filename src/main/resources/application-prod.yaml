@@ -1,0 +1,60 @@
+# our own configuration for the file storage
+file:
+  storage-dir: "filestorage/images/"
+  client-dir: "/images/**"
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: layhak.garu@gmail.com
+    password: 'hvhdsfakwkhawmwk'
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+  servlet: # this is for file upload
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  datasource:
+    username: dealkh
+    password: Dealkh@123
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://136.228.158.126:3104/deal-kh
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
+springdoc:
+  swagger-ui:
+    path: /
+
+
+#logging:
+#  level:
+#    org.springframework.security: DEBUG
+#    org.springframework.orm.jpa: DEBUG
+#    org.hibernate.SQL: DEBUG  # To log SQL statements
+#    org.hibernate.type: TRACE  # To log bound parameters
+
+# This is for the access token
+ACCESS_TOKEN_PRIVATE_KEY_PATH: access-refresh-token-keys/access-token-private.key
+ACCESS_TOKEN_PUBLIC_KEY_PATH: access-refresh-token-keys/access-token-public.key
+# This is for the refresh token
+REFRESH_TOKEN_PRIVATE_KEY_PATH: access-refresh-token-keys/refresh-token-private.key
+REFRESH_TOKEN_PUBLIC_KEY_PATH: access-refresh-token-keys/refresh-token-public.key
+
+google:
+  maps:
+    api-key: AIzaSyAakh_98ZoiOIrtv6fiA3QtH1sWaMni36c

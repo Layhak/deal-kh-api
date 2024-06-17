@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -20,6 +21,9 @@ public class ProductFeedback extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "uuid", unique = true, nullable = false, updatable = false)
+    private String uuid;
 
     @Column(length = 250)
     private String description;
@@ -34,4 +38,11 @@ public class ProductFeedback extends Auditable {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @PrePersist
+    protected void onCreate() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID().toString();
+        }
+    }
 }

@@ -10,13 +10,13 @@ import org.mapstruct.*;
 public interface ShopMapper {
 
     @Mapping(target = "owners", source = "users", qualifiedByName = "userToString")
-    @Mapping(target = "shopType", source = "shopType", qualifiedByName = "shopTypeSlugToString")
+    @Mapping(target = "shopType", source = "shopType", qualifiedByName = "shopTypeToString")
     @Mapping(target = "slug", source = "slug")
     ShopResponse toShopResponse(Shop shop);
 
     @Mapping(source = "openAt", target = "openAt", qualifiedByName = "stringToLocalTime")
     @Mapping(source = "closeAt", target = "closeAt", qualifiedByName = "stringToLocalTime")
-    @Mapping(source = "shopTypeSlug", target = "shopType", qualifiedByName = "stringToShopTypeSlug")
+    @Mapping(source = "shopType", target = "shopType", qualifiedByName = "stringToShopTypeSlug")
     Shop toShop(ShopCreateRequest shopRequest);
 
     @Mapping(target = "id", ignore = true)

@@ -35,7 +35,6 @@ public class ShopTypeServiceImpl implements ShopTypeService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Shop type name already exists");
         }
 
-
         String name = NameFormatter.formatName(shopTypeCreateRequest.name());
         String slug = SlugFormatter.formatSlug(shopTypeCreateRequest.name());
 

@@ -1,11 +1,19 @@
 package co.istad.dealkh.features.productfeedback;
 
+import co.istad.dealkh.domain.Product;
 import co.istad.dealkh.domain.ProductFeedback;
+import co.istad.dealkh.domain.User;
+import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackRequest;
 import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackResponse;
+import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackUpdate;
+import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.mapper.ProductFeedbackMapper;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.control.MappingControl;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -25,42 +33,77 @@ import java.util.List;
 public class ProductFeedbackServiceImpl implements ProductFeedbackService {
     private final ProductFeedbackRepository productFeedbackRepository;
     private final ProductFeedbackMapper productFeedbackMapper;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
     /**
      * Retrieves all product feedback for a given product ID.
      *
-     * @param productId
+     * @param productSlug
      * @return
      */
     @Override
-    public List<ProductFeedbackResponse> getProductFeedbacks(Long productId) {
-        return productFeedbackRepository.findByProductId(productId).stream()
+    public List<ProductFeedbackResponse> getProductFeedbacks(String productSlug) {
+        return productFeedbackRepository.findByProductSlug(productSlug).stream()
                 .map(productFeedbackMapper::toProductFeedbackResponse)
                 .toList();
     }
 
     /**
      * Creates a new product feedback for a given product ID.
-     *
+     * @param username
      * @param productFeedbackRequest
      * @return
      */
     @Override
-    public ProductFeedbackResponse createProductFeedback(ProductFeedbackRequest productFeedbackRequest) {
+    public ProductFeedbackResponse createProductFeedback(String username, ProductFeedbackRequest productFeedbackRequest) {
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "User not found"));
+
+        Product product = productRepository.findBySlug(productFeedbackRequest.productSlug())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Product not found"));
+
         ProductFeedback productFeedback = productFeedbackMapper.toProductFeedback(productFeedbackRequest);
+
+        productFeedback.setUser(user);
+        productFeedback.setProduct(product);
         return productFeedbackMapper.toProductFeedbackResponse(productFeedbackRepository.save(productFeedback));
     }
 
     /**
      * Retrieves a product feedback by its ID.
      *
-     * @param id
+     * @param username
      * @return
      */
     @Override
-    public ProductFeedbackResponse updateProductFeedback(Long id, ProductFeedbackRequest productFeedbackRequest) {
-        var productFeedback = productFeedbackRepository.findById(id).orElseThrow();
-        productFeedback.setDescription(productFeedbackRequest.description());
+    public ProductFeedbackResponse updateProductFeedback(String username, String uuid,  ProductFeedbackUpdate productFeedbackUpdate) {
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found!"
+                ));
+
+
+        ProductFeedback productFeedback = productFeedbackRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Product feedback not found!"
+                ));
+
+
+        if(productFeedbackRepository.findByUserUsernameAndUuid(username, uuid).isEmpty()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
+        }
+
+        productFeedbackMapper.mapProductFeedbackUpdateRequest(productFeedback, productFeedbackUpdate);
+
+        productFeedback.setUser(user);
+        productFeedback.setDescription(productFeedbackUpdate.description());
         return productFeedbackMapper.toProductFeedbackResponse(productFeedbackRepository.save(productFeedback));
 
     }
@@ -68,13 +111,20 @@ public class ProductFeedbackServiceImpl implements ProductFeedbackService {
     /**
      * Deletes a product feedback by its ID.
      *
-     * @param id
+     * @param uuid
      */
     @Override
-    public void deleteProductFeedback(Long id) {
-        var productFeedback = productFeedbackRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Product feedback not found")
-        );
+    public void deleteProductFeedback(String username, String uuid) {
+
+        ProductFeedback productFeedback = productFeedbackRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Product feedback not found!"
+                ));
+
+        if(productFeedbackRepository.findByUserUsernameAndUuid(username, uuid).isEmpty()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
+        }
+
         productFeedbackRepository.delete(productFeedback);
     }
 }

@@ -2,6 +2,7 @@ package co.istad.dealkh.features.productfeedback;
 
 import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackRequest;
 import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackResponse;
+import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackUpdate;
 
 import java.util.List;
 
@@ -13,10 +14,10 @@ public interface ProductFeedbackService {
     /**
      * Retrieves all product feedback for a given product ID.
      *
-     * @param productId
+     * @param productSlug
      * @return
      */
-    List<ProductFeedbackResponse> getProductFeedbacks(Long productId);
+    List<ProductFeedbackResponse> getProductFeedbacks(String productSlug);
 
     /**
      * Creates a new product feedback for a given product ID.
@@ -24,22 +25,23 @@ public interface ProductFeedbackService {
      * @param productFeedbackRequest
      * @return
      */
-    ProductFeedbackResponse createProductFeedback(ProductFeedbackRequest productFeedbackRequest);
+    ProductFeedbackResponse createProductFeedback(String username,ProductFeedbackRequest productFeedbackRequest);
 
     /**
      * Retrieves a product feedback by its ID.
      *
-     * @param id
+     * @param username
+     * @param productSlug
      * @return
      */
-    ProductFeedbackResponse updateProductFeedback(Long id, ProductFeedbackRequest productFeedbackRequest);
+    ProductFeedbackResponse updateProductFeedback(String username,String productSlug, ProductFeedbackUpdate productFeedbackUpdate);
 
     /**
      * Deletes a product feedback by its ID.
      *
-     * @param id
+     * @param uuid
      * @return
      */
-    void deleteProductFeedback(Long id);
+    void deleteProductFeedback(String username, String uuid);
 
 }

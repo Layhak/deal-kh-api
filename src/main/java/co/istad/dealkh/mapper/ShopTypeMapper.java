@@ -10,6 +10,7 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface ShopTypeMapper {
+
     ShopTypeResponse mapShopTypeToShopTypeResponse(ShopType shopType);
 
     ShopType mapShopTypeRequestToShopType(ShopTypeCreateRequest shopTypeCreateRequest);
