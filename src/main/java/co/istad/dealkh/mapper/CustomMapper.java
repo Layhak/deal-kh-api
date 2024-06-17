@@ -38,9 +38,9 @@ public class CustomMapper {
                 .collect(Collectors.toList());
     }
 
-    @Named("shopTypeToString")
-    public String mapShopType(ShopType shopType) {
-        return shopType.getName();
+    @Named("shopTypeSlugToString")
+    public String mapShopTypeSLug(ShopType shopType) {
+        return shopType.getSlug();
     }
 
     @Named("discountTypeToLong")
@@ -64,10 +64,10 @@ public class CustomMapper {
         return LocalTime.parse(time, TIME_FORMATTER);
     }
 
-    @Named("stringToShopType")
-    public ShopType stringToShopType(String shopTypeName) {
+    @Named("stringToShopTypeSlug")
+    public ShopType stringToShopType(String shopTypeSlug) {
         // Assuming you have a method in ShopTypeRepository to find by name
-        return shopTypeRepository.findByName(shopTypeName)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop type not found: " + shopTypeName));
+        return shopTypeRepository.findBySlug(shopTypeSlug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop type slug not found: " + shopTypeSlug));
     }
 }

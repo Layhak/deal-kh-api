@@ -18,6 +18,7 @@ public interface ProductMapper {
     @Mapping(target = "category", source = "category", qualifiedByName = "categoryToString")
     @Mapping(target = "shop", source = "shop", qualifiedByName = "shopToString")
     @Mapping(target = "discountValue", source = "discount", qualifiedByName = "discountToDouble")
+    @Mapping(target = "description", source = "description")
     @Mapping(target = "images", source = "images")
     ProductResponse mapProductToProductResponseDetail(Product product);
 

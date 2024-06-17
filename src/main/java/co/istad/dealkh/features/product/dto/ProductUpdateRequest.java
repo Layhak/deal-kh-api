@@ -27,9 +27,9 @@ public record ProductUpdateRequest(
 
         @Size(max = 500, message = "Description must be less than 500 characters")
         String description,
-        Long shopId,
-        Long discountId,
-        Long categoryId
+        String shopSlug,
+        String discountUuid,
+        String categorySlug
 
 ) {
 }

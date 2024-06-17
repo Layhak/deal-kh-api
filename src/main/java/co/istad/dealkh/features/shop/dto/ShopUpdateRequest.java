@@ -44,6 +44,9 @@ public record ShopUpdateRequest(
         @Size(min = 5, max = 20, message = "Phone number must be between 5 and 20 characters")
         String phoneNumber,
 
+        @NotNull(message = "Shop Type Slug  is required")
+        String shopTypeSlug,
+
 //        @ValidEmail(message = "Email must be properly formatted")
         @Size(max = 100, message = "Email must be less than 100 characters")
         String email,

@@ -24,8 +24,6 @@ import java.util.List;
  * @param email
  * @param openAt
  * @param closeAt
- * @param shopTypeId
- * @param userIds
  * @param location
  */
 public record ShopCreateRequest(
@@ -58,8 +56,8 @@ public record ShopCreateRequest(
         @ValidLocalTime(message = "Please provide a valid closing time in the format Example:16:00")
         String closeAt,
 
-        @NotNull(message = "Shop type id is required")
-        String shopType,
+        @NotNull(message = "Shop Type Slug  is required")
+        String shopTypeSlug,
 
 
         @NotNull(message = "Location is required")
