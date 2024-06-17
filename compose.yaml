@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  deal-kh-api:
+    container_name: 'deal-kh-api'
+    #    image: 'surveybox_stage:latest'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - TZ=Asia/Bangkok
+    ports:
+      - '3101:8080'   #follow you port
+    volumes:
+      - '/home/dealkh/deal-kh-api/filestorage/images:/home/dealkh/filestorage/images'

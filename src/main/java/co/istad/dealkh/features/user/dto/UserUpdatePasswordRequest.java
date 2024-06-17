@@ -1,13 +1,12 @@
 package co.istad.dealkh.features.user.dto;
 
+import co.istad.dealkh.validator.password.ValidPassword;
 import jakarta.validation.constraints.NotBlank;
 
 public record UserUpdatePasswordRequest(
 
-        @NotBlank(message = "Old password is required")
-        String oldPassword,
-
         @NotBlank(message = "New password is required")
+        @ValidPassword
         String newPassword,
 
         @NotBlank(message = "New password confirmation is required")

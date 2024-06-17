@@ -5,6 +5,7 @@ import co.istad.dealkh.validator.name.ValidName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -34,6 +35,8 @@ public record ProductCreateRequest(
         @NotNull(message = "Create shop first before create product")
         String shopSlug,
 
+        @NotNull(message = "DiscountUUID must be provided")
+        @Size(min = 0, max = 100, message = "DiscountUUID must be less than 100 characters")
         String discountUuid,
 
         @NotNull(message = "Product category is required")
