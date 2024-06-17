@@ -1,7 +1,6 @@
 package co.istad.dealkh.features.category;
 
 import co.istad.dealkh.domain.Category;
-import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.category.dto.CategoryCreateRequest;
 import co.istad.dealkh.features.category.dto.CategoryResponse;
 import co.istad.dealkh.features.category.dto.CategoryUpdateRequest;
@@ -62,7 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         newCategory.setName(name);
         newCategory.setSlug(slug);
-        newCategory.setIcon("icon.png");
+        newCategory.setIcon(categoryCreateRequest.icon());
 
         return categoryMapper.mapCategoryToCategoryResponse(categoryRepository.save(newCategory));
     }
@@ -130,7 +129,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with slug %s not found! ", slug)));
 
-        if(categoryRepository.findByCreatedBy(username).isEmpty()){
+        if (categoryRepository.findByCreatedBy(username).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
         }
 
@@ -155,7 +154,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with slug %s not found! ", slug)));
 
-        if(categoryRepository.findByCreatedBy(username).isEmpty()){
+        if (categoryRepository.findByCreatedBy(username).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
         }
         categoryRepository.delete(category);
