@@ -16,7 +16,8 @@ public class DiscountRangeValidator implements ConstraintValidator<DiscountRange
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext context) {
         if (value == null) {
-            return true; // Assuming null values are valid. Adjust as needed.
+            //null is not valid
+            return false;
         }
         return value >= min && value <= max;
     }

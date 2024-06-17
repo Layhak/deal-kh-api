@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface DiscountTypeRepository extends JpaRepository<DiscountType, Long>{
+public interface DiscountTypeRepository extends JpaRepository<DiscountType, Long> {
     boolean existsByName(String name);
 
     boolean existsBySlug(String slug);
@@ -13,4 +13,5 @@ public interface DiscountTypeRepository extends JpaRepository<DiscountType, Long
     Optional<DiscountType> findByName(String name);
 
     Optional<DiscountType> findBySlug(String slug);
+
 }

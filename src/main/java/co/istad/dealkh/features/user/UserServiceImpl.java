@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateSortingParams(String field, String order) {
-        List<String> validFields = Arrays.asList("username", "username", "email", "dob", "createdAt", "updatedAt");
+        List<String> validFields = Arrays.asList("username", "email", "dob", "createdAt", "updatedAt");
 
         if (field == null || field.isEmpty() || !validFields.contains(field)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be username, username, email, dob, createdAt, updatedAt");

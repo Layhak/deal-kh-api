@@ -222,13 +222,50 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public boolean isShopOwner(String slug, String username) {
+    public ShopResponse addOwnerToShop(String slug, String username, String owner) {
         Shop shop = shopRepository.findBySlug(slug)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop with slug %s not found! ", slug)));
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User with username %s not found! ", username)));
+        shop.getUsers().stream().filter(usr -> usr.getUsername().equals(owner)).findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of this shop"));
 
-        return shop.getUsers().contains(user);
+        // Check if the user is already a member of the shop
+        if (shop.getUsers().stream().anyMatch(usr -> usr.getUsername().equals(username))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are already a member of this shop");
+        }
+
+        //if that user don't have the seller role yet then add it
+        if (user.getRoles().stream().noneMatch(role -> role.getName().equals("SELLER"))) {
+            user.getRoles().add(roleRepository.findByName("SELLER")
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found!")));
+            userRepository.save(user);
+        }
+
+        shop.getUsers().add(user);
+        shopRepository.save(shop);
+        return shopMapper.toShopResponse(shop);
+
+    }
+
+    @Override
+    public ShopResponse removeOwnerFromShop(String slug, String username, String owner) {
+
+        Shop shop = shopRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop with slug %s not found! ", slug)));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User with username %s not found! ", username)));
+        shop.getUsers().stream().filter(usr -> usr.getUsername().equals(owner)).findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of this shop"));
+        //owner can't remove himself from the shop
+        if (username.equals(owner)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can't remove yourself from the shop");
+        }
+        if (shop.getUsers().stream().noneMatch(usr -> usr.getUsername().equals(username))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of this shop");
+        }
+
+        shop.getUsers().remove(user);
+        shopRepository.save(shop);
+        return shopMapper.toShopResponse(shop);
     }
 
 

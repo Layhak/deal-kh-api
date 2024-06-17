@@ -4,6 +4,7 @@ import co.istad.dealkh.domain.DiscountType;
 import co.istad.dealkh.domain.Product;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.domain.WishList;
+import co.istad.dealkh.domain.enumType.GrantStatus;
 import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
 import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.user.UserRepository;
@@ -11,15 +12,19 @@ import co.istad.dealkh.features.wishlist.dto.WishListRequest;
 import co.istad.dealkh.features.wishlist.dto.WishListResponse;
 import co.istad.dealkh.mapper.WishListMapper;
 import co.istad.dealkh.paging.PageResponse;
-import co.istad.dealkh.specification.filter.PageFilter;
+import co.istad.dealkh.paging.Pagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,23 +36,34 @@ public class WishListServiceImpl implements WishListService {
     private final ProductRepository productRepository;
     private final DiscountTypeRepository discountTypeRepository;
 
+    private void validateSortingParams(String field, String order) {
+        List<String> validFields = Arrays.asList("id", "discountTypeSlug", "productName", "username", "discountPercentage", "isGranted");
+
+        if (field == null || field.isEmpty() || !validFields.contains(field)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, discountTypeSlug, productName, username, discountPercentage, or isGranted");
+        }
+        if (order != null && !order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
+        }
+    }
+
     @Override
-    public WishListResponse addWishList(WishListRequest wishListRequest) {
+    public WishListResponse addWishList(String username, WishListRequest wishListRequest) {
 
         WishList newWishList = wishListMapper.mapRequestToWishList(wishListRequest);
 
-        User user = userRepository.findById(wishListRequest.userId()).orElseThrow(() -> new ResponseStatusException(
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("User with username %s not found! ", username)
+                ));
+        Product product = productRepository.findBySlug(wishListRequest.productSlug()).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                String.format("User with id %d not found! ", wishListRequest.userId())
+                String.format("Product with slug %s not found! ", wishListRequest.productSlug())
         ));
-        Product product = productRepository.findById(wishListRequest.productId()).orElseThrow(() -> new ResponseStatusException(
+        DiscountType discountType = discountTypeRepository.findBySlug(wishListRequest.discountTypeSlug()).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                String.format("Product with id %d not found! ", wishListRequest.productId())
-        ));
-
-        DiscountType discountType = discountTypeRepository.findById(wishListRequest.discountTypeId()).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                String.format("DiscountType with id %d not found! ", wishListRequest.discountTypeId())
+                String.format("DiscountType with uuid %s not found! ", wishListRequest.discountTypeSlug())
         ));
 
         newWishList.setUser(user);
@@ -59,60 +75,96 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public PageResponse<WishListResponse> getAllWishList(Map<String, String> params) {
+    public PageResponse<WishListResponse> getAllWishList(int page, int size, String field, String order, Map<String, String> params) {
 
-        int pageNumber = PageFilter.DEFAULT_PAGE_NUMBER;
-        if (params.containsKey(PageFilter.PAGE_NUMBER)) {
-            pageNumber = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
-        }
+        validateSortingParams(field, order);
 
-        int pageLimit = PageFilter.DEFAULT_PAGE_LIMIT;
-        if (params.containsKey(PageFilter.PAGE_LIMIT)) {
-            pageLimit = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
-        }
 
-        Pageable pageable = PageFilter.getPageable(pageNumber, pageLimit);
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
 
-        Page<WishListResponse> page = wishListRepository.findAll(pageable)
+        Page<WishListResponse> wishes = wishListRepository.findAll(pageable)
                 .map(wishListMapper::mapToWishListResponse);
 
-        return new PageResponse<>(page);
+        return new PageResponse<>(wishes);
 
     }
 
     @Override
-    public void deleteWishList(Long id) {
+    public void deleteWishList(String uuid) {
 
-        wishListRepository.findById(id)
+        wishListRepository.findByUuid(uuid)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("WishList with id %d not found! ", id)
+                        String.format("WishList with id %d not found! ", uuid)
                 ));
 
-        wishListRepository.deleteById(id);
+        wishListRepository.deleteByUuid(uuid);
     }
 
     @Override
-    public WishListResponse grantWishList(Long id) {
-        WishList wishList = wishListRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
+    public WishListResponse grantWishListByUuid(String uuid) {
+        WishList wishList = wishListRepository.findByUuid(uuid).orElseThrow(
+                () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("WishList with id %d not found! ", id)
-                ));
-        wishList.setIsGranted(true);
+                        String.format("WishList with uuid %s not found! ", uuid)
+                )
+        );
+        wishList.setIsGranted(GrantStatus.GRANTED);
         wishListRepository.save(wishList);
         return wishListMapper.mapToWishListResponse(wishList);
     }
 
     @Override
-    public WishListResponse denyWishList(Long id) {
-        WishList wishList = wishListRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
+    public WishListResponse denyWishListByUuid(String uuid) {
+        WishList wishList = wishListRepository.findByUuid(uuid).orElseThrow(
+                () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("WishList with id %d not found! ", id)
-                ));
-        wishList.setIsGranted(false);
+                        String.format("WishList with uuid %s not found! ", uuid)
+                )
+        );
+        wishList.setIsGranted(GrantStatus.DENIED);
         wishListRepository.save(wishList);
         return wishListMapper.mapToWishListResponse(wishList);
+    }
+
+    @Override
+    public WishListResponse getWishListByUuid(String uuid) {
+        WishList wishList = wishListRepository.findByUuid(uuid).orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("WishList with uuid %s not found! ", uuid)
+                )
+        );
+        return wishListMapper.mapToWishListResponse(wishList);
+    }
+
+    @Override
+    public PageResponse<WishListResponse> getWishListByUsername(int page, int size, String field, String order, Map<String, String> params, String username) {
+
+        validateSortingParams(field, order);
+
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("User with username %s not found! ", username)
+                ));
+        Page<WishList> wishesPage = wishListRepository.findByUser(user, pageable);
+
+        // Map WishList entities to WishListResponse objects
+        List<WishListResponse> wishListResponses = wishesPage.getContent().stream()
+                .map(wishListMapper::mapToWishListResponse)
+                .collect(Collectors.toList());
+
+        // Create and return PageResponse object with paginated data
+        return new PageResponse<>(
+                wishListResponses,
+                wishesPage.getNumber(),     // Current page number
+                wishesPage.getSize(),       // Page size
+                wishesPage.getTotalElements(),  // Total elements count
+                wishesPage.getTotalPages(),    // Total pages count
+                wishesPage.hasPrevious(),   // Whether there's a previous page
+                wishesPage.hasNext()        // Whether there's a next page
+        );
     }
 }

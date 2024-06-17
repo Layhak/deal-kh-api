@@ -9,6 +9,7 @@ import co.istad.dealkh.validator.phonenumber.ValidPhoneNumber;
 import co.istad.dealkh.validator.slug.ValidSlug;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -31,11 +32,13 @@ public record ShopCreateRequest(
 
         @NotBlank(message = "Name is required")
         @ValidName(message = "Name must be properly formatted and can contain letters, numbers, single spaces, and single dashes")
+        @Size(max = 100, message = "Name must be less than 100 characters")
         String name,
 
         @NotNull(message = "address is required")
         String address,
 
+        @Size(max = 500, message = "Description must be less than 500 characters")
         String description,
 
         @ValidSlug(message = "Slug must be properly formatted and can contain lowercase letters, numbers, and single dashes")
@@ -46,6 +49,7 @@ public record ShopCreateRequest(
         String phoneNumber,
 
 //        @ValidEmail
+        @Size(max = 100, message = "Email must be less than 100 characters")
         String email,
 
         @ValidLocalTime(message = "Please provide a valid opening time in the format Example:08:00")

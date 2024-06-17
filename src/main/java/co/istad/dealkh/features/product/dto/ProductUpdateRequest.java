@@ -3,6 +3,7 @@ package co.istad.dealkh.features.product.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * ProductUpdateRequest is a request object for updating a product.
@@ -18,11 +19,13 @@ import jakarta.validation.constraints.NotNull;
 public record ProductUpdateRequest(
 
         @NotBlank(message = "Name is required")
+        @Size(max = 100, message = "Name must be less than 100 characters")
         String name,
 
         @NotNull(message = "Price is required")
         double price,
 
+        @Size(max = 500, message = "Description must be less than 500 characters")
         String description,
         Long shopId,
         Long discountId,

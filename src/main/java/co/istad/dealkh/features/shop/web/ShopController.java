@@ -75,7 +75,7 @@ public class ShopController {
 
     @DeleteMapping("/{slug}")
     @Operation(summary = "Delete shop")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public BaseResponse<?> deleteShop(@PathVariable String slug, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         shopService.deleteShop(slug, customUserDetails.getUsername());
         return BaseResponse.ok("Successfully deleted shop!").setPayload(new ArrayList<>());
@@ -137,5 +137,29 @@ public class ShopController {
     ) {
         return BaseResponse.<ShopResponse>ok("Successfully retrieved all shops created by the logged-in user!")
                 .setPayload(shopService.getOwnerShopBySlug(slug, customUserDetails.getUsername()));
+    }
+
+    @PostMapping("/{slug}/owner")
+    @Operation(summary = "Add owner to shop")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<ShopResponse> addOwnerToShop(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable String slug,
+            @RequestParam String username
+    ) {
+        return BaseResponse.<ShopResponse>ok("Successfully add owner to shop!")
+                .setPayload(shopService.addOwnerToShop(slug, username, customUserDetails.getUsername()));
+    }
+
+    @DeleteMapping("/{slug}/owner")
+    @Operation(summary = "Remove owner from shop")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<ShopResponse> removeOwnerFromShop(
+            @PathVariable String slug,
+            @RequestParam String username,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        return BaseResponse.<ShopResponse>ok("Successfully remove owner from shop!")
+                .setPayload(shopService.removeOwnerFromShop(slug, username, customUserDetails.getUsername()));
     }
 }

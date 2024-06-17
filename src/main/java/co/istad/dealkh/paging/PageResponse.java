@@ -1,5 +1,6 @@
 package co.istad.dealkh.paging;
 
+import co.istad.dealkh.features.wishlist.dto.WishListResponse;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 
@@ -21,6 +22,21 @@ public class PageResponse<T> {
                 .totalPages(page.getTotalPages())
                 .totalElements(page.getTotalElements())
                 .numberOfElements(page.getNumberOfElements())
+                .build();
+    }
+
+    public PageResponse(List<WishListResponse> wishListResponses, int number, int size, long totalElements, int totalPages, boolean b, boolean b1) {
+
+        this.list = wishListResponses;
+        this.pagination = PaginationResponse.builder()
+                .empty(false)
+                .first(b)
+                .last(b1)
+                .pageSize(size)
+                .pageNumber(number)
+                .totalPages(totalPages)
+                .totalElements(totalElements)
+                .numberOfElements(wishListResponses.size())
                 .build();
     }
 }

@@ -18,7 +18,7 @@ public class ResetPassword extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    short opt;
+    Integer opt;
 
     Date expireDate;
 

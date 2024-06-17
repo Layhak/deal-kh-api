@@ -2,11 +2,11 @@ package co.istad.dealkh.features.wishlist.dto;
 
 public record WishListResponse(
 
-        Long id,
-        Long discountTypeId,
+        String id,
+        String discountTypeSlug,
         String productName,
-        Long userId,
-        String discountPercentage,
-        boolean isGranted
+        String username,
+        Double discountPercentage,
+        String isGranted
 ) {
 }

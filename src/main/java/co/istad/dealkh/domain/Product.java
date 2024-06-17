@@ -22,7 +22,7 @@ public class Product extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String name;
 
     @Column(nullable = false, unique = true)
@@ -56,8 +56,6 @@ public class Product extends Auditable {
 
     @ManyToMany(mappedBy = "products")
     private List<Order> orders;
-
-
 
 
 }
