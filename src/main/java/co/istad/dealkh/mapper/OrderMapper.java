@@ -13,7 +13,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
 
-    @Mapping(target = "id", source = "id")
     @Mapping(target = "products", source = "products")
     @Mapping(target = "date", source = "date")
     OrderResponse toOrderResponse(Order order);

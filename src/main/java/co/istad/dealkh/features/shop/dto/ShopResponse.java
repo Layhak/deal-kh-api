@@ -26,7 +26,7 @@ import java.util.List;
  * @param location
  */
 public record ShopResponse(
-//        Long id,
+
         String name,
         String slug,
         String address,

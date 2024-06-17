@@ -14,7 +14,6 @@ import java.util.List;
  * @param date
  */
 public record OrderResponse(
-        Long id,
         List<ProductResponse> products,
         LocalDateTime date
 

@@ -15,7 +15,6 @@ import java.time.LocalDate;
  * @param updatedAt
  */
 public record CategoryResponse(
-        Long id,
         String name,
         String slug,
         String icon,

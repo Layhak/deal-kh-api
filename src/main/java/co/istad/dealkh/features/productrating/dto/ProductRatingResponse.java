@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
  * @param createdAt
  */
 public record ProductRatingResponse(
-        Long id,
         double ratingValue,
         String username,
         String productName,
