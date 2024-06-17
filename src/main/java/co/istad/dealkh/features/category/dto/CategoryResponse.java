@@ -6,7 +6,6 @@ import java.time.LocalDate;
  * CategoryResponse is a response object for a category.
  * It contains the ID, name, icon, and created by fields.
  *
- * @param id
  * @param name
  * @param icon
  * @param createdBy
