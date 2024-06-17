@@ -1,13 +1,9 @@
 package co.istad.dealkh.features.user;
 
-import co.istad.dealkh.features.coupon.dto.CouponCreateRequest;
-import co.istad.dealkh.features.coupon.dto.CouponResponse;
 import co.istad.dealkh.features.user.dto.*;
 import co.istad.dealkh.paging.PageResponse;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public interface UserService {
 
@@ -28,9 +24,8 @@ public interface UserService {
 
     UserProfileResponse uploadUserProfile(String username, UserProfileRequest userProfileRequest);
 
-    void updatePassword(String username, UserUpdatePasswordRequest userUpdatePasswordRequest);
+    void updatePassword(String username, String oldPassword, UserUpdatePasswordRequest userUpdatePasswordRequest);
 
-    void resetPassword(String username, UserResetPasswordRequest userResetPasswordRequest);
 
     UserResponse disableUser(String username);
 
@@ -41,6 +36,7 @@ public interface UserService {
     UserResponse removerRole(String username, UserRoleRequest userRoleRequest);
 
     PageResponse<UserResponse> getAllBuyer(int page, int size, String field, String order);
+
     PageResponse<UserResponse> getAllSeller(int page, int size, String field, String order);
 
 }

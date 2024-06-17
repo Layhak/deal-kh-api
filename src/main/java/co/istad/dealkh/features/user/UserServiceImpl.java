@@ -200,12 +200,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(String username, UserUpdatePasswordRequest userUpdatePasswordRequest) {
+    public void updatePassword(String username, String oldPassword, UserUpdatePasswordRequest userUpdatePasswordRequest) {
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
-        if (!passwordEncoder.matches(userUpdatePasswordRequest.oldPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Old password is incorrect.");
         }
 
@@ -217,22 +217,6 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
     }
-
-    @Override
-    public void resetPassword(String username, UserResetPasswordRequest userResetPasswordRequest) {
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
-
-        if (!userResetPasswordRequest.newPassword().equals(userResetPasswordRequest.newPasswordConfirmation())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "New passwords do not match.");
-        }
-
-        user.setPassword(passwordEncoder.encode(userResetPasswordRequest.newPassword()));
-
-        userRepository.save(user);
-    }
-
 
     @Override
     public UserResponse disableUser(String username) {

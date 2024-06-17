@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -31,12 +32,14 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public CouponResponse createCoupon(CouponCreateRequest couponCreateRequest) {
 
-        Shop shop = shopRepository.findBySlug(couponCreateRequest.slug())
+        Shop shop = shopRepository.findBySlug(couponCreateRequest.shopSlug())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("Shop with slug %s not found! ", couponCreateRequest.slug())));
+                        String.format("Shop with slug %s not found! ", couponCreateRequest.shopSlug())));
 
         Coupon newCoupon = couponMapper.mapRequestCoupon(couponCreateRequest);
+        LocalDate expiredAt = LocalDate.parse(couponCreateRequest.expiredAt(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        newCoupon.setExpiredAt(expiredAt);
 
         String couponCode;
         Random random = new Random();

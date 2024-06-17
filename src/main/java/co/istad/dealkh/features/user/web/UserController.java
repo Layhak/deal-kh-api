@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -142,21 +143,15 @@ public class UserController {
 
     }
 
-    @PutMapping("/updatePassword")
+    @PutMapping("/updatePassword/{oldPassword}")
     @Operation(summary = "Update user password")
-    public BaseResponse<Void> updatePassword(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserUpdatePasswordRequest updatePasswordRequest) {
+    public BaseResponse<?> updatePassword(@AuthenticationPrincipal CustomUserDetails customUserDetails, @Valid @RequestBody UserUpdatePasswordRequest updatePasswordRequest
+            , @PathVariable String oldPassword) {
         String username = customUserDetails.getUsername();
-        userService.updatePassword(username, updatePasswordRequest);
-        return BaseResponse.ok("Successfully update user password");
+        userService.updatePassword(username, oldPassword, updatePasswordRequest);
+        return BaseResponse.ok("Successfully update user password").setPayload(new ArrayList<>());
     }
 
-    @PutMapping("/resetPassword")
-    @Operation(summary = "Reset user password")
-    public BaseResponse<Void> resetPassword(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserResetPasswordRequest userResetPasswordRequest) {
-        String username = customUserDetails.getUsername();
-        userService.resetPassword(username, userResetPasswordRequest);
-        return BaseResponse.ok("Successfully reset user password");
-    }
 
     @PostMapping("/addRole/{username}")
     @Operation(summary = "Add role to user")
