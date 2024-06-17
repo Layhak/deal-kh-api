@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  kak_bank:
+  deal-kh-api:
     container_name: 'deal-kh-api'
     #    image: 'surveybox_stage:latest'
     build:
@@ -13,6 +13,3 @@ services:
       - '3101:8080'   #follow you port
     volumes:
       - '/home/dealkh/deal-kh-api/filestorage/images:/home/dealkh/filestorage/images'
-## what i want to explain to you is like see
-#/home/ite/media is inside contianer right
-#/home/istad/kak-bank/images on host machine or on server that deploy container
