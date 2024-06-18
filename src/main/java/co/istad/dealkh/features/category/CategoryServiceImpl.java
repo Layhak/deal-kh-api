@@ -1,7 +1,6 @@
 package co.istad.dealkh.features.category;
 
 import co.istad.dealkh.domain.Category;
-import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.category.dto.CategoryCreateRequest;
 import co.istad.dealkh.features.category.dto.CategoryResponse;
 import co.istad.dealkh.features.category.dto.CategoryUpdateRequest;
@@ -78,7 +77,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Optional<CategoryResponse> getCategoryBySlug(String slug) {
 
-        Category category = categoryRepository.findByName(slug)
+        Category category = categoryRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found!"));
 
 
@@ -113,7 +112,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with slug %s not found! ", slug)));
 
-        if(categoryRepository.findByCreatedByAndSlug(username, slug).isEmpty()){
+        if (categoryRepository.findByCreatedByAndSlug(username, slug).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
         }
 
@@ -139,7 +138,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with slug %s not found! ", slug)));
 
-        if(categoryRepository.findByCreatedByAndSlug(username, slug).isEmpty()){
+        if (categoryRepository.findByCreatedByAndSlug(username, slug).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
         }
         categoryRepository.delete(category);

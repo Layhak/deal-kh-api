@@ -52,6 +52,12 @@ public class WishListController {
     }
 
 
+    @PutMapping("/{uuid}")
+    @Operation(summary = "Update wish list")
+    public BaseResponse<WishListResponse> updateWishList(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String uuid, @RequestBody WishListRequest wishListRequest) {
+        return BaseResponse.<WishListResponse>ok("Update wish list successfully!").setPayload(wishListService.updateWishList(uuid, customUserDetails.getUsername(), wishListRequest));
+    }
+
     @DeleteMapping("/{uuid}")
     @Operation(summary = "Delete wish list")
     BaseResponse<?> deleteWishList(@PathVariable String uuid) {

@@ -1,37 +1,39 @@
 package co.istad.dealkh.mapper;
 
-import co.istad.dealkh.domain.Category;
 import co.istad.dealkh.domain.Order;
 import co.istad.dealkh.domain.Product;
-import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.features.order.dto.OrderRequest;
 import co.istad.dealkh.features.order.dto.OrderResponse;
-import co.istad.dealkh.features.product.dto.ProductResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
+    OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
 
-    @Mapping(target = "products", source = "products")
-    @Mapping(target = "date", source = "date")
+    @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "products", source = "products", qualifiedByName = "mapProductSlugs")
     OrderResponse toOrderResponse(Order order);
 
-    @Mapping(target = "user.id", source = "userId")
-    @Mapping(target = "products", ignore = true)
+    @Mapping(target = "products", source = "productSlugs", qualifiedByName = "mapProductSlugsToProducts")
     Order toOrder(OrderRequest orderRequest);
-    
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "shop", source = "shop.name")
-    @Mapping(target = "category", source = "category.name")
-        // Map the category name to the category field in ProductResponse
-    ProductResponse productToProductResponse(Product product);
 
-    default String map(Shop shop) {
-        return shop.getName();
+    @Named("mapProductSlugs")
+    default List<String> mapProductSlugs(List<Product> products) {
+        return products.stream().map(Product::getSlug).toList();
     }
 
-    default String map(Category category) {
-        return category.getName();
+    @Named("mapProductSlugsToProducts")
+    default List<Product> mapProductSlugsToProducts(List<String> productSlugs) {
+        return productSlugs.stream().map(slug -> {
+            Product product = new Product();
+            product.setSlug(slug);
+            return product;
+        }).toList();
     }
+
 }

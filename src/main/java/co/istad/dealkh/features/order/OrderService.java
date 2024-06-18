@@ -10,10 +10,10 @@ import java.util.List;
  * It handles the business logic for managing orders in the application.
  */
 public interface OrderService {
-    OrderResponse createOrder(OrderRequest orderRequest);
+    OrderResponse createOrder(String username, OrderRequest orderRequest);
 
-    List<OrderResponse> getOrdersByUserId(Long userId);
+    List<OrderResponse> getOrderByUsername(String username);
 
-    void deleteOrder(Long orderId);
+    void deleteOrder(String orderUuid);
 
 }

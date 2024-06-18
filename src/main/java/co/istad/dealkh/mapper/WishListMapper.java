@@ -4,9 +4,7 @@ import co.istad.dealkh.domain.WishList;
 import co.istad.dealkh.domain.enumType.GrantStatus;
 import co.istad.dealkh.features.wishlist.dto.WishListRequest;
 import co.istad.dealkh.features.wishlist.dto.WishListResponse;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", uses = {DiscountMapper.class})
 public interface WishListMapper {
@@ -22,6 +20,11 @@ public interface WishListMapper {
     @Mapping(source = "productSlug", target = "product.slug")
     @Mapping(source = "discountTypeSlug", target = "discountType.slug")
     WishList mapRequestToWishList(WishListRequest wishListRequest);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "isGranted", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void mapWishListToUpdateRequest(@MappingTarget WishList wishList, WishListRequest wishListRequest);
 
     @Named("mapGrantStatusToString")
     static String mapGrantStatusToString(GrantStatus status) {

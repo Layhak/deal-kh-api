@@ -37,10 +37,10 @@ public class WishListServiceImpl implements WishListService {
     private final DiscountTypeRepository discountTypeRepository;
 
     private void validateSortingParams(String field, String order) {
-        List<String> validFields = Arrays.asList("id", "discountTypeSlug", "productName", "username", "discountPercentage", "isGranted");
+        List<String> validFields = Arrays.asList("discountTypeSlug", "productName", "discountPercentage", "isGranted");
 
         if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, discountTypeSlug, productName, username, discountPercentage, or isGranted");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be  discountTypeSlug, productName, discountPercentage, or isGranted");
         }
         if (order != null && !order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
@@ -95,10 +95,28 @@ public class WishListServiceImpl implements WishListService {
         wishListRepository.findByUuid(uuid)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("WishList with id %d not found! ", uuid)
+                        String.format("WishList with uuid %s not found! ", uuid)
                 ));
 
         wishListRepository.deleteByUuid(uuid);
+    }
+
+    @Override
+    public WishListResponse updateWishList(String uuid, String username, WishListRequest wishListRequest) {
+        WishList wishList = wishListRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, String.format("WishList with uuid %s not found! ", uuid)
+                ));
+        //if username is not the owner of the wishlist
+        if (!wishList.getUser().getUsername().equals(username)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
+        }
+
+        wishListMapper.mapWishListToUpdateRequest(wishList, wishListRequest);
+
+        wishList = wishListRepository.save(wishList);
+
+        return wishListMapper.mapToWishListResponse(wishList);
     }
 
     @Override
