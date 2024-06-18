@@ -19,7 +19,7 @@ public record CategoryResponse(
         String icon,
         String createdBy,
         LocalDate createdAt,
-        LocalDate updateBy,
+        String updateBy,
         LocalDate updatedAt
 ) {
 }

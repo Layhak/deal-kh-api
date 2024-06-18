@@ -1,6 +1,5 @@
 package co.istad.dealkh.validator.phonenumber;
 
-import co.istad.dealkh.validator.phonenumber.ValidPhoneNumber;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -18,9 +17,8 @@ public class PhoneNumberValidator implements ConstraintValidator<ValidPhoneNumbe
         }
 
         // Define the phone number pattern
-        // This example assumes phone numbers should be 10 digits long
-        // Adjust the regex pattern according to your specific requirements
-        String phoneNumberPattern = "^[0-9]{10}$";
+        // This example assumes phone numbers should be 9 to 10 digits long
+        String phoneNumberPattern = "^[0-9]{9,10}$";
 
         return phoneNumber.matches(phoneNumberPattern);
     }

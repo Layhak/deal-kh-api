@@ -14,9 +14,13 @@ public interface CouponService {
 
     Optional<CouponResponse> getCouponByCode(String code);
 
-    CouponResponse updateCouponByCode(String code, CouponUpdateRequest couponUpdateRequest);
+    CouponResponse updateCouponByCode(String username, String code, CouponUpdateRequest couponUpdateRequest);
 
-    void deleteCouponByCode(String code);
+    void deleteCouponByCode(String username, String code);
 
     CouponResponse claimCoupon(String code, String username);
+
+    List<CouponResponse> getCouponsByUser(String username);
+
+
 }

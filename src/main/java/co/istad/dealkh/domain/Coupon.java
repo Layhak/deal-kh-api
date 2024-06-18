@@ -1,5 +1,6 @@
 package co.istad.dealkh.domain;
 
+import co.istad.dealkh.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "dk_coupons")
-public class Coupon {
+public class Coupon extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -23,6 +23,8 @@ public record DiscountResponseDetail(
         LocalDate expiredAt,
         LocalDate createdAt,
         LocalDate updatedAt,
+        String createdBy,
+        String updateBy,
         String shopName
 ) {
 }

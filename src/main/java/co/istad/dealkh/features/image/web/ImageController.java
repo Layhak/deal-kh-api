@@ -25,7 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/images/")
+@RequestMapping("/api/v1/images")
 public class ImageController {
     private final ImageService imageService;
 
@@ -36,7 +36,7 @@ public class ImageController {
      * @param request the request containing the file
      * @return a {@link ImageUploadResponse} containing the uploaded image details
      */
-    @PostMapping(value = "", consumes = "multipart/form-data")
+    @PostMapping(value = "/single", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
     public BaseResponse<ImageUploadResponse> uploadSingleFile(
             @RequestPart("file") MultipartFile file, HttpServletRequest request
@@ -78,7 +78,7 @@ public class ImageController {
      * @param fileName
      * @return
      */
-    @DeleteMapping("{fileName}")
+    @DeleteMapping("/{fileName}")
     public BaseResponse<String> deleteFile(@PathVariable String fileName) {
         imageService.deleteFile(fileName);
         return BaseResponse.<String>ok("File is deleted successfully!");

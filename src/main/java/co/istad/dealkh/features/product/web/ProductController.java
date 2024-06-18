@@ -49,13 +49,13 @@ public class ProductController {
     /**
      * Retrieves a product based on its Name.
      *
-     * @param name
+     * @param slug
      * @return
      */
-    @GetMapping("/{name}")
-    BaseResponse<Optional<ProductResponse>> getProductByName(@PathVariable String name) {
+    @GetMapping("/{slug}")
+    BaseResponse<Optional<ProductResponse>> getProductBySlug(@PathVariable String slug) {
         return BaseResponse.<Optional<ProductResponse>>ok("Successfully retrieved product!")
-                .setPayload(productService.getProductByName(name));
+                .setPayload(productService.getProductBySlug(slug));
     }
 
     /**

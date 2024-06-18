@@ -21,5 +21,5 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     Optional<Product> findBySlug(String slug);
 
 
-    List<Product> findByCreatedBy(String username);
+    List<Product> findByCreatedByAndSlug(String username, String slug);
 }

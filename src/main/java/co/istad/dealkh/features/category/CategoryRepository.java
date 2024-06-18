@@ -17,5 +17,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findBySlug(String slug);
 
 
-    List<Category> findByCreatedBy(String createdBy);
+    List<Category> findByCreatedByAndSlug(String createdBy, String slug);
 }

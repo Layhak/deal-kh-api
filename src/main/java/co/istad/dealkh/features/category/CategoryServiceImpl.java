@@ -1,6 +1,7 @@
 package co.istad.dealkh.features.category;
 
 import co.istad.dealkh.domain.Category;
+import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.category.dto.CategoryCreateRequest;
 import co.istad.dealkh.features.category.dto.CategoryResponse;
 import co.istad.dealkh.features.category.dto.CategoryUpdateRequest;
@@ -66,35 +67,18 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.mapCategoryToCategoryResponse(categoryRepository.save(newCategory));
     }
 
-    /**
-     * Retrieves a category by its ID.
-     *
-     * @param id the ID of the category to retrieve
-     * @return a {@link CategoryResponse} containing the details of the retrieved category
-     * @throws ResponseStatusException if the category is not found
-     */
-    @Override
-    public CategoryResponse getCategoryById(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found!"));
-
-        return categoryMapper.mapCategoryToCategoryResponse(category);
-    }
 
     /**
      * Retrieves a category by its name.
      *
-     * @param name the name of the category to retrieve
+     * @param slug the name of the category to retrieve
      * @return an {@link Optional} containing the {@link CategoryResponse} if found, or empty if not found
      * @throws ResponseStatusException if the category is not found
      */
     @Override
-    public Optional<CategoryResponse> getCategoryByName(String name) {
+    public Optional<CategoryResponse> getCategoryBySlug(String slug) {
 
-        // Check format name request
-        name = NameFormatter.formatName(name);
-
-        Category category = categoryRepository.findByName(name)
+        Category category = categoryRepository.findByName(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found!"));
 
 
@@ -129,11 +113,12 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with slug %s not found! ", slug)));
 
-        if (categoryRepository.findByCreatedBy(username).isEmpty()) {
+        if(categoryRepository.findByCreatedByAndSlug(username, slug).isEmpty()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
         }
 
         category.setUpdatedAt(LocalDateTime.now());
+        category.setUpdatedBy(username);
 
         categoryMapper.mapCategoryUpdateRequest(category, categoryUpdateRequest);
 
@@ -154,7 +139,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with slug %s not found! ", slug)));
 
-        if (categoryRepository.findByCreatedBy(username).isEmpty()) {
+        if(categoryRepository.findByCreatedByAndSlug(username, slug).isEmpty()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
         }
         categoryRepository.delete(category);

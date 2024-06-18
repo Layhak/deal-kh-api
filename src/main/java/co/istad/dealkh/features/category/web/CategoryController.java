@@ -45,21 +45,16 @@ public class CategoryController {
                 .setPayload(categoryService.createCategory(categoryCreateRequest));
     }
 
-    BaseResponse<CategoryResponse> getCategoryById(@PathVariable Long id) {
-        return BaseResponse.<CategoryResponse>ok("Successfully retrieved category!")
-                .setPayload(categoryService.getCategoryById(id));
-    }
-
     /**
      * Retrieves a category by its name.
      *
-     * @param name
+     * @param slug
      * @return
      */
-    @GetMapping("/{name}")
-    BaseResponse<Optional<CategoryResponse>> getCategoryByName(@PathVariable String name) {
+    @GetMapping("/{slug}")
+    BaseResponse<Optional<CategoryResponse>> getCategoryBySlug(@PathVariable String slug) {
         return BaseResponse.<Optional<CategoryResponse>>ok("Successfully retrieved category!")
-                .setPayload(categoryService.getCategoryByName(name));
+                .setPayload(categoryService.getCategoryBySlug(slug));
     }
 
     /**

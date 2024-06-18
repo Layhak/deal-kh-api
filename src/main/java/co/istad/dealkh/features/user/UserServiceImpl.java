@@ -133,6 +133,9 @@ public class UserServiceImpl implements UserService {
                     "Username already exists! Try another one.");
         }
 
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(username);
+
         // Update other user fields
         userMapper.mapUpdateRequestToUser(user, userUpdateRequest);
 
@@ -172,8 +175,8 @@ public class UserServiceImpl implements UserService {
                 .filter(image -> !image.getUrl().equals(imageUrl))
                 .collect(Collectors.toList());
 
-        System.out.println(filteredImages);
-//        user.setImages(filteredImages);
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(username);
 
         userRepository.save(user);
     }
@@ -191,8 +194,9 @@ public class UserServiceImpl implements UserService {
         Image newImage = new Image(userProfileRequest.imageUrl());
 
         existingImages.add(newImage);
-
         user.setImages(existingImages);
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(username);
 
         userRepository.save(user);
 
@@ -213,6 +217,9 @@ public class UserServiceImpl implements UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "New passwords do not match.");
         }
 
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(username);
+
         user.setPassword(passwordEncoder.encode(userUpdatePasswordRequest.newPassword()));
 
         userRepository.save(user);
@@ -232,6 +239,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
         user.setIsDisabled(false);
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(username);
         userRepository.save(user);
         return userMapper.mapToUserResponse(user);
     }
@@ -257,7 +266,8 @@ public class UserServiceImpl implements UserService {
         }
 
         user.getRoles().add(newRole);
-
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(username);
         userRepository.save(user);
 
         return userMapper.mapToUserResponse(user);
@@ -286,6 +296,8 @@ public class UserServiceImpl implements UserService {
         }
 
         user.getRoles().remove(roleToRemove);
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(username);
         userRepository.save(user);
 
         return userMapper.mapToUserResponse(user);
@@ -314,6 +326,5 @@ public class UserServiceImpl implements UserService {
         }
         return new PageResponse<>(sellers);
     }
-
 
 }

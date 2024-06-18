@@ -152,11 +152,15 @@ public class DiscountServiceImpl implements DiscountService {
     public DiscountResponseDetail updateDiscountByUuid(String username, String uuid, DiscountUpdateRequest discountUpdateRequest) {
         Discount discount = discountRepository.findByUuid(uuid)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Discount with uuid %s not found!", uuid)));
-        if (discountRepository.findByCreatedBy(username).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
+
+        if (discountRepository.findByCreatedByAndUuid(username, uuid).isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You're not this resource owner!");
         }
 
         discount.setUpdatedAt(LocalDateTime.now());
+        discount.setUpdatedBy(username);
 
         discountMapper.mapDiscountToUpdateRequest(discount, discountUpdateRequest);
 
@@ -168,11 +172,12 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public void deleteDiscountByUuid(String username, String uuid) {
 
-
         Discount discount = discountRepository.findByUuid(uuid)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Discount with uuid %s not found!", uuid)));
-        if (discountRepository.findByCreatedBy(username).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
+        if (discountRepository.findByCreatedByAndUuid(username, uuid).isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You're not this resource owner!");
         }
 
         discountRepository.delete(discount);
