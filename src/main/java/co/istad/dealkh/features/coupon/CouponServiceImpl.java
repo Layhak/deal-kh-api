@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -56,6 +57,7 @@ public class CouponServiceImpl implements CouponService {
         newCoupon.setCode(couponCode);
         newCoupon.setIsExpired(false);
         newCoupon.setShop(shop);
+        newCoupon.setCreatedAt(LocalDateTime.now());
         if (newCoupon.getExpiredAt().isBefore(LocalDate.now())) {
             newCoupon.setIsExpired(true);
         }
@@ -83,18 +85,18 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public CouponResponse updateCouponByCode(String code, CouponUpdateRequest couponUpdateRequest) {
+    public CouponResponse updateCouponByCode(String username, String code, CouponUpdateRequest couponUpdateRequest) {
+
+        if (couponRepository.findByCreatedByAndCode(username, code).isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You're not this resource owner!");
+        }
 
         Coupon coupon = couponRepository.findByCode(code)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         String.format("Coupon with code %s not found! ", code)));
-
-//        if(couponUpdateRequest.expiredAt() == null) {
-//            coupon.setExpiredAt(coupon.getExpiredAt());
-//        } else {
-//            coupon.setIsExpired(!couponUpdateRequest.expiredAt().isAfter(LocalDate.now()));
-//        }
 
         if (couponUpdateRequest.expiredAt() == null) {
             coupon.setExpiredAt(coupon.getExpiredAt());
@@ -103,7 +105,8 @@ public class CouponServiceImpl implements CouponService {
             coupon.setExpiredAt(couponUpdateRequest.expiredAt());
             coupon.setIsExpired(!couponUpdateRequest.expiredAt().isAfter(LocalDate.now()));
         }
-
+        coupon.setUpdatedAt(LocalDateTime.now());
+        coupon.setUpdatedBy(username);
 
         couponMapper.mapCouponUpdateRequest(coupon, couponUpdateRequest);
         coupon = couponRepository.save(coupon);
@@ -112,7 +115,13 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public void deleteCouponByCode(String code) {
+    public void deleteCouponByCode(String username, String code) {
+
+        if (couponRepository.findByCreatedByAndCode(username, code).isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You're not this resource owner!");
+        }
 
         Coupon coupon = couponRepository.findByCode(code)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -125,22 +134,38 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public CouponResponse claimCoupon(String code, String username) {
 
+        // Fetch the user by username
         User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("User with username %s not found! ", username)));
+                        String.format("User with username %s not found!", username)));
 
-        Long couponId = couponRepository.findIdByCode(code).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                String.format("Coupon with code %s not found! ", code)));
-
-        Coupon coupon = couponRepository.findById(couponId)
+        // Fetch the coupon by code
+        Coupon coupon = couponRepository.findByCode(code)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("Coupon with code %s not found! ", code)));
+                        String.format("Coupon with code %s not found!", code)));
 
-        coupon.setUsers(List.of(user));
-        couponRepository.save(coupon);
+        // Check if the user already claimed this coupon
+        if (user.getCoupons().contains(coupon)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    String.format("User %s has already claimed coupon %s!", username, code));
+        }
+
+        // Add the coupon to the user's list of claimed coupons
+        user.getCoupons().add(coupon);
+        userRepository.save(user);
+
         return couponMapper.mapToCouponResponse(coupon);
     }
+
+    @Override
+    public List<CouponResponse> getCouponsByUser(String username) {
+        return couponRepository.findAllByUsersUsername(username)
+                .stream()
+                .map(couponMapper::mapToCouponResponse)
+                .toList();
+    }
+
 }

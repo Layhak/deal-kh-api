@@ -25,10 +25,10 @@ public interface ProductService {
     /**
      * Retrieves a product by its ID.
      *
-     * @param name
+     * @param slug
      * @return
      */
-    Optional<ProductResponse> getProductByName(String name);
+    Optional<ProductResponse> getProductBySlug(String slug);
 
     /**
      * Retrieves all products.

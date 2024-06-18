@@ -26,15 +26,14 @@ public interface CategoryService {
      * @param id the ID of the category to retrieve
      * @return a {@link CategoryResponse} containing the details of the retrieved category
      */
-    CategoryResponse getCategoryById(Long id);
 
     /**
      * Retrieves a category by its name.
      *
-     * @param name the name of the category to retrieve
+     * @param slug the name of the category to retrieve
      * @return an {@link Optional} containing the {@link CategoryResponse} if found, or empty if not found
      */
-    Optional<CategoryResponse> getCategoryByName(String name);
+    Optional<CategoryResponse> getCategoryBySlug(String slug);
 
     /**
      * Retrieves all categories.
@@ -46,7 +45,7 @@ public interface CategoryService {
     /**
      * Updates a category identified by its name based on the provided request.
      *
-     * @param name                  the name of the category to update
+     * @param slug                  the name of the category to update
      * @param categoryUpdateRequest the request containing the updated details for the category
      * @return a {@link CategoryResponse} containing the details of the updated category
      */
@@ -55,7 +54,7 @@ public interface CategoryService {
     /**
      * Deletes a category identified by its name.
      *
-     * @param name the name of the category to delete
+     * @param slug the name of the category to delete
      */
     void deleteCategoryBySlug(String username, String slug);
 }

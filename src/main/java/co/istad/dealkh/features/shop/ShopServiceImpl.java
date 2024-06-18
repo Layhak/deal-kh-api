@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -145,6 +146,9 @@ public class ShopServiceImpl implements ShopService {
         if (shop.getUsers().stream().noneMatch(user -> user.getUsername().equals(username))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to update this shop");
         }
+
+        shop.setUpdatedAt(LocalDateTime.now());
+        shop.setUpdatedBy(username);
         shopMapper.mapUpdateShopToShop(shop, shopRequest);
         shopRepository.save(shop);
         return shopMapper.toShopResponse(shop);
@@ -165,6 +169,9 @@ public class ShopServiceImpl implements ShopService {
         if (shop.getUsers().stream().noneMatch(user -> user.getUsername().equals(username))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to disable this shop");
         }
+
+        shop.setUpdatedBy(username);
+        shop.setUpdatedAt(LocalDateTime.now());
         shop.setIsDisabled(true);
         Shop updatedShop = shopRepository.save(shop);
         return shopMapper.toShopResponse(updatedShop);
@@ -176,6 +183,9 @@ public class ShopServiceImpl implements ShopService {
         if (shop.getUsers().stream().noneMatch(user -> user.getUsername().equals(username))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to enable this shop");
         }
+
+        shop.setUpdatedBy(username);
+        shop.setUpdatedAt(LocalDateTime.now());
         shop.setIsDisabled(false);
         Shop updatedShop = shopRepository.save(shop);
         return shopMapper.toShopResponse(updatedShop);
@@ -241,6 +251,8 @@ public class ShopServiceImpl implements ShopService {
             userRepository.save(user);
         }
 
+        shop.setUpdatedBy(username);
+        shop.setUpdatedAt(LocalDateTime.now());
         shop.getUsers().add(user);
         shopRepository.save(shop);
         return shopMapper.toShopResponse(shop);
@@ -263,6 +275,8 @@ public class ShopServiceImpl implements ShopService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of this shop");
         }
 
+        shop.setUpdatedBy(username);
+        shop.setUpdatedAt(LocalDateTime.now());
         shop.getUsers().remove(user);
         shopRepository.save(shop);
         return shopMapper.toShopResponse(shop);

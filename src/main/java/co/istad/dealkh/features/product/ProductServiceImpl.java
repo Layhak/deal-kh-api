@@ -89,19 +89,16 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Retrieves a product by its ID.
      *
-     * @param name
+     * @param slug
      * @return
      */
     @Override
-    public Optional<ProductResponse> getProductByName(String name) {
+    public Optional<ProductResponse> getProductBySlug(String slug) {
 
-        // Check format name request
-        String nameRequest = NameFormatter.formatName(name);
-
-        Product product = productRepository.findByName(nameRequest)
+        Product product = productRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("Product with id %s not found! ", nameRequest)
+                        String.format("Product with slug %s not found! ", slug)
                 ));
 
         ProductResponse productResponseDetail = productMapper.mapProductToProductResponseDetail(product);
@@ -168,14 +165,14 @@ public class ProductServiceImpl implements ProductService {
 
         Product product = productRepository.findByName(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found! ", slug)));
 
-        if(productRepository.findByCreatedBy(username).isEmpty()){
+        if(productRepository.findByCreatedByAndSlug(username, slug).isEmpty()){
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
                     "You're not this resource owner!");
         }
 
         product.setUpdatedAt(LocalDateTime.now());
-//        product.setUpdatedBy(product.getCreatedBy());
+        product.setUpdatedBy(username);
         productMapper.mapProductToUpdateRequest(product, productUpdateRequest);
         productRepository.save(product);
 
@@ -193,7 +190,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product product = productRepository.findBySlug(slug).orElseThrow(() -> new  ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found! ", slug)));
 
-        if(productRepository.findByCreatedBy(username).isEmpty()){
+        if(productRepository.findByCreatedByAndSlug(username, slug).isEmpty()){
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
                     "You're not this resource owner!");

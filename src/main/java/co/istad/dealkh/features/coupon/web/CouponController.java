@@ -42,24 +42,30 @@ public class CouponController {
 
     // update by code
     @PutMapping("/{code}")
-    public BaseResponse<CouponResponse> updateCouponByCode(@PathVariable String code, @RequestBody CouponUpdateRequest couponUpdateRequest) {
+    public BaseResponse<CouponResponse> updateCouponByCode(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String code, @RequestBody CouponUpdateRequest couponUpdateRequest) {
         return BaseResponse.<CouponResponse>createSuccess("Update coupon by code successfully!")
-                .setPayload(couponService.updateCouponByCode(code, couponUpdateRequest));
+                .setPayload(couponService.updateCouponByCode(customUserDetails.getUsername(), code, couponUpdateRequest));
     }
 
     // delete by code
     @DeleteMapping("/{code}")
-    public BaseResponse<?> deleteCouponByCode(@PathVariable String code) {
-        couponService.deleteCouponByCode(code);
+    public BaseResponse<?> deleteCouponByCode(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String code) {
+        couponService.deleteCouponByCode(customUserDetails.getUsername(), code);
         return BaseResponse.ok("Delete coupon by code successfully!")
                 .setPayload("No content");
     }
 
     // claim coupon
-    @PostMapping("/{code}/claim")
-    public BaseResponse<?> claimCoupon(@PathVariable String code, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        couponService.claimCoupon(code, customUserDetails.getUsername());
-        return BaseResponse.ok("Claim coupon successfully!");
+    @PostMapping("/claim/{code}")
+    public BaseResponse<CouponResponse> claimCoupon(@PathVariable String code, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return BaseResponse.<CouponResponse>createSuccess("Claim coupon successfully!")
+                .setPayload(couponService.claimCoupon(code, customUserDetails.getUsername()));
+    }
+
+    @GetMapping("/users/claims")
+    public BaseResponse<List<CouponResponse>> getAllCouponsByUserClaim(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return BaseResponse.<List<CouponResponse>>createSuccess("Get all coupons that you have claimed!")
+                .setPayload(couponService.getCouponsByUser(customUserDetails.getUsername()));
     }
 
 }

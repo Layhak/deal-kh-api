@@ -2,4 +2,4 @@ spring:
   application:
     name: deal-kh-api
   profiles:
-    active: prod # configuration dev file
+    active: dev # configuration dev file

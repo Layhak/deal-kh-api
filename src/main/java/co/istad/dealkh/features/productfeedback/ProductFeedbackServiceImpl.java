@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -102,6 +103,8 @@ public class ProductFeedbackServiceImpl implements ProductFeedbackService {
 
         productFeedbackMapper.mapProductFeedbackUpdateRequest(productFeedback, productFeedbackUpdate);
 
+        productFeedback.setUpdatedAt(LocalDateTime.now());
+        productFeedback.setUpdatedBy(username);
         productFeedback.setUser(user);
         productFeedback.setDescription(productFeedbackUpdate.description());
         return productFeedbackMapper.toProductFeedbackResponse(productFeedbackRepository.save(productFeedback));

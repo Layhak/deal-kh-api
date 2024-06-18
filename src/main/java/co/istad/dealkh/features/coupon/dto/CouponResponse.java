@@ -12,6 +12,10 @@ public record CouponResponse(
         BigDecimal value,
         LocalDate expiredAt,
         Boolean isExpired,
-        String shop
+        String shop,
+        LocalDate createdAt,
+        LocalDate updatedAt,
+        String createdBy,
+        String updateBy
 ) {
 }

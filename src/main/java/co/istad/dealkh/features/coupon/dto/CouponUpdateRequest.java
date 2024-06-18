@@ -11,8 +11,6 @@ public record CouponUpdateRequest(
 
         String description,
         BigDecimal value,
-
-//        @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "ExpiredAt must be in the format yyyy-MM-dd")
         LocalDate expiredAt
 ) {
 }
