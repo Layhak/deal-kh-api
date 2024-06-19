@@ -254,9 +254,9 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + userRoleRequest.role()));
 
         // Check if the user has the BUYER role and is trying to promote to ADMIN or SUPER_ADMIN
-        if (user.getRoles().stream().anyMatch(role -> role.getName().equals("BUYER"))
+        if (user.getRoles().stream().anyMatch(role -> role.getName().equals("BUYER") || role.getName().equals("SELLER"))
                 && (userRoleRequest.role().equals("ADMIN") || userRoleRequest.role().equals("SUPER_ADMIN"))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User with BUYER role cannot promote themselves to ADMIN or SUPER_ADMIN");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User with BUYER or SELLER role cannot promote themselves to ADMIN or SUPER_ADMIN");
         }
 
         // Check if the user has the ADMIN role and is trying to promote to SUPER_ADMIN
@@ -271,7 +271,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // Check if the user does not have any of the required roles (ADMIN, SUPER_ADMIN, BUYER)
-        if (user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("SUPER_ADMIN") || role.getName().equals("BUYER"))) {
+        if (user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("SUPER_ADMIN") || role.getName().equals("BUYER") || role.getName().equals("SELLER"))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have the necessary role to add a new role");
         }
 

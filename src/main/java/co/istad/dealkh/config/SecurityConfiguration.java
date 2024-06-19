@@ -64,10 +64,13 @@ public class SecurityConfiguration {
 //                                .anyRequest().permitAll()
                                 // auth
                                 .requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/api/v1/mail/send-email").permitAll()
+
+                                //products scrap
+                                .requestMatchers("/api/v1/product-scrape/**").permitAll()
 
                                 // users
                                 .requestMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "api/v1/users/removeRole/", "/api/v1/users/removeRole/**").hasAnyAuthority("ROLE_BUYER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/api/v1/users").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
@@ -92,7 +95,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/api/v1/shops/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/v1/shops/**").hasAuthority("ROLE_SELLER")
                                 .requestMatchers(HttpMethod.DELETE, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER")
+                                .requestMatchers(HttpMethod.PATCH, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER")
 
                                 // wishlists
                                 .requestMatchers(HttpMethod.GET, "/api/v1/wishlists/**").permitAll()
@@ -123,7 +126,18 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.POST, "/api/v1/product-feedbacks/**").hasAuthority("ROLE_BUYER")
                                 .requestMatchers(HttpMethod.DELETE, "/api/v1/product-feedbacks/**").hasAnyAuthority("ROLE_BUYER", "ROLE_SELLER")
                                 .requestMatchers(HttpMethod.PATCH, "/api/v1/product-feedbacks/**").hasAuthority("ROLE_BUYER")
-
+                                //order
+                                .requestMatchers(HttpMethod.GET, "/api/v1/orders/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/orders/**").hasAuthority("ROLE_BUYER")
+                                .requestMatchers(HttpMethod.DELETE, "/api/v1/orders/**").hasAuthority("ROLE_BUYER")
+                                //coupons
+                                .requestMatchers(HttpMethod.GET, "/api/v1/coupons/").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
+                                .requestMatchers(HttpMethod.GET, "api/v1/coupons/users/claims").hasAuthority("ROLE_BUYER")
+                                .requestMatchers(HttpMethod.POST, "/api/v1/coupons/claim/").hasAuthority("ROLE_BUYER")
+                                .requestMatchers(HttpMethod.POST, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
+                                .requestMatchers(HttpMethod.DELETE, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
+                                .requestMatchers(HttpMethod.PATCH, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
                                 // images
                                 .requestMatchers("/api/v1/images/**").permitAll()
                                 .requestMatchers("/images/**").permitAll()

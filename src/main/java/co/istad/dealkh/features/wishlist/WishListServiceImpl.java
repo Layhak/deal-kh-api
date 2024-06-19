@@ -37,10 +37,10 @@ public class WishListServiceImpl implements WishListService {
     private final DiscountTypeRepository discountTypeRepository;
 
     private void validateSortingParams(String field, String order) {
-        List<String> validFields = Arrays.asList("discountTypeSlug", "productName", "discountPercentage", "isGranted");
+        List<String> validFields = Arrays.asList("discountTypeSlug", "productName", "discountPercentage");
 
         if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be  discountTypeSlug, productName, discountPercentage, or isGranted");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be  discountTypeSlug, productName or discountPercentage");
         }
         if (order != null && !order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
