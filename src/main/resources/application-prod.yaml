@@ -41,12 +41,12 @@ springdoc:
     path: /
 
 
-logging:
-  level:
-    org.springframework.security: DEBUG
-    org.springframework.orm.jpa: DEBUG
-    org.hibernate.SQL: DEBUG  # To log SQL statements
-    org.hibernate.type: TRACE  # To log bound parameters
+#logging:
+#  level:
+#    org.springframework.security: DEBUG
+#    org.springframework.orm.jpa: DEBUG
+#    org.hibernate.SQL: DEBUG  # To log SQL statements
+#    org.hibernate.type: TRACE  # To log bound parameters
 
 # This is for the access token
 ACCESS_TOKEN_PRIVATE_KEY_PATH: access-refresh-token-keys/access-token-private.key

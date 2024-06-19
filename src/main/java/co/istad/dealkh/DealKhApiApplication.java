@@ -29,6 +29,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
                 )
         ),
         security = @SecurityRequirement(name = "bearerAuth")
+//        servers = {
+//                @Server(url = "https://dealkh-api.istad.co", description = "")
+//        }
 )
 
 @SecurityScheme(

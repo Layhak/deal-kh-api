@@ -32,5 +32,14 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id"))
     private List<Product> products;
 
+    @Column(name = "uuid", unique = true, nullable = false, updatable = false)
+    String uuid;
+
+    @PrePersist
+    protected void onCreate() {
+        if (uuid == null) {
+            uuid = java.util.UUID.randomUUID().toString();
+        }
+    }
 
 }

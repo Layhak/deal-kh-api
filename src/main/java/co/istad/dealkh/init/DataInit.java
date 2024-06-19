@@ -50,13 +50,13 @@ public class DataInit {
         try {
             initAuthorities();
             initRoles();
-            initShopTypes();
+//            initShopTypes();
             initUsers();
-            initShops();
-            initDiscountTypes();
-            initDiscounts();
-            initDiscounts();
-            initCategories();
+//            initShops();
+//            initDiscountTypes();
+//            initDiscounts();
+//            initDiscounts();
+//            initCategories();
             logger.info("Data initialized successfully");
         } catch (Exception e) {
             logger.severe("Error in data initialization: " + e.getMessage());

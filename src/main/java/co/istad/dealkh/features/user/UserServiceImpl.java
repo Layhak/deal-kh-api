@@ -253,16 +253,26 @@ public class UserServiceImpl implements UserService {
         Role newRole = roleRepository.findByName(userRoleRequest.role())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + userRoleRequest.role()));
 
-        if (userRoleRequest.role().equals("SUPER_ADMIN") && user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) {
+        // Check if the user has the BUYER role and is trying to promote to ADMIN or SUPER_ADMIN
+        if (user.getRoles().stream().anyMatch(role -> role.getName().equals("BUYER") || role.getName().equals("SELLER"))
+                && (userRoleRequest.role().equals("ADMIN") || userRoleRequest.role().equals("SUPER_ADMIN"))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User with BUYER or SELLER role cannot promote themselves to ADMIN or SUPER_ADMIN");
+        }
+
+        // Check if the user has the ADMIN role and is trying to promote to SUPER_ADMIN
+        if (user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))
+                && userRoleRequest.role().equals("SUPER_ADMIN")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User with ADMIN role cannot promote themselves to SUPER_ADMIN");
         }
 
+        // Check if the user already has the role
         if (user.getRoles().stream().anyMatch(role -> role.getName().equals(userRoleRequest.role()))) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Role already exist");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Role already exists");
         }
 
-        if (user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("SUPER_ADMIN"))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have admin or super admin role");
+        // Check if the user does not have any of the required roles (ADMIN, SUPER_ADMIN, BUYER)
+        if (user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("SUPER_ADMIN") || role.getName().equals("BUYER") || role.getName().equals("SELLER"))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have the necessary role to add a new role");
         }
 
         user.getRoles().add(newRole);
@@ -273,26 +283,45 @@ public class UserServiceImpl implements UserService {
         return userMapper.mapToUserResponse(user);
     }
 
+
     @Override
-    public UserResponse removerRole(String username, UserRoleRequest userRoleRequest) {
+    public UserResponse removeRole(String username, UserRoleRequest userRoleRequest) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
         Role roleToRemove = roleRepository.findByName(userRoleRequest.role())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role has not been found!"));
 
-        if (user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("SUPER_ADMIN"))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have admin or super admin role");
-        }
-
-        //user don't have the request role
-        if (!user.getRoles().stream().anyMatch(role -> role.getName().equals(userRoleRequest.role()))) {
+        // Check if the user has the role that needs to be removed
+        if (user.getRoles().stream().noneMatch(role -> role.getName().equals(userRoleRequest.role()))) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found");
         }
 
-        //if user have only one role left throw exception else remove the role from the user
+        // Prevent removal if the user only has one role left
         if (user.getRoles().size() == 1) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User has only one role");
+        }
+
+        // Check if the user attempting the removal has the BUYER role but not SUPER_ADMIN or ADMIN
+        boolean isBuyerOnly = user.getRoles().stream().anyMatch(role -> role.getName().equals("BUYER")) &&
+                user.getRoles().stream().noneMatch(role -> role.getName().equals("SUPER_ADMIN") || role.getName().equals("ADMIN"));
+
+        // Check if the target user has SUPER_ADMIN or ADMIN roles
+        User targetUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Target user has not been found!"));
+
+        boolean isTargetSuperAdminOrAdmin = targetUser.getRoles().stream().anyMatch(role -> role.getName().equals("SUPER_ADMIN") || role.getName().equals("ADMIN"));
+
+        if (isBuyerOnly && isTargetSuperAdminOrAdmin) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User with BUYER role cannot remove roles from a user with SUPER_ADMIN or ADMIN roles");
+        }
+
+        // Check if the user attempting the removal is not SUPER_ADMIN and is trying to remove a role from SUPER_ADMIN
+        boolean isNotSuperAdmin = user.getRoles().stream().noneMatch(role -> role.getName().equals("SUPER_ADMIN"));
+        boolean isTargetSuperAdmin = targetUser.getRoles().stream().anyMatch(role -> role.getName().equals("SUPER_ADMIN"));
+
+        if (isNotSuperAdmin && isTargetSuperAdmin) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only SUPER_ADMIN can remove roles from another SUPER_ADMIN");
         }
 
         user.getRoles().remove(roleToRemove);
@@ -302,6 +331,7 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.mapToUserResponse(user);
     }
+
 
     @Override
     public PageResponse<UserResponse> getAllBuyer(int page, int size, String field, String order) {

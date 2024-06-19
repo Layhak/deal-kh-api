@@ -33,7 +33,7 @@ public interface UserService {
 
     UserResponse addRole(String username, UserRoleRequest userRoleRequest);
 
-    UserResponse removerRole(String username, UserRoleRequest userRoleRequest);
+    UserResponse removeRole(String username, UserRoleRequest userRoleRequest);
 
     PageResponse<UserResponse> getAllBuyer(int page, int size, String field, String order);
 

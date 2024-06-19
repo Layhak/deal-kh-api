@@ -4,11 +4,14 @@ import co.istad.dealkh.base.BaseResponse;
 import co.istad.dealkh.features.order.OrderService;
 import co.istad.dealkh.features.order.dto.OrderRequest;
 import co.istad.dealkh.features.order.dto.OrderResponse;
+import co.istad.dealkh.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,13 +35,13 @@ public class OrderController {
     /**
      * Creates a new order based on the provided request.
      *
-     * @param userId
+     * @param username
      * @return
      */
-    @GetMapping("/{userId}")
+    @GetMapping("/{username}")
     @Operation(summary = "Get all orders")
-    public BaseResponse<List<OrderResponse>> getOrders(@RequestParam Long userId) {
-        return BaseResponse.<List<OrderResponse>>ok("Success get all order").setPayload(orderService.getOrdersByUserId(userId));
+    public BaseResponse<List<OrderResponse>> getOrdersByUsername(@PathVariable String username) {
+        return BaseResponse.<List<OrderResponse>>ok("Success get all order").setPayload(orderService.getOrderByUsername(username));
     }
 
     /**
@@ -49,21 +52,21 @@ public class OrderController {
      */
     @PostMapping
     @Operation(summary = "Create order")
-    public BaseResponse<OrderResponse> createOrder(@RequestBody @Valid OrderRequest orderRequest) {
-        return BaseResponse.<OrderResponse>createSuccess("Success create order").setPayload(orderService.createOrder(orderRequest));
+    public BaseResponse<OrderResponse> createOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody @Valid OrderRequest orderRequest) {
+        return BaseResponse.<OrderResponse>createSuccess("Success create order").setPayload(orderService.createOrder(customUserDetails.getUsername(), orderRequest));
     }
 
     /**
      * Deletes an order based on the provided ID.
      *
-     * @param id
+     * @param uuid
      * @return
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{uuid}")
     @Operation(summary = "Delete order")
-    public BaseResponse<Void> deleteOrder(@PathVariable Long id) {
-        orderService.deleteOrder(id);
-        return BaseResponse.<Void>ok("Success delete order");
+    public BaseResponse<?> deleteOrder(@PathVariable String uuid) {
+        orderService.deleteOrder(uuid);
+        return BaseResponse.ok("Success delete order").setPayload(new ArrayList<>());
     }
 
 }

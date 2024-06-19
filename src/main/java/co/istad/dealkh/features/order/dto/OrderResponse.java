@@ -1,7 +1,5 @@
 package co.istad.dealkh.features.order.dto;
 
-import co.istad.dealkh.features.product.dto.ProductResponse;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,7 +12,9 @@ import java.util.List;
  * @param date
  */
 public record OrderResponse(
-        List<ProductResponse> products,
+        String uuid,
+        String username,
+        List<String> products,
         LocalDateTime date
 
 ) {

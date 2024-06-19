@@ -14,6 +14,7 @@ public interface WishListService {
 
     void deleteWishList(String uuid);
 
+    WishListResponse updateWishList(String uuid, String username, WishListRequest wishListRequest);
 
     WishListResponse grantWishListByUuid(String uuid);
 

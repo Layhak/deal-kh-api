@@ -163,7 +163,7 @@ public class UserController {
     @DeleteMapping("/removeRole/{username}")
     @Operation(summary = "Remove role from user")
     public BaseResponse<UserResponse> removeRole(@PathVariable String username, @RequestBody UserRoleRequest userRoleRequest) {
-        return BaseResponse.<UserResponse>ok("Successfully remove role from user").setPayload(userService.removerRole(username, userRoleRequest));
+        return BaseResponse.<UserResponse>ok("Successfully remove role from user").setPayload(userService.removeRole(username, userRoleRequest));
     }
 
     @GetMapping("/buyers")

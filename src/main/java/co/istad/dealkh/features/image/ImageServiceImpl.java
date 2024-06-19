@@ -57,7 +57,7 @@ public class ImageServiceImpl implements ImageService {
      * @return the download URL of the uploaded image
      */
     private String generateDownloadImageUrl(HttpServletRequest request, String filename) {
-        return String.format("%s://%s:%d/api/v1/files/download/%s", request.getScheme(), request.getServerName(), request.getServerPort(), filename);
+        return String.format("%s://%s:%d/api/v1/images/download/%s", request.getScheme(), request.getServerName(), request.getServerPort(), filename);
     }
 
     /**
