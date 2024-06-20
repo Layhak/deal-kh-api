@@ -1,6 +1,7 @@
 package co.istad.dealkh.features.discount.dto;
 
 import co.istad.dealkh.validator.discount.DiscountRange;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
@@ -24,13 +25,16 @@ public record DiscountCreateRequest(
         @DiscountRange(min = 0, max = 100, message = "Discount must be between 0 and 100")
         BigDecimal discountValue,
 
+        @NotNull(message = "IsPercentage is required")
+        Boolean isPercentage,
+
         @NotNull(message = "Expired At is required")
         LocalDate expiredAt,
 
-        @NotNull(message = "Discount Type Id is required")
-        Long discountTypeId,
+        @NotNull(message = "Discount Type slug is required")
+        String discountTypeSlug,
 
-        @NotNull(message = "Shop Id is required")
-        Long shopId
+        @NotNull(message = "Shop slug is required")
+        String shopSlug
 ) {
 }

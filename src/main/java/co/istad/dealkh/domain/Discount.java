@@ -27,6 +27,9 @@ public class Discount extends Auditable {
     @Column(nullable = false)
     private BigDecimal discountValue;
 
+    @Column(nullable = false)
+    private Boolean isPercentage;
+
     private LocalDate expiredAt;
     private Boolean isExpired;
 

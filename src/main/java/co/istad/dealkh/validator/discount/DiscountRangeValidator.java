@@ -2,8 +2,9 @@ package co.istad.dealkh.validator.discount;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import java.math.BigDecimal;
 
-public class DiscountRangeValidator implements ConstraintValidator<DiscountRange, Integer> {
+public class DiscountRangeValidator implements ConstraintValidator<DiscountRange, BigDecimal> {
     private int min;
     private int max;
 
@@ -14,11 +15,11 @@ public class DiscountRangeValidator implements ConstraintValidator<DiscountRange
     }
 
     @Override
-    public boolean isValid(Integer value, ConstraintValidatorContext context) {
+    public boolean isValid(BigDecimal value, ConstraintValidatorContext context) {
         if (value == null) {
-            //null is not valid
+            // Null is not valid
             return false;
         }
-        return value >= min && value <= max;
+        return value.compareTo(BigDecimal.valueOf(min)) >= 0 && value.compareTo(BigDecimal.valueOf(max)) <= 0;
     }
 }

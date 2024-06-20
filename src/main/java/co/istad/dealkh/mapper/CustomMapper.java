@@ -43,9 +43,9 @@ public class CustomMapper {
         return shopType.getName();
     }
 
-    @Named("discountTypeToLong")
-    public DiscountType map(Long id) {
-        return discountTypeRepository.findById(id).orElse(null);
+    @Named("discountTypeToString")
+    public DiscountType map(String slug) {
+        return discountTypeRepository.findBySlug(slug).orElse(null);
     }
 
     @Named("mapShopSlugsToShops")

@@ -20,13 +20,15 @@ public record DiscountUpdateRequest(
 
         String name,
 
-        @NotNull(message = "Discount Type Id is required")
-        Long discountTypeId,
+        @NotNull(message = "Discount Type slug is required")
+        String discountTypeSlug,
 
         String description,
 
         @DiscountRange(min = 0, max = 100, message = "Discount must be between 0 and 100")
         BigDecimal value,
+
+        Boolean isPercentage,
 
         LocalDate expiredAt
 

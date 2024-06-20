@@ -88,6 +88,7 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.save(newProduct);
 
+
         return productMapper.mapProductToProductResponseDetail(newProduct);
     }
 

@@ -12,7 +12,7 @@ public interface DiscountMapper {
     @Mapping(source = "discountType.name", target = "discountType")
     DiscountResponseDetail mapDiscountToResponseDetail(Discount discount);
 
-    @Mapping(target = "discountType", source = "discountTypeId", qualifiedByName = "discountTypeToLong")
+    @Mapping(target = "discountType", source = "discountTypeSlug", qualifiedByName = "discountTypeToString")
     Discount mapDiscountRequestToDiscount(DiscountCreateRequest discountCreateRequest);
 
 

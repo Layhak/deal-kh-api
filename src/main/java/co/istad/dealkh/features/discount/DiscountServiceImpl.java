@@ -59,19 +59,19 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public DiscountResponseDetail createDiscount(DiscountCreateRequest discountCreateRequest) {
 
-        if (discountRepository.existsByDiscountValueAndDiscountTypeId(discountCreateRequest.discountValue(), discountCreateRequest.discountTypeId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Discount percentage already exists for this discount type");
+        if (discountRepository.existsByDiscountValueAndDiscountTypeSlug(discountCreateRequest.discountValue(), discountCreateRequest.discountTypeSlug())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Discount value already exists for this discount type");
         }
 
-        DiscountType discountType = discountTypeRepository.findById(discountCreateRequest.discountTypeId())
+        DiscountType discountType = discountTypeRepository.findBySlug(discountCreateRequest.discountTypeSlug())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("Discount type with uuid %d not found! ", discountCreateRequest.discountTypeId())));
+                        String.format("Discount type with slug %s not found! ", discountCreateRequest.discountTypeSlug())));
 
-        Shop shop = shopRepository.findById(discountCreateRequest.shopId())
+        Shop shop = shopRepository.findBySlug(discountCreateRequest.shopSlug())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("Shop with uuid %d not found! ", discountCreateRequest.shopId())));
+                        String.format("Shop with slug %s not found! ", discountCreateRequest.shopSlug())));
 
         Discount newDiscount = discountMapper.mapDiscountRequestToDiscount(discountCreateRequest);
 

@@ -20,6 +20,7 @@ public interface ProductMapper {
     @Mapping(target = "discountValue", source = "discount", qualifiedByName = "discountToDouble")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "images", source = "images")
+    @Mapping(target = "discountPrice", source = "product", qualifiedByName = "toDiscountPrice")
     ProductResponse mapProductToProductResponseDetail(Product product);
 
     Product mapProductRequestToProduct(ProductCreateRequest productCreateRequest);
@@ -42,6 +43,18 @@ public interface ProductMapper {
     default BigDecimal mapDiscount(Discount discount) {
         return discount.getDiscountValue();
     }
+
+    @Named("toDiscountPrice")
+    default BigDecimal mapDiscountPrice(Product product) {
+        if(product.getDiscount().getIsPercentage()) {
+            BigDecimal price = BigDecimal.valueOf(product.getPrice());
+            BigDecimal discountValue = product.getDiscount().getDiscountValue();
+            BigDecimal discountRate = discountValue.divide(BigDecimal.valueOf(100));
+            return price.multiply(discountRate);
+        }
+        return product.getDiscount().getDiscountValue();
+    }
+
 
 
 }

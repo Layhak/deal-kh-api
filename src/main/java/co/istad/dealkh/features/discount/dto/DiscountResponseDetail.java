@@ -7,7 +7,7 @@ import java.time.LocalDate;
  * DiscountResponseDetail is a response object for a discount type.
  * It contains the ID, name, and description fields.
  *
- * @param id
+ * @param uuid
  * @param discountType
  * @param description
  * @param value
@@ -19,7 +19,8 @@ public record DiscountResponseDetail(
         String uuid,
         String discountType,
         String description,
-        BigDecimal value,
+        BigDecimal discountValue,
+        Boolean isPercentage,
         LocalDate expiredAt,
         LocalDate createdAt,
         LocalDate updatedAt,
