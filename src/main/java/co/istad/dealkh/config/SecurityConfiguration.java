@@ -62,85 +62,86 @@ public class SecurityConfiguration {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
 //                                .anyRequest().permitAll()
-                                // auth
-                                .requestMatchers("/api/v1/auth/**").permitAll()
-                                .requestMatchers("/api/v1/mail/send-email").permitAll()
 
-                                //products scrap
-                                .requestMatchers("/api/v1/product-scrape/**").permitAll()
-
-                                // users
-                                .requestMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/users").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "/api/v1/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-
-                                // discounts
-                                .requestMatchers(HttpMethod.GET, "/api/v1/discounts/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/discounts/**").hasAuthority("ROLE_SELLER")
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/discounts/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/v1/discounts/**").hasAuthority("ROLE_SELLER")
-                                .requestMatchers(HttpMethod.PATCH, "/api/v1/discounts/**").hasAuthority("ROLE_SELLER")
-
-                                // products
-                                .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasAuthority("ROLE_SELLER")
-                                .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasAuthority("ROLE_SELLER")
-                                .requestMatchers(HttpMethod.PATCH, "/api/v1/products/**").hasAuthority("ROLE_SELLER")
-
-                                // shops
-                                .requestMatchers(HttpMethod.GET, "/api/v1/shops/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER", "ROLE_BUYER")
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER")
-
-                                // wishlists
-                                .requestMatchers(HttpMethod.GET, "/api/v1/wishlists/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/wishlists/**").hasAuthority("ROLE_BUYER")
-                                .requestMatchers(HttpMethod.POST, "/api/v1/wishlists/{uuid}/grant").hasAuthority("ROLE_SELLER")
-                                .requestMatchers(HttpMethod.POST, "/api/v1/wishlists/{uuid}/deny").hasAuthority("ROLE_SELLER")
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/wishlists/**").hasAuthority("ROLE_BUYER")
-
-                                // categories
-                                .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/v1/categories/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-
-                                // product-ratings
-                                .requestMatchers(HttpMethod.GET, "/api/v1/product-ratings/**").hasAuthority("ROLE_SELLER")
-                                .requestMatchers(HttpMethod.POST, "/api/v1/product-ratings/**").hasAuthority("ROLE_BUYER")
-
-                                //shop-types
-                                .requestMatchers(HttpMethod.GET, "/api/v1/shop-types/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/shop-types/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/shop-types/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/v1/shop-types/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "/api/v1/shop-types/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-
-                                // product-feedbacks
-                                .requestMatchers(HttpMethod.GET, "/api/v1/product-feedbacks/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/product-feedbacks/**").hasAuthority("ROLE_BUYER")
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/product-feedbacks/**").hasAnyAuthority("ROLE_BUYER", "ROLE_SELLER")
-                                .requestMatchers(HttpMethod.PATCH, "/api/v1/product-feedbacks/**").hasAuthority("ROLE_BUYER")
-                                //order
-                                .requestMatchers(HttpMethod.GET, "/api/v1/orders/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/orders/**").hasAuthority("ROLE_BUYER")
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/orders/**").hasAuthority("ROLE_BUYER")
-                                //coupons
-                                .requestMatchers(HttpMethod.GET, "/api/v1/coupons/").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
-                                .requestMatchers(HttpMethod.GET, "api/v1/coupons/users/claims").hasAuthority("ROLE_BUYER")
-                                .requestMatchers(HttpMethod.POST, "/api/v1/coupons/claim/").hasAuthority("ROLE_BUYER")
-                                .requestMatchers(HttpMethod.POST, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
-                                .requestMatchers(HttpMethod.PATCH, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
-                                // images
-                                .requestMatchers("/api/v1/images/**").permitAll()
-                                .requestMatchers("/images/**").permitAll()
+//                                // auth
+//                                .requestMatchers("/api/v1/auth/**").permitAll()
+//                                .requestMatchers("/api/v1/mail/send-email").permitAll()
+//
+//                                //products scrap
+//                                .requestMatchers("/api/v1/product-scrape/**").permitAll()
+//
+//                                // users
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/users").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
+//                                .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+//                                .requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+//                                .requestMatchers(HttpMethod.PATCH, "/api/v1/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+//
+//                                // discounts
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/discounts/**").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/discounts/**").hasAuthority("ROLE_SELLER")
+//                                .requestMatchers(HttpMethod.DELETE, "/api/v1/discounts/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+//                                .requestMatchers(HttpMethod.PUT, "/api/v1/discounts/**").hasAuthority("ROLE_SELLER")
+//                                .requestMatchers(HttpMethod.PATCH, "/api/v1/discounts/**").hasAuthority("ROLE_SELLER")
+//
+//                                // products
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN")
+//                                .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasAuthority("ROLE_SELLER")
+//                                .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasAuthority("ROLE_SELLER")
+//                                .requestMatchers(HttpMethod.PATCH, "/api/v1/products/**").hasAuthority("ROLE_SELLER")
+//
+//                                // shops
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/shops/**").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER", "ROLE_BUYER")
+//                                .requestMatchers(HttpMethod.DELETE, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+//                                .requestMatchers(HttpMethod.PATCH, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER")
+//
+//                                // wishlists
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/wishlists/**").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/wishlists/**").hasAuthority("ROLE_BUYER")
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/wishlists/{uuid}/grant").hasAuthority("ROLE_SELLER")
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/wishlists/{uuid}/deny").hasAuthority("ROLE_SELLER")
+//                                .requestMatchers(HttpMethod.DELETE, "/api/v1/wishlists/**").hasAuthority("ROLE_BUYER")
+//
+//                                // categories
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+//                                .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+//                                .requestMatchers(HttpMethod.PUT, "/api/v1/categories/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+//
+//                                // product-ratings
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/product-ratings/**").hasAuthority("ROLE_SELLER")
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/product-ratings/**").hasAuthority("ROLE_BUYER")
+//
+//                                //shop-types
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/shop-types/**").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/shop-types/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+//                                .requestMatchers(HttpMethod.DELETE, "/api/v1/shop-types/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+//                                .requestMatchers(HttpMethod.PUT, "/api/v1/shop-types/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+//                                .requestMatchers(HttpMethod.PATCH, "/api/v1/shop-types/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+//
+//                                // product-feedbacks
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/product-feedbacks/**").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/product-feedbacks/**").hasAuthority("ROLE_BUYER")
+//                                .requestMatchers(HttpMethod.DELETE, "/api/v1/product-feedbacks/**").hasAnyAuthority("ROLE_BUYER", "ROLE_SELLER")
+//                                .requestMatchers(HttpMethod.PATCH, "/api/v1/product-feedbacks/**").hasAuthority("ROLE_BUYER")
+//                                //order
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/orders/**").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/orders/**").hasAuthority("ROLE_BUYER")
+//                                .requestMatchers(HttpMethod.DELETE, "/api/v1/orders/**").hasAuthority("ROLE_BUYER")
+//                                //coupons
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/coupons/").permitAll()
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
+//                                .requestMatchers(HttpMethod.GET, "api/v1/coupons/users/claims").hasAuthority("ROLE_BUYER")
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/coupons/claim/").hasAuthority("ROLE_BUYER")
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
+//                                .requestMatchers(HttpMethod.DELETE, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
+//                                .requestMatchers(HttpMethod.PATCH, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
+//                                // images
+//                                .requestMatchers("/api/v1/images/**").permitAll()
+//                                .requestMatchers("/images/**").permitAll()
 
                                 .anyRequest().permitAll()
                 )
