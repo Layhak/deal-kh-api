@@ -4,6 +4,7 @@ import co.istad.dealkh.base.BaseResponse;
 import co.istad.dealkh.domain.ResetPassword;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.mail.MailService;
+import co.istad.dealkh.features.resetpassword.dto.ResetPasswordRequest;
 import co.istad.dealkh.features.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,24 +62,43 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     }
 
     @Override
-    public BaseResponse<?> updatePassword(String email, Integer confirmationCode, String newPassword, String confirmPassword) {
+    public BaseResponse<?> updatePassword(ResetPasswordRequest resetPasswordRequest) {
+        // Extract fields from resetPasswordRequest
+        String email = resetPasswordRequest.email();
+        Integer confirmationCode = resetPasswordRequest.confirmationCode();
+        String newPassword = resetPasswordRequest.newPassword();
+        String confirmPassword = resetPasswordRequest.confirmPassword();
+
+        // Check if newPassword and confirmPassword match
         if (!newPassword.equals(confirmPassword)) {
             return BaseResponse.badRequest("Passwords do not match");
         }
+
+        // Find the user by email
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
+
+            // Find the most recent ResetPassword entry for the user
             Optional<ResetPassword> optionalResetPassword = resetPasswordRepository.findTopByUserOrderByExpireDateDesc(user);
             if (optionalResetPassword.isPresent()) {
                 ResetPassword resetPassword = optionalResetPassword.get();
+
+                // Check if the confirmation code matches and is not expired
                 if (resetPassword.getOpt().equals(confirmationCode) && resetPassword.getExpireDate().after(new Date())) {
+                    // Update the user's password
                     user.setPassword(passwordEncoder.encode(newPassword)); // Ensure you hash the password before saving
                     userRepository.save(user);
-                    return (BaseResponse.ok("Password updated successfully")).setPayload(new ArrayList<>());
+
+                    // Return success response
+                    return BaseResponse.ok("Password updated successfully").setPayload(new ArrayList<>());
                 }
+                // Return error if confirmation code is invalid or expired
                 return BaseResponse.badRequest("Invalid or expired confirmation code").setPayload(new ArrayList<>());
             }
         }
+
+        // Return error if user is not found
         return BaseResponse.notFound("User not found").setPayload(new ArrayList<>());
     }
 

@@ -6,6 +6,7 @@ import co.istad.dealkh.features.auth.dto.AuthRequest;
 import co.istad.dealkh.features.auth.dto.AuthResponse;
 import co.istad.dealkh.features.auth.dto.RefreshTokenRequest;
 import co.istad.dealkh.features.resetpassword.ResetPasswordService;
+import co.istad.dealkh.features.resetpassword.dto.ResetPasswordRequest;
 import co.istad.dealkh.features.user.UserService;
 import co.istad.dealkh.features.user.dto.UserCreateRequest;
 import co.istad.dealkh.features.user.dto.UserResponse;
@@ -112,11 +113,7 @@ public class AuthController {
     }
 
     @PostMapping("/update-password")
-    public BaseResponse<?> updatePassword(
-            @RequestParam String email,
-            @RequestParam Integer confirmationCode,
-            @RequestParam String newPassword,
-            @RequestParam String confirmPassword) {
-        return resetPasswordService.updatePassword(email, confirmationCode, newPassword, confirmPassword);
+    public BaseResponse<?> updatePassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        return resetPasswordService.updatePassword(resetPasswordRequest);
     }
 }

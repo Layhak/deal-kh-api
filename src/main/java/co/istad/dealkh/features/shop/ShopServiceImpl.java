@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -116,12 +117,13 @@ public class ShopServiceImpl implements ShopService {
         if (shopRequest.slug() != null && !shopRequest.slug().isEmpty() && !shopRequest.slug().isBlank()) {
             String slug = SlugFormatter.formatSlug(shopRequest.slug());
             if (shopRepository.existsBySlug(slug)) {
-                slug = String.format("%s-%s", SlugFormatter.formatSlug(shopRequest.slug()), shop.getAddress());
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Slug is already taken!");
             }
             shop.setSlug(slug);
         } else {
             // If the slug is not provided, generate a random slug
-            shop.setSlug(SlugFormatter.formatSlug(shopRequest.name()));
+            String randomSlug = UUID.randomUUID().toString();
+            shop.setSlug(randomSlug);
         }
 
         shop.setIsDeleted(false);

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Entity
@@ -25,7 +26,7 @@ public class Product extends Auditable {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "slug", unique = true, nullable = false, updatable = false)
     private String slug;
 
     private double ratingAvg;
@@ -57,5 +58,11 @@ public class Product extends Auditable {
     @ManyToMany(mappedBy = "products")
     private List<Order> orders;
 
+    @PrePersist
+    protected void onCreate() {
+        if (slug == null) {
+            slug = UUID.randomUUID().toString();
+        }
+    }
 
 }

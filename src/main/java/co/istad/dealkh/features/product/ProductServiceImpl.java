@@ -67,16 +67,21 @@ public class ProductServiceImpl implements ProductService {
 
         Product newProduct = productMapper.mapProductRequestToProduct(productCreateRequest);
 
-        Discount discount = discountRepository.findByUuid(productCreateRequest.discountUuid()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Discount with uuid %s not found! ", productCreateRequest.discountUuid())));
+        Discount discount = discountRepository.findByUuid(productCreateRequest.discountUuid())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Discount with uuid %s not found! ", productCreateRequest.discountUuid())));
 
-        Category category = categoryRepository.findBySlug(productCreateRequest.categorySlug()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with slug %s not found! ", productCreateRequest.categorySlug())));
+        Category category = categoryRepository.findBySlug(productCreateRequest.categorySlug())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Category with slug %s not found! ", productCreateRequest.categorySlug())));
 
-        Shop shop = shopRepository.findBySlug(productCreateRequest.shopSlug()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Shop with slug %s not found! ", productCreateRequest.shopSlug())));
+        Shop shop = shopRepository.findBySlug(productCreateRequest.shopSlug())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Shop with slug %s not found! ", productCreateRequest.shopSlug())));
 
-        String name = NameFormatter.formatName(productCreateRequest.name());
-        String slug = SlugFormatter.formatSlug(productCreateRequest.name());
-        newProduct.setName(name);
-        newProduct.setSlug(slug);
         newProduct.setDiscount(discount);
         newProduct.setCategory(category);
         newProduct.setShop(shop);
