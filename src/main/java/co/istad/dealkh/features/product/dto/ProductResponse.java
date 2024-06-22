@@ -26,7 +26,7 @@ public record ProductResponse(
         LocalDate createdAt,
         LocalDate updatedAt,
         String createdBy,
-        String updateBy
+        String updatedBy
 
 ) {
 }

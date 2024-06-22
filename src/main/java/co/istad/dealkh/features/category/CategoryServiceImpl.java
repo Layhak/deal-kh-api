@@ -117,11 +117,12 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         category.setUpdatedAt(LocalDateTime.now());
+        System.out.println("USERNAME:"+username);
         category.setUpdatedBy(username);
 
         categoryMapper.mapCategoryUpdateRequest(category, categoryUpdateRequest);
 
-        category = categoryRepository.save(category);
+       categoryRepository.save(category);
 
         return categoryMapper.mapCategoryToCategoryResponse(category);
     }

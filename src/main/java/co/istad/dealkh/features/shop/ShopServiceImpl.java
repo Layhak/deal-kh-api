@@ -13,6 +13,7 @@ import co.istad.dealkh.mapper.ShopMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
 import co.istad.dealkh.validator.formatter.SlugFormatter;
+import co.istad.dealkh.validator.page.ValidatePagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,25 +37,9 @@ public class ShopServiceImpl implements ShopService {
     private final ShopMapper shopMapper;
     private final RoleRepository roleRepository;
 
-    private void validatePageAndSize(int page, int size, String field, String order) {
-        if (page < 0 || size <= 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page and size must be greater than 0");
-        }
-
-        List<String> validFields = Arrays.asList("name", "email");
-
-        if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be name or email");
-        }
-
-        if (order != null && !order.equals("asc") && !order.equals("desc")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
-        }
-    }
-
     @Override
     public PageResponse<ShopResponse> getAllShop(int page, int size, String field, String order) {
-        validatePageAndSize(page, size, field, order);
+        ValidatePagination.validatePageAndSize(page, size, field, order);
 
         Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
         Page<ShopResponse> shops = shopRepository.findAll(pageable).map(shopMapper::toShopResponse);
@@ -65,7 +49,7 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public PageResponse<ShopResponse> getAllOwnerShop(int page, int size, String field, String order, String username) {
-        validatePageAndSize(page, size, field, order);
+        ValidatePagination.validatePageAndSize(page, size, field, order);
         Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));

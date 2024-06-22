@@ -10,7 +10,7 @@ import java.time.LocalDate;
  * @param uuid
  * @param discountType
  * @param description
- * @param value
+ * @param discountValue
  * @param expiredAt
  * @param createdAt
  * @param updatedAt
@@ -25,7 +25,7 @@ public record DiscountResponseDetail(
         LocalDate createdAt,
         LocalDate updatedAt,
         String createdBy,
-        String updateBy,
-        String shopName
+        String updatedBy,
+        String shop
 ) {
 }

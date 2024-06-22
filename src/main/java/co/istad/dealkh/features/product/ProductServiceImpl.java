@@ -15,10 +15,12 @@ import co.istad.dealkh.mapper.ProductMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
 import co.istad.dealkh.security.CustomUserDetails;
+import co.istad.dealkh.specification.filter.PageFilter;
 import co.istad.dealkh.specification.filter.ProductFilter;
 import co.istad.dealkh.specification.filter.ProductSpecification;
 import co.istad.dealkh.validator.formatter.NameFormatter;
 import co.istad.dealkh.validator.formatter.SlugFormatter;
+import co.istad.dealkh.validator.page.ValidatePagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,20 +69,29 @@ public class ProductServiceImpl implements ProductService {
 
         Product newProduct = productMapper.mapProductRequestToProduct(productCreateRequest);
 
-        Discount discount = discountRepository.findByUuid(productCreateRequest.discountUuid())
+
+        Shop shop = shopRepository.findBySlug(productCreateRequest.shopSlug())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("Discount with uuid %s not found! ", productCreateRequest.discountUuid())));
+                        String.format("Shop with name %s not found! ", productCreateRequest.shopSlug())));
+
+
+        Discount discount = discountRepository.findByShopSlugAndUuid(productCreateRequest.shopSlug(), productCreateRequest.discountUuid())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Discount with name %s not found! ", productCreateRequest.discountUuid())
+                ));
+
+        if(discountRepository.findByShopSlugAndUuid(productCreateRequest.shopSlug(), productCreateRequest.discountUuid()).isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You have not create this discount yet!");
+        }
 
         Category category = categoryRepository.findBySlug(productCreateRequest.categorySlug())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         String.format("Category with slug %s not found! ", productCreateRequest.categorySlug())));
-
-        Shop shop = shopRepository.findBySlug(productCreateRequest.shopSlug())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        String.format("Shop with slug %s not found! ", productCreateRequest.shopSlug())));
 
         newProduct.setDiscount(discount);
         newProduct.setCategory(category);
@@ -124,17 +135,20 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public PageResponse<ProductResponse> getAllProducts(int page, int size, String field, String order, Map<String, String> params) {
-        size = Pagination.page_limit;
-        page = Pagination.page_number;
+
+        // Here is validate pagination
+        ValidatePagination.validatePageAndSize(page, size, field, order);
+
+        // Here is for filter product by params
         ProductFilter productFilter = new ProductFilter();
         if (params.containsKey("name")) {
             String name = params.get("name");
             productFilter.setName(name);
         }
 
-        if (params.containsKey("discountPercentage")) {
-            String discountPercentage = params.get("discountPercentage");
-            productFilter.setDiscountPercentage(Double.parseDouble(discountPercentage));
+        if (params.containsKey("discountValue")) {
+            String discountValue = params.get("discountValue");
+            productFilter.setDiscountValue(Double.parseDouble(discountValue));
         }
         if (params.containsKey("category")) {
             String category = params.get("category");
@@ -145,10 +159,10 @@ public class ProductServiceImpl implements ProductService {
             productFilter.setShop(shop);
         }
 
-        List<String> validFields = List.of("name", "price", "discountPrice", "description", "shop", "discountPercentage", "category", "createdAt", "updatedAt", "createdBy", "updateBy");
+        List<String> validFields = List.of("name", "price", "discountPrice", "description", "shop", "discountValue", "category", "createdAt", "updatedAt", "createdBy", "updateBy");
 
         if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, name, price, discountPrice, description, shop, discountPercentage, category, createdAt, updatedAt, createdBy, updateBy");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, name, price, discountPrice, description, shop, discountValue, category, createdAt, updatedAt, createdBy, updateBy");
         }
 
         ProductSpecification specification = new ProductSpecification(productFilter);

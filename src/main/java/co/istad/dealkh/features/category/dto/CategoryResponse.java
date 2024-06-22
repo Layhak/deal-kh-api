@@ -10,7 +10,7 @@ import java.time.LocalDate;
  * @param icon
  * @param createdBy
  * @param createdAt
- * @param updateBy
+ * @param updatedBy
  * @param updatedAt
  */
 public record CategoryResponse(
@@ -19,7 +19,7 @@ public record CategoryResponse(
         String icon,
         String createdBy,
         LocalDate createdAt,
-        String updateBy,
+        String updatedBy,
         LocalDate updatedAt
 ) {
 }

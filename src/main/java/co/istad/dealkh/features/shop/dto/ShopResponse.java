@@ -3,6 +3,7 @@ package co.istad.dealkh.features.shop.dto;
 
 import co.istad.dealkh.features.image.dto.ImageResponse;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -40,6 +41,10 @@ public record ShopResponse(
         String shopType,
         List<ImageResponse> images,
         List<String> owners,
-        String location
+        String location,
+        LocalDate createdAt,
+        LocalDate updatedAt,
+        String createdBy,
+        String updatedBy
 ) {
 }

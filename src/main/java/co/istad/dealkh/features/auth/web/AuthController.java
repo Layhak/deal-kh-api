@@ -6,7 +6,9 @@ import co.istad.dealkh.features.auth.dto.AuthRequest;
 import co.istad.dealkh.features.auth.dto.AuthResponse;
 import co.istad.dealkh.features.auth.dto.RefreshTokenRequest;
 import co.istad.dealkh.features.resetpassword.ResetPasswordService;
+import co.istad.dealkh.features.resetpassword.dto.ConfirmOtpCode;
 import co.istad.dealkh.features.resetpassword.dto.ResetPasswordRequest;
+import co.istad.dealkh.features.resetpassword.dto.SentOtpRequest;
 import co.istad.dealkh.features.user.UserService;
 import co.istad.dealkh.features.user.dto.UserCreateRequest;
 import co.istad.dealkh.features.user.dto.UserResponse;
@@ -101,19 +103,18 @@ public class AuthController {
                 .setPayload(userService.createUser(userRequest));
     }
 
-
     @PostMapping("/send-otp")
-    public BaseResponse<?> sendOtp(@RequestParam String email) {
-        return resetPasswordService.sendOtp(email);
+    public BaseResponse<?> sendOtp(@Valid @RequestBody SentOtpRequest sentOtpRequest) {
+        return resetPasswordService.sendOtp(sentOtpRequest);
     }
 
     @PostMapping("/confirm-otp")
-    public BaseResponse<?> confirmOtp(@RequestParam String email, @RequestParam Integer otp) {
-        return resetPasswordService.confirmOtp(email, otp);
+    public BaseResponse<?> confirmOtp(@Valid @RequestBody ConfirmOtpCode confirmOtpCode) {
+        return resetPasswordService.confirmOtp(confirmOtpCode);
     }
 
-    @PostMapping("/update-password")
-    public BaseResponse<?> updatePassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
-        return resetPasswordService.updatePassword(resetPasswordRequest);
+    @PostMapping("/reset-password")
+    public BaseResponse<?> updatePassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
+        return resetPasswordService.resetPassword(resetPasswordRequest);
     }
 }

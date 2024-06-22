@@ -14,6 +14,8 @@ import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
 import co.istad.dealkh.specification.filter.DiscountFilter;
 import co.istad.dealkh.specification.filter.DiscountSpecification;
+import co.istad.dealkh.specification.filter.PageFilter;
+import co.istad.dealkh.validator.page.ValidatePagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -109,12 +111,21 @@ public class DiscountServiceImpl implements DiscountService {
      * @return a list of {@link DiscountResponseDetail} containing the details of all discounts
      */
     @Override
-    public PageResponse<DiscountResponseDetail> getAllDiscounts(int pageNumber, int size, String field, String order, Map<String, String> params) {
+    public PageResponse<DiscountResponseDetail> getAllDiscounts(int page, int size, String field, String order, Map<String, String> params) {
 
+        // Here is validate pagination
+        size = PageFilter.DEFAULT_PAGE_LIMIT;
+        if(params.containsKey(PageFilter.PAGE_LIMIT)) {
+            size = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
+        }
+
+        page = PageFilter.DEFAULT_PAGE_NUMBER;
+        if(params.containsKey(PageFilter.PAGE_NUMBER)) {
+            page = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
+        }
+
+        // Here is validate filter params
         DiscountFilter discountFilter = new DiscountFilter();
-        pageNumber = Pagination.page_number;
-        size = Pagination.page_limit;
-
         if (params.containsKey("name")) {
             String name = params.get("name");
             discountFilter.setName(name);
@@ -132,12 +143,12 @@ public class DiscountServiceImpl implements DiscountService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
         }
         DiscountSpecification specification = new DiscountSpecification(discountFilter);
-        Pageable pageable = Pagination.getPageable(pageNumber, size, Sort.by(Sort.Direction.fromString(order), field));
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
 
-        Page<DiscountResponseDetail> page = discountRepository.findAll(specification, pageable)
+        Page<DiscountResponseDetail> discounts = discountRepository.findAll(specification, pageable)
                 .map(discountMapper::mapDiscountToResponseDetail);
 
-        return new PageResponse<>(page);
+        return new PageResponse<>(discounts);
 
     }
 

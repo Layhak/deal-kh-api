@@ -21,18 +21,18 @@ public class ProductSpecification implements Specification<Product> {
     public Predicate toPredicate(Root<Product> product, CriteriaQuery<?> query, CriteriaBuilder criteria) {
 
         if (productFilter.getName() != null) {
-            Predicate name = criteria.like(criteria.upper(product.get("name")), productFilter.getName().toUpperCase() + "%");
+            Predicate name = criteria.like(criteria.upper(product.get("name")), "%" + productFilter.getName().toUpperCase() + "%");
             predicates.add(name);
         }
 
         if (productFilter.getCategory() != null) {
-            Predicate category = criteria.like(criteria.upper(product.join("category").get("category")), productFilter.getCategory().toUpperCase() + "%");
+            Predicate category = criteria.like(criteria.upper(product.join("category").get("name")), productFilter.getCategory().toUpperCase());
             predicates.add(category);
         }
 
-        if (productFilter.getDiscountPercentage() > 0) {
-            Predicate discountPercentage = criteria.greaterThan(product.join("discount").get("discountPercentage"), productFilter.getDiscountPercentage());
-            predicates.add(discountPercentage);
+        if (productFilter.getDiscountValue() > 0) {
+            Predicate discountValue = criteria.equal(product.join("discount").get("discountValue"), productFilter.getDiscountValue());
+            predicates.add(discountValue);
         }
 
         if (productFilter.getShop() != null) {

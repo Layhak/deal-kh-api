@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProductFilter {
     private String name;
-    private double discountPercentage;
+    private double discountValue;
     private String category;
     private String shop;
 }

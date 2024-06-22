@@ -7,8 +7,10 @@ import co.istad.dealkh.features.product.dto.ProductResponse;
 import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.security.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,6 +72,8 @@ public class ProductController {
      * @return
      */
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all products")
     PageResponse<ProductResponse> filterProduct(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int size,

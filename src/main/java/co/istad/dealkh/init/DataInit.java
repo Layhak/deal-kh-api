@@ -50,13 +50,12 @@ public class DataInit {
         try {
             initAuthorities();
             initRoles();
-//            initShopTypes();
             initUsers();
+//            initShopTypes();
+//            initCategories();
 //            initShops();
 //            initDiscountTypes();
 //            initDiscounts();
-//            initDiscounts();
-//            initCategories();
             logger.info("Data initialized successfully");
         } catch (Exception e) {
             logger.severe("Error in data initialization: " + e.getMessage());
@@ -136,7 +135,6 @@ public class DataInit {
     private void initShops() {
         if (shopRepository.findAll().isEmpty()) {
 
-
             Shop shop = new Shop();
             shop.setName("Layhak Shop");
             shop.setAddress("Phnom Penh");
@@ -168,20 +166,46 @@ public class DataInit {
 //    }
 
     private void initCategories() {
-        List<String> categories = List.of("Electronics", "Fashion", "Health", "Books", "Food");
-        if (categoryRepository.findAll().isEmpty()) {
-            categories.forEach(category -> {
-                Category category1 = new Category();
-                category1.setName(category);
-                category1.setIcon("icon.jpg");
-                category1.setSlug(category.toLowerCase().replace(" ", "-"));
-                category1.setCreatedAt(LocalDateTime.now());
-                category1.setUpdatedAt(LocalDateTime.now());
-                category1.setCreatedBy("Admin");
-                categoryRepository.save(category1);
-            });
+        List<String> categories = List.of("Food", "Drink", "Accessories", "Clothes", "Skin Care", "Shoes", "Electronic");
+        List<String> icons = List.of(
+                "http://dealkh-api.istad.co:80/images/67b22426-a4f1-44bd-a165-95a4e206a065.jpg",
+                "http://dealkh-api.istad.co:80/images/67b22426-a4f1-44bd-a165-95a4e206a065.jpg",
+                "http://dealkh-api.istad.co:80/images/67b22426-a4f1-44bd-a165-95a4e206a065.jpg",
+                "http://dealkh-api.istad.co:80/images/67b22426-a4f1-44bd-a165-95a4e206a065.jpg",
+                "http://dealkh-api.istad.co:80/images/67b22426-a4f1-44bd-a165-95a4e206a065.jpg",
+                "http://dealkh-api.istad.co:80/images/67b22426-a4f1-44bd-a165-95a4e206a065.jpg",
+                "http://dealkh-api.istad.co:80/images/67b22426-a4f1-44bd-a165-95a4e206a065.jpg"
+
+        );
+
+        for (int i = 0; i < categories.size(); i++) {
+            Category category = new Category();
+            category.setName(categories.get(i));
+            category.setIcon(icons.get(i));
+            category.setSlug(categories.get(i).toLowerCase().replace(" ", "-"));
+            category.setCreatedAt(LocalDateTime.now());
+            category.setUpdatedAt(LocalDateTime.now());
+            category.setCreatedBy("Admin");
+            category.setUpdatedBy("Admin");
+            categoryRepository.save(category);
         }
     }
+
+//    private void initCategories() {
+//        List<String> categories = List.of("Food", "Drink", "Accessories", "Clothes", "Skin Care", "Electronic");
+//        if (categoryRepository.findAll().isEmpty()) {
+//            categories.forEach(category -> {
+//                Category category1 = new Category();
+//                category1.setName(category);
+//                category1.setIcon("icon.jpg");
+//                category1.setSlug(category.toLowerCase().replace(" ", "-"));
+//                category1.setCreatedAt(LocalDateTime.now());
+//                category1.setUpdatedAt(LocalDateTime.now());
+//                category1.setCreatedBy("Admin");
+//                categoryRepository.save(category1);
+//            });
+//        }
+//    }
 
     private void initDiscountTypes() {
         List<String> discountTypes = List.of("No Discount", "Coupon", "Promotion", "Sale");
@@ -198,9 +222,11 @@ public class DataInit {
     private void initDiscounts() {
         if (discountRepository.findAll().isEmpty()) {
             List<DiscountType> discountTypes = discountTypeRepository.findAll();
+            List<Shop> shops = shopRepository.findAll();
+            Discount discount = new Discount();
 
             discountTypes.forEach(discountType -> {
-                Discount discount = new Discount();
+
                 discount.setDescription("Discount Description");
                 // Random 0-100 except for No Discount
                 if (!discountType.getName().equals("No Discount")) {
@@ -212,8 +238,14 @@ public class DataInit {
                 } else {
                     discount.setDiscountValue(BigDecimal.valueOf(0));
                 }
+                discount.setIsPercentage(true);
                 discount.setExpiredAt(LocalDate.now().plusDays(30));
+                discount.setIsExpired(false);
                 discount.setDiscountType(discountType);
+                discountRepository.save(discount);
+            });
+            shops.forEach(shop -> {
+                discount.setShop(shop);
                 discountRepository.save(discount);
             });
         }

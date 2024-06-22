@@ -43,6 +43,6 @@ public class EntityAuditorAware implements AuditorAware<String> {
         if (securityContext.getAuthentication() != null) {
             return Optional.of(securityContext.getAuthentication().getName());
         }
-        return Optional.of("Error");
+        return Optional.of("admin");
     }
 }

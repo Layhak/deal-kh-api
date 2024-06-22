@@ -1,12 +1,15 @@
 package co.istad.dealkh.features.resetpassword;
 
 import co.istad.dealkh.base.BaseResponse;
+import co.istad.dealkh.domain.User;
+import co.istad.dealkh.features.resetpassword.dto.ConfirmOtpCode;
 import co.istad.dealkh.features.resetpassword.dto.ResetPasswordRequest;
+import co.istad.dealkh.features.resetpassword.dto.SentOtpRequest;
 
 public interface ResetPasswordService {
-    BaseResponse<?> sendOtp(String email);
+    BaseResponse<?> sendOtp(SentOtpRequest sentOtpRequest);
 
-    BaseResponse<?> confirmOtp(String email, Integer opt);
+    BaseResponse<?> confirmOtp(ConfirmOtpCode confirmOtpCode);
 
-    BaseResponse<?> updatePassword(ResetPasswordRequest resetPasswordRequest);
+    BaseResponse<?> resetPassword(ResetPasswordRequest resetPasswordRequest);
 }
