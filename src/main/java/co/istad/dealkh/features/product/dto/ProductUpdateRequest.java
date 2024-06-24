@@ -21,7 +21,6 @@ import jakarta.validation.constraints.Size;
 public record ProductUpdateRequest(
 
         @NotBlank(message = "Name is required")
-        @ValidName(message = "Name must be properly formatted and can contain letters, numbers, single spaces, and single dashes")
         String name,
 
         @NotNull(message = "Price is required")

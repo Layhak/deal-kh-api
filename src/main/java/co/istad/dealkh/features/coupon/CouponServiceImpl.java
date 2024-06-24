@@ -6,10 +6,17 @@ import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.coupon.dto.CouponCreateRequest;
 import co.istad.dealkh.features.coupon.dto.CouponResponse;
 import co.istad.dealkh.features.coupon.dto.CouponUpdateRequest;
+import co.istad.dealkh.features.product.dto.ProductResponse;
 import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.mapper.CouponMapper;
+import co.istad.dealkh.paging.PageResponse;
+import co.istad.dealkh.paging.Pagination;
+import co.istad.dealkh.validator.page.ValidatePagination;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -65,11 +72,21 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<CouponResponse> getAllCoupons() {
-        return couponRepository.findAll()
-                .stream()
-                .map(couponMapper::mapToCouponResponse)
-                .toList();
+    public PageResponse<CouponResponse> getAllCoupons(int page, int size, String field, String order) {
+
+        if (page < 0) {
+            page = 1;
+        }
+
+        if (size < 0){
+            size = 25;
+        }
+
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+
+        Page<CouponResponse> couponResponses = couponRepository.findAll(pageable).map(couponMapper::mapToCouponResponse);
+
+        return new PageResponse<>(couponResponses);
     }
 
     @Override

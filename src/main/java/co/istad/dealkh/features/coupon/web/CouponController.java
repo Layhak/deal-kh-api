@@ -5,6 +5,7 @@ import co.istad.dealkh.features.coupon.CouponService;
 import co.istad.dealkh.features.coupon.dto.CouponCreateRequest;
 import co.istad.dealkh.features.coupon.dto.CouponResponse;
 import co.istad.dealkh.features.coupon.dto.CouponUpdateRequest;
+import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,9 +29,14 @@ public class CouponController {
 
     // get all coupons
     @GetMapping
-    public BaseResponse<List<CouponResponse>> getAllCoupons() {
-        return BaseResponse.<List<CouponResponse>>ok("Get all coupons successfully!")
-                .setPayload(couponService.getAllCoupons());
+    public BaseResponse<PageResponse<CouponResponse>> getAllCoupons(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "25") int size,
+            @RequestParam(defaultValue = "code") String field,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        return BaseResponse.<PageResponse<CouponResponse>>ok("Get all coupons successfully!")
+                .setPayload(couponService.getAllCoupons(page, size, field, order));
     }
 
     // get coupon by code

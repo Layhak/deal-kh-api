@@ -22,7 +22,7 @@ public class ProductScrapeController {
             @RequestParam(defaultValue = "25") int size,
             @RequestParam(defaultValue = "name") String field,
             @RequestParam(defaultValue = "asc") String order) {
-        return BaseResponse.<PageResponse<ProductScrapeResponse>>ok("Success").setPayload(productScrapeService.getProductScrapes(page, size, field, order));
+        return BaseResponse.<PageResponse<ProductScrapeResponse>>ok("Get all product scrapes successfully!").setPayload(productScrapeService.getProductScrapes(page, size, field, order));
     }
 
     @PostMapping

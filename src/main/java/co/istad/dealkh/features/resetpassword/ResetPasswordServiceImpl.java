@@ -25,29 +25,26 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     private final MailService emailService;
     private final PasswordEncoder passwordEncoder;
 
-
     @Override
     public BaseResponse<?> sendOtp(SentOtpRequest sentOtpRequest) {
-        Optional<User> userOpt = userRepository.findByEmail(sentOtpRequest.email());
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            int otp = generateOtp();
-            Date expireDate = new Date(System.currentTimeMillis() + 15 * 60 * 1000); // OTP valid for 15 minutes
+        Optional<User> optionalUser = userRepository.findByEmail(sentOtpRequest.email());
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            Integer otp = generateOtp();
+            Date expireDate = new Date(System.currentTimeMillis() + 30 * 60 * 1000); // 30 minutes
 
             ResetPassword resetPassword = new ResetPassword();
-            resetPassword.setUser(user);
             resetPassword.setOtp(otp);
             resetPassword.setExpireDate(expireDate);
+            resetPassword.setUser(user);
+
             resetPasswordRepository.save(resetPassword);
 
             emailService.sendSimpleEmail(user.getEmail(), "Your OTP Code", "Your OTP code is " + otp);
-            return BaseResponse.ok("OTP has been sent to your email.").setPayload(new ArrayList<>());
-        } else {
-            return BaseResponse.notFound("User with this email does not exist!").setPayload(new ArrayList<>());
+            return BaseResponse.ok("OTP sent to your email").setPayload(new ArrayList<>());
         }
+        return BaseResponse.notFound("User not found").setPayload(new ArrayList<>());
     }
-
-
 
     @Override
     public BaseResponse<?> confirmOtp(ConfirmOtpCode confirmOtpCode) {
@@ -55,7 +52,9 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
         if (resetPasswordOpt.isPresent()) {
             ResetPassword resetPassword = resetPasswordOpt.get();
             if (resetPassword.getExpireDate().after(new Date())) {
-                return BaseResponse.ok("OTP is valid.").setPayload(new ArrayList<>());
+                resetPassword.setIsConfirmed(true);
+                resetPasswordRepository.save(resetPassword);
+                return BaseResponse.ok("OTP confirmed. Now you can reset your password.").setPayload(new ArrayList<>());
             } else {
                 return BaseResponse.notFound("OTP has expired.").setPayload(new ArrayList<>());
             }
@@ -64,20 +63,19 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
         }
     }
 
-
-
     @Override
     public BaseResponse<?> resetPassword(ResetPasswordRequest resetPasswordRequest) {
-
         if (!resetPasswordRequest.newPassword().equals(resetPasswordRequest.confirmPassword())) {
-            return BaseResponse.notFound("Passwords do not match.").setPayload(new ArrayList<>());
+            return BaseResponse.badRequest("Passwords do not match.").setPayload(new ArrayList<>());
         }
 
-        Optional<ResetPassword> resetPasswordOpt = resetPasswordRepository.findByOtp(resetPasswordRequest.otp());
+        Optional<ResetPassword> resetPasswordOpt = resetPasswordRepository.findByOtpAndIsConfirmed(resetPasswordRequest.otp(), true);
         if (resetPasswordOpt.isPresent()) {
             ResetPassword resetPassword = resetPasswordOpt.get();
             if (resetPassword.getExpireDate().after(new Date())) {
                 User user = resetPassword.getUser();
+                System.out.println("EMAIL:"+user.getEmail());
+                System.out.println("PASSWORD:"+user.getPassword());
                 user.setPassword(passwordEncoder.encode(resetPasswordRequest.newPassword()));
                 userRepository.save(user);
 
@@ -96,4 +94,5 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
         Random random = new Random();
         return 100000 + random.nextInt(900000);
     }
+
 }

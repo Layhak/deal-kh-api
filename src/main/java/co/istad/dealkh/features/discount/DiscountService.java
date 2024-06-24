@@ -1,10 +1,12 @@
 package co.istad.dealkh.features.discount;
 
+import co.istad.dealkh.domain.Discount;
 import co.istad.dealkh.features.discount.dto.DiscountCreateRequest;
 import co.istad.dealkh.features.discount.dto.DiscountResponseDetail;
 import co.istad.dealkh.features.discount.dto.DiscountUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -52,4 +54,6 @@ public interface DiscountService {
      * @param id
      */
     void deleteDiscountByUuid(String username, String uuid);
+
+    List<DiscountResponseDetail> getAllDiscountOwner(String username);
 }

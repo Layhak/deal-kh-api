@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.Optional;
 
+import static co.istad.dealkh.base.BaseResponse.ok;
+
 /**
  * ProductController is a controller for managing products.
  * It handles creating, retrieving, updating, and deleting products.
@@ -74,14 +76,15 @@ public class ProductController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all products")
-    PageResponse<ProductResponse> filterProduct(
+    BaseResponse<PageResponse<ProductResponse>> filterProduct(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int size,
             @RequestParam(defaultValue = "name") String field,
             @RequestParam(defaultValue = "asc") String order,
             @RequestParam Map<String, String> params
     ) {
-        return productService.getAllProducts(page, size, field, order, params);
+        return BaseResponse.<PageResponse<ProductResponse>>ok("Successfully retrieved products!")
+                .setPayload(productService.getAllProducts(page, size, field, order, params));
     }
 
     /**
@@ -109,7 +112,7 @@ public class ProductController {
     @DeleteMapping("/{slug}")
     BaseResponse<?> deleteProductBySlug(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug) {
         productService.deleteProduct(customUserDetails.getUsername(), slug);
-        return BaseResponse.ok("Delete product successfully!")
+        return ok("Delete product successfully!")
                 .setPayload("No content");
     }
 

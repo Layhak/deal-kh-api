@@ -23,7 +23,6 @@ import java.util.List;
 public record ProductCreateRequest(
 
         @NotBlank(message = "Name is required")
-        @ValidName(message = "Name must be properly formatted and can contain letters, numbers, single spaces, and single dashes")
         String name,
 
         @Positive(message = "Price must be a positive number")

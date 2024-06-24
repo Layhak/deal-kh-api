@@ -194,4 +194,13 @@ public class DiscountServiceImpl implements DiscountService {
         discountRepository.delete(discount);
     }
 
+    @Override
+    public List<DiscountResponseDetail> getAllDiscountOwner(String username) {
+
+        return discountRepository.findAllByCreatedBy(username)
+                .stream()
+                .map(discountMapper::mapDiscountToResponseDetail)
+                .toList();
+    }
+
 }

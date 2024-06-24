@@ -22,6 +22,8 @@ public record ProductResponse(
         List<ImageResponse> images,
         String shop,
         BigDecimal discountValue,
+        String discountType,
+        LocalDate expiredAt,
         String category,
         LocalDate createdAt,
         LocalDate updatedAt,

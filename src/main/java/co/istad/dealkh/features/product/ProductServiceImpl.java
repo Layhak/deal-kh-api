@@ -137,7 +137,12 @@ public class ProductServiceImpl implements ProductService {
     public PageResponse<ProductResponse> getAllProducts(int page, int size, String field, String order, Map<String, String> params) {
 
         // Here is validate pagination
-        ValidatePagination.validatePageAndSize(page, size, field, order);
+        if (page < 0){
+            page = PageFilter.DEFAULT_PAGE_NUMBER;
+        }
+        if(size < 0){
+            size = PageFilter.DEFAULT_PAGE_LIMIT;
+        }
 
         // Here is for filter product by params
         ProductFilter productFilter = new ProductFilter();
@@ -150,6 +155,12 @@ public class ProductServiceImpl implements ProductService {
             String discountValue = params.get("discountValue");
             productFilter.setDiscountValue(Double.parseDouble(discountValue));
         }
+
+        if (params.containsKey("discountType")) {
+            String discountType = params.get("discountType");
+            productFilter.setDiscountType(discountType);
+        }
+
         if (params.containsKey("category")) {
             String category = params.get("category");
             productFilter.setCategory(category);
@@ -183,7 +194,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse updateProductBySlug(String username, String slug, ProductUpdateRequest productUpdateRequest) {
 
-        Product product = productRepository.findByName(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found! ", slug)));
+        Product product = productRepository.findBySlug(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found! ", slug)));
 
         if(productRepository.findByCreatedByAndSlug(username, slug).isEmpty()){
             throw new ResponseStatusException(

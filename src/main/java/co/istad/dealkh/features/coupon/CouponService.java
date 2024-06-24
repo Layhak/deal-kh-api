@@ -3,6 +3,7 @@ package co.istad.dealkh.features.coupon;
 import co.istad.dealkh.features.coupon.dto.CouponCreateRequest;
 import co.istad.dealkh.features.coupon.dto.CouponResponse;
 import co.istad.dealkh.features.coupon.dto.CouponUpdateRequest;
+import co.istad.dealkh.paging.PageResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +11,7 @@ import java.util.Optional;
 public interface CouponService {
     CouponResponse createCoupon(CouponCreateRequest couponCreateRequest);
 
-    List<CouponResponse> getAllCoupons();
+    PageResponse<CouponResponse> getAllCoupons(int page, int size, String field, String order);
 
     Optional<CouponResponse> getCouponByCode(String code);
 

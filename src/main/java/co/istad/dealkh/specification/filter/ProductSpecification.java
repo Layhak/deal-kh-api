@@ -35,6 +35,12 @@ public class ProductSpecification implements Specification<Product> {
             predicates.add(discountValue);
         }
 
+        if (productFilter.getDiscountType() != null) {
+            Predicate discountType = criteria.equal(criteria.upper(product.join("discount").get("discountType").get("name")), productFilter.getDiscountType().toUpperCase());
+            predicates.add(discountType);
+        }
+
+
         if (productFilter.getShop() != null) {
             Predicate shop = criteria.like(criteria.upper(product.join("shop").get("name")), "%" + productFilter.getShop().toUpperCase() + "%");
             predicates.add(shop);

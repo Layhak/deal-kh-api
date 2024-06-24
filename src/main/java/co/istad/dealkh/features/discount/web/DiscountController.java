@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -122,6 +123,13 @@ public class DiscountController {
         discountService.deleteDiscountByUuid(customUserDetails.getUsername(), uuid);
         return BaseResponse.ok("Discount has been deleted!")
                 .setPayload("No content");
+    }
+
+    @GetMapping("/owner")
+    BaseResponse<List<DiscountResponseDetail>> getAllDiscountOwner(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return BaseResponse.<List<DiscountResponseDetail>>ok("Retrieves all your discounts successfully!")
+                .setPayload(discountService.getAllDiscountOwner(customUserDetails.getUsername()));
     }
 
 }

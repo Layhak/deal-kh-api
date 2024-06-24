@@ -22,6 +22,8 @@ public class ResetPassword extends Auditable {
 
     Date expireDate;
 
+    Boolean isConfirmed;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

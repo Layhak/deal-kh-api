@@ -8,13 +8,9 @@ import java.util.Optional;
 
 public interface ResetPasswordRepository extends JpaRepository<ResetPassword, Long> {
 
-    Optional<ResetPassword> findTopByUserOrderByExpireDateDesc(User user);
-
-    Optional<ResetPassword> findTopByOtpOrderByExpireDateDesc(Integer otp);
-
-    Optional<ResetPassword> findTopByUserAndOtpOrderByExpireDateDesc(User user, Integer otp);
-
     Optional<ResetPassword> findByOtp(Integer otp);
+
+    Optional<ResetPassword> findByOtpAndIsConfirmed(Integer otp, Boolean isConfirmed);
 
 
 }

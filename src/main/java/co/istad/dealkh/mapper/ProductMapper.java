@@ -10,6 +10,7 @@ import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
 import org.mapstruct.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
@@ -21,6 +22,8 @@ public interface ProductMapper {
     @Mapping(target = "description", source = "description")
     @Mapping(target = "images", source = "images")
     @Mapping(target = "discountPrice", source = "product", qualifiedByName = "toDiscountPrice")
+    @Mapping(target = "discountType", source = "discount", qualifiedByName = "discountToDiscountType")
+    @Mapping(target = "expiredAt", source = "discount", qualifiedByName = "discountToExpiredAt")
     ProductResponse mapProductToProductResponseDetail(Product product);
 
     Product mapProductRequestToProduct(ProductCreateRequest productCreateRequest);
@@ -53,6 +56,16 @@ public interface ProductMapper {
             return price.multiply(discountRate);
         }
         return product.getDiscount().getDiscountValue();
+    }
+
+    @Named("discountToDiscountType")
+    default String mapDiscountType(Discount discount) {
+        return discount.getDiscountType().getName();
+    }
+
+    @Named("discountToExpiredAt")
+    default LocalDate mapExpiredAt(Discount discount) {
+        return discount.getExpiredAt();
     }
 
 

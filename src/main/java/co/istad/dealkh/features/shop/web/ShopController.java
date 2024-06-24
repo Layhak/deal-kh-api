@@ -120,7 +120,7 @@ public class ShopController {
     public BaseResponse<PageResponse<ShopResponse>> getAllOwnerShops(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(defaultValue = "25") int size,
             @RequestParam(defaultValue = "name") String field,
             @RequestParam(defaultValue = "asc") String order
     ) {

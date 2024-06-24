@@ -28,4 +28,6 @@ public interface DiscountRepository extends JpaRepository<Discount, Long>, JpaSp
     Optional<Discount> findByShopSlugAndUuid(String slug, String uuid);
 
     Optional<Discount> findByUuid(String uuid);
+
+    List<Discount> findAllByCreatedBy(String username);
 }
