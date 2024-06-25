@@ -1,5 +1,6 @@
 package co.istad.dealkh.features.product.dto;
 
+import co.istad.dealkh.features.image.dto.ImageRequest;
 import co.istad.dealkh.features.image.dto.ImageResponse;
 import co.istad.dealkh.validator.name.ValidName;
 import jakarta.validation.constraints.NotBlank;
@@ -29,7 +30,7 @@ public record ProductCreateRequest(
         double price,
 
         String description,
-        List<ImageResponse> images,
+        List<ImageRequest> images,
 
         @NotNull(message = "Create shop first before create product")
         String shopSlug,

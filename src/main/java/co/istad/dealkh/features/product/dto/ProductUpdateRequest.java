@@ -1,11 +1,15 @@
 package co.istad.dealkh.features.product.dto;
 
 
+import co.istad.dealkh.features.image.dto.ImageRequest;
+import co.istad.dealkh.features.image.dto.ImageResponse;
 import co.istad.dealkh.validator.name.ValidName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 /**
  * ProductUpdateRequest is a request object for updating a product.
@@ -31,7 +35,9 @@ public record ProductUpdateRequest(
         String description,
         String shopSlug,
         String discountUuid,
-        String categorySlug
+        String categorySlug,
+        List<ImageRequest> images
+
 
 ) {
 }
