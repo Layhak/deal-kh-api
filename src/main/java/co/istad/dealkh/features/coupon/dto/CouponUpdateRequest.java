@@ -11,6 +11,7 @@ public record CouponUpdateRequest(
 
         String description,
         BigDecimal value,
-        LocalDate expiredAt
+        LocalDate expiredAt,
+        String image
 ) {
 }

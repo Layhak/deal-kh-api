@@ -23,7 +23,7 @@ public record UserUpdateRequest(
         String gender,
 
         @NotBlank(message = "Phone number is required")
-        @ValidPhoneNumber(message = "Phone number must be 10 digits long")
+        @ValidPhoneNumber(message = "Phone number must be 9 or 10 digits long")
         String phoneNumber,
 
         @NotNull(message = "Date of birth is required")

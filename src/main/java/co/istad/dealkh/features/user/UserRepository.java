@@ -40,6 +40,8 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     Optional<User> findUserByUsername(String username);
 
+    boolean existsByPhoneNumber(String phoneNumber);
+
 
 //    boolean existsByPhone(String s);
 //

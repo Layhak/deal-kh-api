@@ -126,16 +126,13 @@ public class DiscountServiceImpl implements DiscountService {
 
         // Here is validate filter params
         DiscountFilter discountFilter = new DiscountFilter();
-        if (params.containsKey("name")) {
-            String name = params.get("name");
-            discountFilter.setName(name);
+
+        if (params.containsKey("discountValue")) {
+            String discountValue = params.get("discountValue");
+            discountFilter.setDiscountValue(Double.parseDouble(discountValue));
         }
 
-        if (params.containsKey("discountPercentage")) {
-            String discountPercentage = params.get("discountPercentage");
-            discountFilter.setDiscountPercentage(Double.parseDouble(discountPercentage));
-        }
-        List<String> validFields = Arrays.asList("uuid", "discountPercentage", "createdAt", "updatedAt");
+        List<String> validFields = Arrays.asList("uuid", "discountValue", "createdAt", "updatedAt");
         if (field == null || field.isEmpty() || !validFields.contains(field)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be uuid, discountPercentage, or createdAt");
         }

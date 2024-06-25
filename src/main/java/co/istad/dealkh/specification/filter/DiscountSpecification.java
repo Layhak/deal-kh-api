@@ -18,14 +18,9 @@ public class DiscountSpecification implements Specification<Discount> {
     @Override
     public Predicate toPredicate(Root<Discount> discount, CriteriaQuery<?> query, CriteriaBuilder criteria) {
 
-        if(discountFilter.getName() != null){
-            Predicate name = criteria.like(criteria.upper(discount.get("name")), "%" + discountFilter.getName().toUpperCase() + "%");
-            predicates.add(name);
-        }
-
-        if(discountFilter.getDiscountPercentage() > 0) {
-            Predicate discountPercentage = discount.get("discountPercentage").in(discountFilter.getDiscountPercentage());
-            predicates.add(discountPercentage);
+        if(discountFilter.getDiscountValue() > 0) {
+            Predicate discountValue = discount.get("discountValue").in(discountFilter.getDiscountValue());
+            predicates.add(discountValue);
         }
 
         //return cb.and(predicates.toArray(new Predicate[0]));

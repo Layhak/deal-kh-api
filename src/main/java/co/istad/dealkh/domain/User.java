@@ -40,7 +40,7 @@ public class User extends Auditable {
     @Convert(converter = ImageListConverter.class)
     private List<Image> images;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
     private LocalDate dob;

@@ -31,7 +31,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             Integer otp = generateOtp();
-            Date expireDate = new Date(System.currentTimeMillis() + 30 * 60 * 1000); // 30 minutes
+            Date expireDate = new Date(System.currentTimeMillis() + 60 * 1000); // 1 minute
 
             ResetPassword resetPassword = new ResetPassword();
             resetPassword.setOtp(otp);

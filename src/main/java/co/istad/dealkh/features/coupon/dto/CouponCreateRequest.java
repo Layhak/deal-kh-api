@@ -11,6 +11,7 @@ import java.time.LocalDate;
 public record CouponCreateRequest(
 
         String description,
+        String image,
 
         @NotBlank(message = "Value is required")
         @Positive(message = "Value must be a positive number")

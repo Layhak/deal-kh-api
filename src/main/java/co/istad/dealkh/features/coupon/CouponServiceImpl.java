@@ -12,6 +12,7 @@ import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.mapper.CouponMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
+import co.istad.dealkh.specification.filter.PageFilter;
 import co.istad.dealkh.validator.page.ValidatePagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -75,11 +76,11 @@ public class CouponServiceImpl implements CouponService {
     public PageResponse<CouponResponse> getAllCoupons(int page, int size, String field, String order) {
 
         if (page < 0) {
-            page = 1;
+            page = PageFilter.DEFAULT_PAGE_NUMBER;
         }
 
         if (size < 0){
-            size = 25;
+            size = PageFilter.DEFAULT_PAGE_LIMIT;
         }
 
         Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));

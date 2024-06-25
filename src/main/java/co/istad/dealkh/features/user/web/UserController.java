@@ -155,15 +155,15 @@ public class UserController {
 
     @PostMapping("/addRole/{username}")
     @Operation(summary = "Add role to user")
-    public BaseResponse<UserResponse> addRole(@PathVariable String username, @RequestBody UserRoleRequest userRoleRequest) {
+    public BaseResponse<UserResponse> addRole(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String username, @RequestBody UserRoleRequest userRoleRequest) {
         //if user has  role admin or super admin
-        return BaseResponse.<UserResponse>ok("Successfully add role to user").setPayload(userService.addRole(username, userRoleRequest));
+        return BaseResponse.<UserResponse>ok("Successfully add role to user").setPayload(userService.addRole(customUserDetails.getUsername(), username, userRoleRequest));
     }
 
     @DeleteMapping("/removeRole/{username}")
     @Operation(summary = "Remove role from user")
-    public BaseResponse<UserResponse> removeRole(@PathVariable String username, @RequestBody UserRoleRequest userRoleRequest) {
-        return BaseResponse.<UserResponse>ok("Successfully remove role from user").setPayload(userService.removeRole(username, userRoleRequest));
+    public BaseResponse<UserResponse> removeRole(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String username, @RequestBody UserRoleRequest userRoleRequest) {
+        return BaseResponse.<UserResponse>ok("Successfully remove role from user").setPayload(userService.removeRole(customUserDetails.getUsername(), username, userRoleRequest));
     }
 
     @GetMapping("/buyers")

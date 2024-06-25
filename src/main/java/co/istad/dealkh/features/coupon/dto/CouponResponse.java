@@ -16,6 +16,7 @@ public record CouponResponse(
         LocalDate createdAt,
         LocalDate updatedAt,
         String createdBy,
-        String updatedBy
+        String updatedBy,
+        String image
 ) {
 }

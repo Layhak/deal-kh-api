@@ -8,6 +8,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class DiscountFilter {
-    private String name;
-    private double discountPercentage;
+    private double discountValue;
 }

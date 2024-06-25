@@ -94,6 +94,9 @@ public class UserServiceImpl implements UserService {
                     "Email already taken! Try another one.");
         }
 
+        if (userRepository.existsByPhoneNumber(userRequest.phoneNumber())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Phone number already taken! Try another one.");
+        }
         if (!userRequest.confirmedPassword().equals(userRequest.password())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password does not match!");
         }
@@ -246,48 +249,54 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse addRole(String username, UserRoleRequest userRoleRequest) {
+    public UserResponse addRole(String auth, String username,  UserRoleRequest userRoleRequest) {
+
+        // Check if user exists
+        User superAdmin = userRepository.findByUsername(auth)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+
+
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+
+        if (superAdmin.getRoles().stream().noneMatch(role -> role.getName().equals("SUPER_ADMIN"))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only SUPER_ADMIN can add roles");
+        }
+
+        if (user.getRoles().stream().anyMatch(role -> role.getName().equals(userRoleRequest.role()))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already has the role: " + userRoleRequest.role());
+        }
 
         Role newRole = roleRepository.findByName(userRoleRequest.role())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + userRoleRequest.role()));
 
-        // Check if the user has the BUYER role and is trying to promote to ADMIN or SUPER_ADMIN
-        if (user.getRoles().stream().anyMatch(role -> role.getName().equals("BUYER") || role.getName().equals("SELLER"))
-                && (userRoleRequest.role().equals("ADMIN") || userRoleRequest.role().equals("SUPER_ADMIN"))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User with BUYER or SELLER role cannot promote themselves to ADMIN or SUPER_ADMIN");
-        }
 
-        // Check if the user has the ADMIN role and is trying to promote to SUPER_ADMIN
-        if (user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))
-                && userRoleRequest.role().equals("SUPER_ADMIN")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User with ADMIN role cannot promote themselves to SUPER_ADMIN");
-        }
-
-        // Check if the user already has the role
-        if (user.getRoles().stream().anyMatch(role -> role.getName().equals(userRoleRequest.role()))) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Role already exists");
-        }
-
-        // Check if the user does not have any of the required roles (ADMIN, SUPER_ADMIN, BUYER)
-        if (user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("SUPER_ADMIN") || role.getName().equals("BUYER") || role.getName().equals("SELLER"))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have the necessary role to add a new role");
+        if(newRole.getName().equals("SUPER_ADMIN")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot add SUPER_ADMIN role");
         }
 
         user.getRoles().add(newRole);
+
         user.setUpdatedAt(LocalDateTime.now());
-        user.setUpdatedBy(username);
+        user.setUpdatedBy(auth);
         userRepository.save(user);
 
         return userMapper.mapToUserResponse(user);
     }
 
-
     @Override
-    public UserResponse removeRole(String username, UserRoleRequest userRoleRequest) {
+    public UserResponse removeRole(String auth, String username,  UserRoleRequest userRoleRequest) {
+
+        // check authenticate user role
+        User superAdmin = userRepository.findByUsername(auth)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+
+        if (superAdmin.getRoles().stream().noneMatch(role -> role.getName().equals("SUPER_ADMIN"))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only SUPER_ADMIN can remove roles");
+        }
 
         Role roleToRemove = roleRepository.findByName(userRoleRequest.role())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role has not been found!"));
@@ -300,28 +309,6 @@ public class UserServiceImpl implements UserService {
         // Prevent removal if the user only has one role left
         if (user.getRoles().size() == 1) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User has only one role");
-        }
-
-        // Check if the user attempting the removal has the BUYER role but not SUPER_ADMIN or ADMIN
-        boolean isBuyerOnly = user.getRoles().stream().anyMatch(role -> role.getName().equals("BUYER")) &&
-                user.getRoles().stream().noneMatch(role -> role.getName().equals("SUPER_ADMIN") || role.getName().equals("ADMIN"));
-
-        // Check if the target user has SUPER_ADMIN or ADMIN roles
-        User targetUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Target user has not been found!"));
-
-        boolean isTargetSuperAdminOrAdmin = targetUser.getRoles().stream().anyMatch(role -> role.getName().equals("SUPER_ADMIN") || role.getName().equals("ADMIN"));
-
-        if (isBuyerOnly && isTargetSuperAdminOrAdmin) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User with BUYER role cannot remove roles from a user with SUPER_ADMIN or ADMIN roles");
-        }
-
-        // Check if the user attempting the removal is not SUPER_ADMIN and is trying to remove a role from SUPER_ADMIN
-        boolean isNotSuperAdmin = user.getRoles().stream().noneMatch(role -> role.getName().equals("SUPER_ADMIN"));
-        boolean isTargetSuperAdmin = targetUser.getRoles().stream().anyMatch(role -> role.getName().equals("SUPER_ADMIN"));
-
-        if (isNotSuperAdmin && isTargetSuperAdmin) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only SUPER_ADMIN can remove roles from another SUPER_ADMIN");
         }
 
         user.getRoles().remove(roleToRemove);

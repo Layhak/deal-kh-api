@@ -25,6 +25,9 @@ public class Coupon extends Auditable {
     @Column(length = 250)
     private String description;
 
+    @Column(nullable = false)
+    private String image;
+
     @Column(nullable = false, unique = true, length = 10)
     private String code;
 

@@ -31,9 +31,9 @@ public interface UserService {
 
     UserResponse enableUser(String username);
 
-    UserResponse addRole(String username, UserRoleRequest userRoleRequest);
+    UserResponse addRole(String auth, String username, UserRoleRequest userRoleRequest);
 
-    UserResponse removeRole(String username, UserRoleRequest userRoleRequest);
+    UserResponse removeRole(String auth, String username, UserRoleRequest userRoleRequest);
 
     PageResponse<UserResponse> getAllBuyer(int page, int size, String field, String order);
 
