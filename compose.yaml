@@ -12,8 +12,8 @@ services:
     ports:
       - '3101:8080'   #follow your port
     volumes:
-      - deal-kh-api:/home/dealkh/images
-      - /home/dealkh/dealkh-api/filestorage/images:/home/dealkh/images
+      - deal-kh-api:/app/filestorage/images
+      - /home/dealkh/dealkh-api/filestorage/images:/app/filestorage/images
     networks:
       - dealkh
 volumes:

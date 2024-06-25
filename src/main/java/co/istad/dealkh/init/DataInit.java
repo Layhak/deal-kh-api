@@ -114,7 +114,7 @@ public class DataInit {
             user1.setLocation("Phnom Penh");
             user1.setIsDisabled(false);
             user1.setCreatedAt(LocalDateTime.now());
-            user1.setRoles(Set.of(roles.get(0)));
+            user1.setRoles(Set.of(roles.get(0), roles.get(1), roles.get(2), roles.get(3)));
             users.add(user1);
             userRepository.saveAll(users);
         }

@@ -344,4 +344,15 @@ public class UserServiceImpl implements UserService {
         return new PageResponse<>(sellers);
     }
 
+    @Override
+    public PageResponse<UserResponse> getAllAdmin(int page, int size, String field, String order) {
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+
+        Page<UserResponse> admins = userRepository.findAllUserByRoles_Name("ADMIN", pageable).map(userMapper::mapToUserResponse);
+        if (admins.getContent().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No admins found");
+        }
+        return new PageResponse<>(admins);
+    }
+
 }

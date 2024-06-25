@@ -38,5 +38,6 @@ public interface UserService {
     PageResponse<UserResponse> getAllBuyer(int page, int size, String field, String order);
 
     PageResponse<UserResponse> getAllSeller(int page, int size, String field, String order);
+    PageResponse<UserResponse> getAllAdmin(int page, int size, String field, String order);
 
 }

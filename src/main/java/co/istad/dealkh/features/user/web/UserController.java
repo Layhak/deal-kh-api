@@ -214,5 +214,28 @@ public class UserController {
                 .setPayload(userService.getAllSeller(page, size, field, order));
     }
 
+    @GetMapping("/admins")
+    @Operation(summary = "Get all admins")
+    public BaseResponse<PageResponse<UserResponse>> getAllAdmin(
+            @Parameter(name = "page",
+                    description = "Page number",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "1")) @RequestParam(defaultValue = "1") int page,
+            @Parameter(name = "size",
+                    description = "Page size",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "25")) @RequestParam(defaultValue = "25") int size,
+            @Parameter(name = "field",
+                    description = "Sort field",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "username")) @RequestParam(defaultValue = "username") String field,
+            @Parameter(name = "order",
+                    description = "Sort order",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(defaultValue = "asc")) @RequestParam(defaultValue = "asc") String order
+    ) {
+        return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieve all admins!")
+                .setPayload(userService.getAllAdmin(page, size, field, order));
+    }
 
 }
