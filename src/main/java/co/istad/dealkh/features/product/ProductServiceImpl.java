@@ -93,6 +93,7 @@ public class ProductServiceImpl implements ProductService {
                         HttpStatus.NOT_FOUND,
                         String.format("Category with slug %s not found! ", productCreateRequest.categorySlug())));
 
+
         newProduct.setDiscount(discount);
         newProduct.setCategory(category);
         newProduct.setShop(shop);

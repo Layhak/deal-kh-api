@@ -19,7 +19,7 @@ public class ShopRating extends Auditable {
 
     private double ratingValue;
 
-    @Column(length = 250)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ManyToOne

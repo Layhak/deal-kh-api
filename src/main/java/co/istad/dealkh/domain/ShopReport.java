@@ -21,7 +21,7 @@ public class ShopReport extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 250)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Convert(converter = ImageListConverter.class)

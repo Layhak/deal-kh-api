@@ -22,7 +22,7 @@ public class Coupon extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 250)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)

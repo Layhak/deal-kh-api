@@ -23,7 +23,7 @@ public class ProductScrape {
 
     private String name;
 
-    @Column(length = 250)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
 

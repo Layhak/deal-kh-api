@@ -37,7 +37,7 @@ public class Product extends Auditable {
     @Column(nullable = false)
     private double discountPrice;
 
-    @Column(length = 250)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Convert(converter = ImageListConverter.class)

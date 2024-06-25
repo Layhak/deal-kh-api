@@ -51,11 +51,11 @@ public class DataInit {
             initAuthorities();
             initRoles();
             initUsers();
-//            initShopTypes();
-//            initCategories();
-//            initShops();
-//            initDiscountTypes();
-//            initDiscounts();
+            initShopTypes();
+            initCategories();
+            initShops();
+            initDiscountTypes();
+            initDiscounts();
             logger.info("Data initialized successfully");
         } catch (Exception e) {
             logger.severe("Error in data initialization: " + e.getMessage());
@@ -99,18 +99,18 @@ public class DataInit {
             List<Image> images = new ArrayList<>();
             // Example user
             User user1 = new User();
-            user1.setFirstName("Heng");
-            user1.setLastName("Layhak");
-            user1.setUsername("layhak");
-            user1.setEmail("layhakheng@gmail.com");
+            user1.setFirstName("admin");
+            user1.setLastName("admin");
+            user1.setUsername("admin");
+            user1.setEmail("admin@gmail.com");
             user1.setGender("Male");
-            user1.setPassword(passwordEncoder.encode("Layhak@123"));
+            user1.setPassword(passwordEncoder.encode("Admin@100$"));
             images.add(new Image("https://example.com/image1.jpg"));
             images.add(new Image("https://example.com/image2.jpg"));
             user1.setImages(images);
 
-            user1.setPhoneNumber("123456789");
-            user1.setDob(LocalDate.of(2002, 11, 27));
+            user1.setPhoneNumber("0987654321");
+            user1.setDob(LocalDate.of(2001, 1, 31));
             user1.setLocation("Phnom Penh");
             user1.setIsDisabled(false);
             user1.setCreatedAt(LocalDateTime.now());
@@ -136,9 +136,9 @@ public class DataInit {
         if (shopRepository.findAll().isEmpty()) {
 
             Shop shop = new Shop();
-            shop.setName("Layhak Shop");
+            shop.setName("Layhak Online Shop");
             shop.setAddress("Phnom Penh");
-            shop.setDescription("Shop description");
+            shop.setDescription("At Radiant Glow Skincare, we believe that everyone deserves to have radiant, healthy skin. Our online shop offers a curated selection of premium skincare products designed to nourish, rejuvenate, and enhance your natural beauty. Whether you're looking to hydrate, fight signs of aging, or find the perfect cleanser, we have everything you need to create a personalized skincare routine.");
             shop.setPhoneNumber("0123456789");
             shop.setEmail("layhakshop@gmail.com");
             shop.setSlug(SlugFormatter.formatSlug(shop.getName()));
@@ -154,17 +154,6 @@ public class DataInit {
         }
     }
 
-//    private void initUserShops() {
-//        if (userRepository.findByUsername("layhak").isPresent()) {
-//            User user = userRepository.findByUsername("layhak").get();
-//            List<Shop> shops = shopRepository.findAll();
-//            shops.forEach(shop -> {
-//                user.getShops().add(shop);
-//                userRepository.save(user);
-//            });
-//        }
-//    }
-
     private void initCategories() {
         List<String> categories = List.of("Food", "Drink", "Accessories", "Clothes", "Skin Care", "Shoes", "Electronic");
         List<String> icons = List.of(
@@ -175,40 +164,25 @@ public class DataInit {
                 "http://dealkh-api.istad.co:80/images/67b22426-a4f1-44bd-a165-95a4e206a065.jpg",
                 "http://dealkh-api.istad.co:80/images/67b22426-a4f1-44bd-a165-95a4e206a065.jpg",
                 "http://dealkh-api.istad.co:80/images/67b22426-a4f1-44bd-a165-95a4e206a065.jpg"
-
         );
 
-        for (int i = 0; i < categories.size(); i++) {
-            Category category = new Category();
-            category.setName(categories.get(i));
-            category.setIcon(icons.get(i));
-            category.setSlug(categories.get(i).toLowerCase().replace(" ", "-"));
-            category.setCreatedAt(LocalDateTime.now());
-            category.setUpdatedAt(LocalDateTime.now());
-            category.setCreatedBy("Admin");
-            category.setUpdatedBy("Admin");
-            categoryRepository.save(category);
+        if (categoryRepository.findAll().isEmpty()) {
+            for (int i = 0; i < categories.size(); i++) {
+                Category category = new Category();
+                category.setName(categories.get(i));
+                category.setIcon(icons.get(i));
+                category.setSlug(categories.get(i).toLowerCase().replace(" ", "-"));
+                category.setCreatedAt(LocalDateTime.now());
+                category.setUpdatedAt(LocalDateTime.now());
+                category.setCreatedBy("admin");
+                category.setUpdatedBy("admin");
+                categoryRepository.save(category);
+            }
         }
     }
 
-//    private void initCategories() {
-//        List<String> categories = List.of("Food", "Drink", "Accessories", "Clothes", "Skin Care", "Electronic");
-//        if (categoryRepository.findAll().isEmpty()) {
-//            categories.forEach(category -> {
-//                Category category1 = new Category();
-//                category1.setName(category);
-//                category1.setIcon("icon.jpg");
-//                category1.setSlug(category.toLowerCase().replace(" ", "-"));
-//                category1.setCreatedAt(LocalDateTime.now());
-//                category1.setUpdatedAt(LocalDateTime.now());
-//                category1.setCreatedBy("Admin");
-//                categoryRepository.save(category1);
-//            });
-//        }
-//    }
-
     private void initDiscountTypes() {
-        List<String> discountTypes = List.of("No Discount", "Coupon", "Promotion", "Sale");
+        List<String> discountTypes = List.of("No Discount", "Discount Off", "Shop Coupons", "Event", "Buy More Get More", "Clearance Sales", "Flash Sales", "Top Sales");
         if (discountTypeRepository.findAll().isEmpty()) {
             discountTypes.forEach(type -> {
                 DiscountType discountType = new DiscountType();

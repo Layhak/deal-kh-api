@@ -25,7 +25,7 @@ public class ProductFeedback extends Auditable {
     @Column(name = "uuid", unique = true, nullable = false, updatable = false)
     private String uuid;
 
-    @Column(length = 250)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Convert(converter = ImageListConverter.class)

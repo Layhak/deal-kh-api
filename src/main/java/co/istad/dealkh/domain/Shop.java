@@ -32,7 +32,7 @@ public class Shop extends Auditable {
     private String location;
     private String address;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false, unique = true)
