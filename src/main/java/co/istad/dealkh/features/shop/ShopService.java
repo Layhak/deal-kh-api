@@ -16,7 +16,7 @@ public interface ShopService {
 
     ShopResponse getShopBySlug(String slug);
 
-    ShopResponse createShop(ShopCreateRequest shopRequest, List<String> usernames);
+    ShopResponse createShop(ShopCreateRequest shopRequest);
 
     ShopResponse updateShop(String slug, ShopUpdateRequest shopRequest, String username);
 

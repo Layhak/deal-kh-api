@@ -11,7 +11,7 @@ import java.util.List;
  * ShopResponse is a response object for a shop.
  * It contains the ID, name, address, description, phone number, email, is deleted, is disabled, open at, close at, shop type, images, users, location.
  *
- * @param id
+ * @param slug
  * @param name
  * @param address
  * @param description

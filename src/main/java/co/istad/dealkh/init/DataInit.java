@@ -147,7 +147,7 @@ public class DataInit {
             shop.setIsDeleted(false);
             shop.setIsDisabled(false);
             shop.setShopType(shopTypeRepository.findAll().get(0));
-//            shop.setUsers(List.of(userRepository.findByUsername("layhak").get()));
+            shop.setUsers(List.of(userRepository.findByUsername("layhak").get()));
             shopRepository.save(shop);
         } else {
             logger.severe("User with email 'layhak@gmail.com' not found");
