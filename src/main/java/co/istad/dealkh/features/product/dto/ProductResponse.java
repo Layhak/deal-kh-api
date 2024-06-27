@@ -4,6 +4,7 @@ import co.istad.dealkh.features.image.dto.ImageResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -21,6 +22,9 @@ public record ProductResponse(
         String description,
         List<ImageResponse> images,
         String shop,
+        String location,
+        LocalTime openAt,
+        LocalTime closeAt,
         BigDecimal discountValue,
         String discountType,
         LocalDate expiredAt,

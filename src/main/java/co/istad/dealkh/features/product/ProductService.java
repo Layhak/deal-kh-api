@@ -69,4 +69,7 @@ public interface ProductService {
      */
     Double getProductRatingAvg(Long id);
 
+    PageResponse<ProductResponse> getProductShopOwner(int page, int size, String field, String order, String slug);
+
+
 }

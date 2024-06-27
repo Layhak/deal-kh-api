@@ -53,7 +53,7 @@ public class DataInit {
             initUsers();
             initShopTypes();
             initCategories();
-            initShops();
+//            initShops();
             initDiscountTypes();
             initDiscounts();
             logger.info("Data initialized successfully");
@@ -138,7 +138,7 @@ public class DataInit {
             Shop shop = new Shop();
             shop.setName("Layhak Online Shop");
             shop.setAddress("Phnom Penh");
-            shop.setDescription("At Radiant Glow Skincare, we believe that everyone deserves to have radiant, healthy skin. Our online shop offers a curated selection of premium skincare products designed to nourish, rejuvenate, and enhance your natural beauty. Whether you're looking to hydrate, fight signs of aging, or find the perfect cleanser, we have everything you need to create a personalized skincare routine.");
+            shop.setDescription("At Radiant Glow Skincare, we believe that everyone deserves to have radiant, healthy skin. Our online shop offers a curated selection of premium skincare products designed to nourish, rejuvenate, and enhance your natural beauty.");
             shop.setPhoneNumber("0123456789");
             shop.setEmail("layhakshop@gmail.com");
             shop.setSlug(SlugFormatter.formatSlug(shop.getName()));

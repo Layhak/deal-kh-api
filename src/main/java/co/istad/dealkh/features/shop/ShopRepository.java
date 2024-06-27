@@ -29,4 +29,6 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     boolean existsByPhoneNumber(String phoneNumber);
 
     Page<Shop> findByUsersContains(User user, Pageable pageable);
+
+    List<Shop> findAllShopByCreatedBy(String username);
 }

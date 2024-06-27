@@ -76,6 +76,8 @@ public class ShopServiceImpl implements ShopService {
         return shopMapper.toShopResponse(shop);
     }
 
+
+
     @Override
     public ShopResponse createShop(ShopCreateRequest shopRequest) {
 
@@ -115,11 +117,7 @@ public class ShopServiceImpl implements ShopService {
             shop.setSlug(randomSlug);
         }
 
-        User user = userRepository.findByUsername("admin")
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "User not found"));
-
+        User user = userRepository.findByUsername(shop.getCreatedBy()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         shop.setUsers(List.of(user));
         shop.setIsDeleted(false);
         shop.setIsDisabled(false);
@@ -278,6 +276,4 @@ public class ShopServiceImpl implements ShopService {
         shopRepository.save(shop);
         return shopMapper.toShopResponse(shop);
     }
-
-
 }

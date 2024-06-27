@@ -33,4 +33,5 @@ public interface ShopService {
     ShopResponse addOwnerToShop(String slug, String username, String owner);
 
     ShopResponse removeOwnerFromShop(String slug, String username, String owner);
+
 }

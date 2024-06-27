@@ -132,4 +132,12 @@ public class DiscountController {
                 .setPayload(discountService.getAllDiscountOwner(customUserDetails.getUsername()));
     }
 
+    @GetMapping("/discount-type/{slug}")
+    BaseResponse<List<Double>> getAllDiscountPercentageByDiscountType(
+            @PathVariable String slug, String shopSlug) {
+        return BaseResponse.<List<Double>>ok("Retrieves all your discounts percentage successfully!")
+                .setPayload(discountService.getAllPercentageByDiscountType(slug, shopSlug));
+    }
+
+
 }

@@ -56,4 +56,6 @@ public interface DiscountService {
     void deleteDiscountByUuid(String username, String uuid);
 
     List<DiscountResponseDetail> getAllDiscountOwner(String username);
+
+    List<Double> getAllPercentageByDiscountType(String shopSlug, String slug);
 }

@@ -34,6 +34,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * ProductServiceImpl is a service implementation of {@link ProductService} that handles product-related operations.
@@ -247,5 +248,23 @@ public class ProductServiceImpl implements ProductService {
         }
         return totalRating / ratingCount;
     }
+
+    @Override
+    public PageResponse<ProductResponse> getProductShopOwner(int page, int size, String field, String order, String slug) {
+
+        // Here is validate pagination
+        if (page < 0){
+            page = PageFilter.DEFAULT_PAGE_NUMBER;
+        }
+        if(size < 0){
+            size = PageFilter.DEFAULT_PAGE_LIMIT;
+        }
+
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+
+        Page<ProductResponse> productResponses = productRepository.findAllProductByShopSlug(slug, pageable).map(productMapper::mapProductToProductResponseDetail);
+        return new PageResponse<>(productResponses);
+    }
+
 
 }

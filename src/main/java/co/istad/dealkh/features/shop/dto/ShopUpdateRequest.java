@@ -1,5 +1,6 @@
 package co.istad.dealkh.features.shop.dto;
 
+import co.istad.dealkh.features.image.dto.ImageRequest;
 import co.istad.dealkh.validator.localtime.ValidLocalTime;
 import co.istad.dealkh.validator.name.ValidName;
 import co.istad.dealkh.validator.phonenumber.ValidPhoneNumber;
@@ -7,6 +8,8 @@ import co.istad.dealkh.validator.slug.ValidSlug;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 /**
  * ShopRequest is a request object for creating a new shop.
@@ -58,6 +61,8 @@ public record ShopUpdateRequest(
         String closeAt,
 
         @NotNull(message = "Location is required")
-        String location
+        String location,
+
+        List<ImageRequest> images
 ) {
 }

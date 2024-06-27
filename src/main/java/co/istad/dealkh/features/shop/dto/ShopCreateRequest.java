@@ -2,6 +2,7 @@ package co.istad.dealkh.features.shop.dto;
 
 
 import co.istad.dealkh.domain.json.SocialMedia;
+import co.istad.dealkh.features.image.dto.ImageRequest;
 import co.istad.dealkh.features.image.dto.ImageResponse;
 import co.istad.dealkh.validator.localtime.ValidLocalTime;
 import co.istad.dealkh.validator.name.ValidName;
@@ -63,7 +64,7 @@ public record ShopCreateRequest(
         @NotNull(message = "Location is required")
         String location,
 
-        List<ImageResponse> images,
+        List<ImageRequest> images,
         List<SocialMedia> socialMedias
 ) {
 }

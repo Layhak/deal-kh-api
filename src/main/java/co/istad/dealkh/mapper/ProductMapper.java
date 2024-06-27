@@ -11,6 +11,7 @@ import org.mapstruct.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
@@ -18,6 +19,9 @@ public interface ProductMapper {
     @Mapping(target = "seller", source = "product.createdBy")
     @Mapping(target = "category", source = "category", qualifiedByName = "categoryToString")
     @Mapping(target = "shop", source = "shop", qualifiedByName = "shopToString")
+    @Mapping(target = "location", source = "shop", qualifiedByName = "mapLocation")
+    @Mapping(target = "openAt", source = "shop", qualifiedByName = "mapOpenAt")
+    @Mapping(target = "closeAt", source = "shop", qualifiedByName = "mapCloseAt")
     @Mapping(target = "discountValue", source = "discount", qualifiedByName = "discountToDouble")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "images", source = "images")
@@ -68,5 +72,18 @@ public interface ProductMapper {
         return discount.getExpiredAt();
     }
 
+    @Named("mapLocation")
+    default String mapLocation(Shop shop) {
+        return shop.getLocation();
+    }
 
+    @Named("mapOpenAt")
+    default LocalTime mapOpenAt(Shop shop) {
+        return shop.getOpenAt();
+    }
+
+    @Named("mapCloseAt")
+    default LocalTime mapCloseAt(Shop shop) {
+        return shop.getCloseAt();
+    }
 }

@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * DiscountServiceImpl is a service implementation of {@link DiscountService} that handles discount-related operations.
@@ -61,9 +62,7 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public DiscountResponseDetail createDiscount(DiscountCreateRequest discountCreateRequest) {
 
-        if (discountRepository.existsByDiscountValueAndDiscountTypeSlug(discountCreateRequest.discountValue(), discountCreateRequest.discountTypeSlug())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Discount value already exists for this discount type");
-        }
+
 
         DiscountType discountType = discountTypeRepository.findBySlug(discountCreateRequest.discountTypeSlug())
                 .orElseThrow(() -> new ResponseStatusException(
@@ -74,6 +73,10 @@ public class DiscountServiceImpl implements DiscountService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         String.format("Shop with slug %s not found! ", discountCreateRequest.shopSlug())));
+
+        if (discountRepository.existsByDiscountValueAndDiscountTypeSlugAndShopSlug(discountCreateRequest.discountValue(), discountCreateRequest.discountTypeSlug(), shop.getSlug())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Discount value already exists for this discount type");
+        }
 
         Discount newDiscount = discountMapper.mapDiscountRequestToDiscount(discountCreateRequest);
 
@@ -198,6 +201,17 @@ public class DiscountServiceImpl implements DiscountService {
                 .stream()
                 .map(discountMapper::mapDiscountToResponseDetail)
                 .toList();
+    }
+
+    @Override
+    public List<Double> getAllPercentageByDiscountType(String shopSlug, String slug) {
+
+        Shop shop = shopRepository.findBySlug(shopSlug)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Shop with slug %s not found! ", shopSlug)));
+
+        return discountRepository.findAllDiscountValueByDiscountTypeSlugAndShopSlug(slug, shopSlug).stream().toList();
     }
 
 }

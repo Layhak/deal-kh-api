@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface DiscountRepository extends JpaRepository<Discount, Long>, JpaSpecificationExecutor<Discount> {
     boolean existsByDiscountValue(BigDecimal value);
 
-    boolean existsByDiscountValueAndDiscountTypeSlug(BigDecimal value, String discountTypeSlug);
+    boolean existsByDiscountValueAndDiscountTypeSlugAndShopSlug(BigDecimal value, String discountTypeSlug,String shopSlug);
 //    Optional<Discount> findByName(String discountName);
 
 //    boolean existsByName(String name);
@@ -30,4 +30,6 @@ public interface DiscountRepository extends JpaRepository<Discount, Long>, JpaSp
     Optional<Discount> findByUuid(String uuid);
 
     List<Discount> findAllByCreatedBy(String username);
+
+    List<Double> findAllDiscountValueByDiscountTypeSlugAndShopSlug(String slug, String shopSlug);
 }
