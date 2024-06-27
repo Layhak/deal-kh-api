@@ -12,9 +12,11 @@ public interface Pagination {
     static Pageable getPageable(int pageNumber, int pageSize, Sort sort) {
         if (pageNumber < page_number) {
             pageNumber = page_number;
+            System.out.println("pageNumber = " + pageNumber);
         }
         if (pageSize < 1) {
             pageSize = page_limit;
+            System.out.println("pageSize = " + pageSize);
         }
         if (sort == null) {
             sort = DEFAULT_SORT;

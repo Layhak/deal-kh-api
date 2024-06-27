@@ -11,20 +11,17 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-public class ShopTypeSpecification implements Specification<ShopType> {
+public record ShopTypeSpecification(ShopTypeFilter shopTypeFilter) implements Specification<ShopType> {
 
-        private final ShopTypeFilter shopTypeFilter;
+    @Override
+    public Predicate toPredicate(Root<ShopType> shopType, CriteriaQuery<?> query, CriteriaBuilder criteria) {
         List<Predicate> predicates = new ArrayList<>();
 
-        @Override
-        public Predicate toPredicate(Root<ShopType> shopType, CriteriaQuery<?> query, CriteriaBuilder criteria) {
-
-            if(shopTypeFilter.getName() != null){
-                Predicate name = criteria.like(criteria.upper(shopType.get("slug")), "%" + shopTypeFilter.getName().toUpperCase() + "%");
-                predicates.add(name);
-            }
-
-            return criteria.and(predicates.toArray(Predicate[]::new));
+        if (shopTypeFilter.getName() != null && !shopTypeFilter.getName().isEmpty()) {
+            Predicate name = criteria.like(criteria.upper(shopType.get("name")), "%" + shopTypeFilter.getName().toUpperCase() + "%");
+            predicates.add(name);
         }
+
+        return criteria.and(predicates.toArray(Predicate[]::new));
+    }
 }

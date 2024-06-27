@@ -11,19 +11,16 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-public class DiscountSpecification implements Specification<Discount> {
-    private final DiscountFilter discountFilter;
-    List<Predicate> predicates = new ArrayList<>();
+public record DiscountSpecification(DiscountFilter discountFilter) implements Specification<Discount> {
     @Override
     public Predicate toPredicate(Root<Discount> discount, CriteriaQuery<?> query, CriteriaBuilder criteria) {
+        List<Predicate> predicates = new ArrayList<>();
 
-        if(discountFilter.getDiscountValue() > 0) {
-            Predicate discountValue = discount.get("discountValue").in(discountFilter.getDiscountValue());
+        if (discountFilter.getDiscountValue() > 0) {
+            Predicate discountValue = criteria.equal(discount.get("discountValue"), discountFilter.getDiscountValue());
             predicates.add(discountValue);
         }
 
-        //return cb.and(predicates.toArray(new Predicate[0]));
         return criteria.and(predicates.toArray(Predicate[]::new));
     }
 }
