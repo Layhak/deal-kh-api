@@ -115,7 +115,6 @@ public class UserController {
     @Operation(summary = "Get current user info")
     public BaseResponse<UserResponse> getCurrentUserInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         String username = customUserDetails.getUsername();
-        System.out.println("Profile:" + username);
         return BaseResponse.<UserResponse>ok("Success get current user info").setPayload(userService.getByUsername(username));
     }
 

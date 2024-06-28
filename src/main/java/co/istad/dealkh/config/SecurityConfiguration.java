@@ -72,7 +72,7 @@ public class SecurityConfiguration {
                                 // users
                                 .requestMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/users").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/api/v1/users/me").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN", "ROLE_SELLER, ROLE_BUYER")
+                                .requestMatchers(HttpMethod.GET, "/api/v1/users/me").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN", "ROLE_SELLER", "ROLE_BUYER")
                                 .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "/api/v1/users").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
@@ -95,7 +95,7 @@ public class SecurityConfiguration {
 
                                 // shops
                                 .requestMatchers(HttpMethod.GET, "/api/v1/shops/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/shops/owner").hasAnyAuthority("ROLE_SELLER")
+                                .requestMatchers(HttpMethod.GET, "/api/v1/shops/owner").hasAuthority("ROLE_SELLER")
                                 .requestMatchers(HttpMethod.POST, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER", "ROLE_BUYER")
                                 .requestMatchers(HttpMethod.DELETE, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                                 .requestMatchers(HttpMethod.PATCH, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
