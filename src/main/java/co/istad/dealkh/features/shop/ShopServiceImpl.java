@@ -79,12 +79,11 @@ public class ShopServiceImpl implements ShopService {
 
 
     @Override
-    public ShopResponse createShop(ShopCreateRequest shopRequest) {
-
-        if (shopRepository.existsByEmail(shopRequest.email())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
-        }
-
+    public ShopResponse createShop(ShopCreateRequest shopRequest, List<String> usernames) {
+//        if (shopRepository.existsByEmail(shopRequest.email())) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
+//        }
+//
         if (shopRepository.existsByPhoneNumber(shopRequest.phoneNumber())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     String.format("Phone number %s already exists",
@@ -93,46 +92,40 @@ public class ShopServiceImpl implements ShopService {
 
         Shop shop = shopMapper.toShop(shopRequest);
 
+        List<User> users = usernames.stream()
+                .map(username -> userRepository.findByUsername(username)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")))
+                .toList();
 
-
-
-//        List<User> users = usernames.stream()
-//                .map(username -> userRepository.findByUsername(username)
-//                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")))
-//                .toList();
-//
-//        shop.setUsers(users);
+        shop.setUsers(users);
         // Generate a unique slug for the shop
         // If the slug already exists, append a unique suffix to the slug
-
         if (shopRequest.slug() != null && !shopRequest.slug().isEmpty() && !shopRequest.slug().isBlank()) {
             String slug = SlugFormatter.formatSlug(shopRequest.slug());
             if (shopRepository.existsBySlug(slug)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Slug is already taken!");
+                slug = String.format("%s-%s", SlugFormatter.formatSlug(shopRequest.slug()), shop.getAddress());
             }
             shop.setSlug(slug);
         } else {
             // If the slug is not provided, generate a random slug
-            String randomSlug = UUID.randomUUID().toString();
-            shop.setSlug(randomSlug);
+            shop.setSlug(SlugFormatter.formatSlug(shopRequest.name()));
         }
 
-        User user = userRepository.findByUsername(shop.getCreatedBy()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        shop.setUsers(List.of(user));
         shop.setIsDeleted(false);
         shop.setIsDisabled(false);
 
         Shop savedShop = shopRepository.save(shop);
 
-//        users.stream().filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals("BUYER"))).forEach(user -> {
-//            user.getRoles()
-//                    .add(roleRepository.findByName("SELLER")
-//                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found")));
-//            userRepository.save(user);
-//        });
+        users.stream().filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals("BUYER"))).forEach(user -> {
+            user.getRoles()
+                    .add(roleRepository.findByName("SELLER")
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found")));
+            userRepository.save(user);
+        });
 
         return shopMapper.toShopResponse(savedShop);
     }
+
 
     @Override
     public ShopResponse updateShop(String slug, ShopUpdateRequest shopRequest, String username) {

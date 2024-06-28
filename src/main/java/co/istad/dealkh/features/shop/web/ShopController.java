@@ -54,8 +54,9 @@ public class ShopController {
     @ResponseStatus(HttpStatus.CREATED)
     public BaseResponse<ShopResponse> createShop(@RequestBody @Valid ShopCreateRequest shopRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return BaseResponse.<ShopResponse>createSuccess("Successfully created new shop!")
-                .setPayload(shopService.createShop(shopRequest));
+                .setPayload(shopService.createShop(shopRequest, List.of(customUserDetails.getUsername())));
     }
+
 
     @PatchMapping("/{slug}")
     @Operation(summary = "Update shop")

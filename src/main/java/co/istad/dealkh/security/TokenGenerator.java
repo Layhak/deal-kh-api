@@ -52,7 +52,7 @@ public class TokenGenerator {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
-                .expiresAt(now.plus(10, ChronoUnit.HOURS))
+                .expiresAt(now.plus(5, ChronoUnit.MINUTES))
                 .subject(customUserDetails.getEmail())
                 .issuer("co.istad.dealkh")
                 .claim("id", customUserDetails.getUser().getId().toString())
