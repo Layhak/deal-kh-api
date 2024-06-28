@@ -138,7 +138,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageResponse<ProductResponse> getAllProducts(int page, int size, String field, String order, Map<String, String> params) {
 
-
         // Here is for filter product by params
         ProductFilter productFilter = new ProductFilter();
         if (params.containsKey("name")) {
@@ -173,21 +172,15 @@ public class ProductServiceImpl implements ProductService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, name, price, discountPrice, description, shop, discountValue, category, createdAt, updatedAt, createdBy, updateBy");
         }
 
+        size = PageFilter.DEFAULT_PAGE_LIMIT;
         if(params.containsKey(PageFilter.PAGE_LIMIT)) {
             size = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
-            System.out.println("SIZE1: " + size);
         }
-        System.out.println("SIZE2: " + PageFilter.PAGE_LIMIT);
 
         page = PageFilter.DEFAULT_PAGE_NUMBER;
         if(params.containsKey(PageFilter.PAGE_NUMBER)) {
             page = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
-            System.out.println("PAGE1: " + page);
-
         }
-
-        System.out.println("PAGE2: " + PageFilter.PAGE_NUMBER);
-
 
         ProductSpecification specification = new ProductSpecification(productFilter);
 
