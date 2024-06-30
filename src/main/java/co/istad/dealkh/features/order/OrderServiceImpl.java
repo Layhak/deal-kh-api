@@ -3,6 +3,7 @@ package co.istad.dealkh.features.order;
 import co.istad.dealkh.domain.Order;
 import co.istad.dealkh.domain.Product;
 import co.istad.dealkh.domain.User;
+import co.istad.dealkh.features.mail.MailService;
 import co.istad.dealkh.features.order.dto.OrderRequest;
 import co.istad.dealkh.features.order.dto.OrderResponse;
 import co.istad.dealkh.features.product.ProductRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,22 +24,43 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final OrderMapper orderMapper;
     private final UserRepository userRepository;
+    private final MailService mailService;
 
     @Override
     public OrderResponse createOrder(String username, OrderRequest orderRequest) {
         Order order = orderMapper.toOrder(orderRequest);
         order.setDate(LocalDateTime.now());
+
         // Find all products by product slugs
         List<Product> products = productRepository.findAllBySlugIn(orderRequest.productSlugs());
         if (products.isEmpty()) {
             throw new IllegalArgumentException("No products found for the given slugs.");
         }
         order.setProducts(products);
+
         // Set the user manually since we're using the username
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
-        user.setUsername(username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
         order.setUser(user);
+
         Order savedOrder = orderRepository.save(order);
+
+        // Send notification to shop owner
+        Set<String> ownerEmails = products.stream()
+                .map(product -> product.getShop().getEmail()) // Assuming Product has a method getOwnerEmail
+                .collect(Collectors.toSet());
+
+        String emailContent = "New order placed:\n\n" +
+                "Order ID: " + savedOrder.getId() + "\n" +
+                "Customer: " + user.getUsername() + "\n" +
+                "Order Date: " + savedOrder.getDate() + "\n" +
+                "Products: " + products.stream().map(Product::getName).collect(Collectors.joining(", ")) + "\n\n" +
+                "Please review the order details.";
+
+        for (String ownerEmail : ownerEmails) {
+            mailService.sendEmail(ownerEmail, "New Order Notification", emailContent);
+        }
+
         return orderMapper.toOrderResponse(savedOrder);
     }
 

@@ -94,8 +94,8 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.PATCH, "/api/v1/products/**").hasAuthority("ROLE_SELLER")
 
                                 // shops
-                                .requestMatchers(HttpMethod.GET, "/api/v1/shops/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/shops/owner").hasAuthority("ROLE_SELLER")
+                                .requestMatchers(HttpMethod.GET, "/api/v1/shops/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER", "ROLE_BUYER")
                                 .requestMatchers(HttpMethod.DELETE, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                                 .requestMatchers(HttpMethod.PATCH, "/api/v1/shops/**").hasAnyAuthority("ROLE_SELLER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")

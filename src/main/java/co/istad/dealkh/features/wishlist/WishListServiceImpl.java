@@ -1,11 +1,10 @@
 package co.istad.dealkh.features.wishlist;
 
-import co.istad.dealkh.domain.DiscountType;
-import co.istad.dealkh.domain.Product;
-import co.istad.dealkh.domain.User;
-import co.istad.dealkh.domain.WishList;
+import co.istad.dealkh.domain.*;
 import co.istad.dealkh.domain.enumType.GrantStatus;
+import co.istad.dealkh.features.auth.AuthenticationService;
 import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
+import co.istad.dealkh.features.mail.MailService;
 import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.features.wishlist.dto.WishListRequest;
@@ -13,6 +12,7 @@ import co.istad.dealkh.features.wishlist.dto.WishListResponse;
 import co.istad.dealkh.mapper.WishListMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
+import co.istad.dealkh.specification.filter.PageFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,17 +35,18 @@ public class WishListServiceImpl implements WishListService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final DiscountTypeRepository discountTypeRepository;
+    private final MailService mailService;
 
-    private void validateSortingParams(String field, String order) {
-        List<String> validFields = Arrays.asList("discountTypeSlug", "productName", "discountPercentage");
-
-        if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be  discountTypeSlug, productName or discountPercentage");
-        }
-        if (order != null && !order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
-        }
-    }
+//    private void validateSortingParams(String field, String order) {
+//        List<String> validFields = Arrays.asList("discountTypeSlug", "productName", "discountPercentage");
+//
+//        if (field == null || field.isEmpty() || !validFields.contains(field)) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be  discountTypeSlug, productName or discountPercentage");
+//        }
+//        if (order != null && !order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
+//        }
+//    }
 
     @Override
     public WishListResponse addWishList(String username, WishListRequest wishListRequest) {
@@ -77,8 +78,17 @@ public class WishListServiceImpl implements WishListService {
     @Override
     public PageResponse<WishListResponse> getAllWishList(int page, int size, String field, String order, Map<String, String> params) {
 
-        validateSortingParams(field, order);
+//        validateSortingParams(field, order);
 
+        size = PageFilter.DEFAULT_PAGE_LIMIT;
+        if(params.containsKey(PageFilter.PAGE_LIMIT)) {
+            size = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
+        }
+
+        page = PageFilter.DEFAULT_PAGE_NUMBER;
+        if(params.containsKey(PageFilter.PAGE_NUMBER)) {
+            page = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
+        }
 
         Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
 
@@ -120,15 +130,40 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public WishListResponse grantWishListByUuid(String uuid) {
+    public WishListResponse grantWishListByUuid(String email, String uuid) {
+
         WishList wishList = wishListRepository.findByUuid(uuid).orElseThrow(
                 () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("WishList with uuid %s not found! ", uuid)
+                        String.format("WishList with uuid %s not found!", uuid)
                 )
         );
+
+        Product product = productRepository.findById(wishList.getProduct().getId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Product not found!"));
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "User not found!"));
+
+        if(!product.getShop().getCreatedBy().equals(user.getUsername())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not the shop owner!");
+        }
+
         wishList.setIsGranted(GrantStatus.GRANTED);
         wishListRepository.save(wishList);
+
+        // Email the user who created the wishlist
+        String userEmail = wishList.getUser().getEmail();
+        String userEmailContent = "Dear " + wishList.getUser().getUsername() + ",\n\n" +
+                "Your wishlist item has been granted!\n" +
+                "Shop: " + wishList.getProduct().getShop().getName() + "\n" +
+                "Discount: " + wishList.getDiscountPercentage() + "%\n" +
+                "Product Name: " + wishList.getProduct().getName() + "\n\n" +
+                "Thank you for using our service!";
+
+        mailService.sendEmail(userEmail, "Congratulation! Wishlist Item Granted.", userEmailContent);
+
         return wishListMapper.mapToWishListResponse(wishList);
     }
 
@@ -159,7 +194,17 @@ public class WishListServiceImpl implements WishListService {
     @Override
     public PageResponse<WishListResponse> getWishListByUsername(int page, int size, String field, String order, Map<String, String> params, String username) {
 
-        validateSortingParams(field, order);
+//        validateSortingParams(field, order);
+
+        size = PageFilter.DEFAULT_PAGE_LIMIT;
+        if(params.containsKey(PageFilter.PAGE_LIMIT)) {
+            size = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
+        }
+
+        page = PageFilter.DEFAULT_PAGE_NUMBER;
+        if(params.containsKey(PageFilter.PAGE_NUMBER)) {
+            page = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
+        }
 
         Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
         User user = userRepository.findByUsername(username)

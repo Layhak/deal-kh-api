@@ -66,9 +66,9 @@ public class WishListController {
     }
 
     @PostMapping("/{uuid}/grant")
-    BaseResponse<WishListResponse> grantWishList(@PathVariable String uuid) {
+    BaseResponse<WishListResponse> grantWishList(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String uuid) {
         return BaseResponse.<WishListResponse>ok("Successfully grant wish list with uuid:" + uuid).setPayload(
-                wishListService.grantWishListByUuid(uuid)
+                wishListService.grantWishListByUuid(customUserDetails.getEmail(), uuid)
         );
     }
 

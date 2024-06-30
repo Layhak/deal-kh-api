@@ -21,7 +21,7 @@ public class MailController {
             @RequestParam String subject,
             @RequestParam String text
     ) {
-        emailService.sendSimpleEmail(to, subject, text);
+        emailService.sendEmail(to, subject, text);
         return "Email sent!";
     }
 }

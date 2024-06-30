@@ -8,6 +8,7 @@ spring:
     port: 587
     username: layhak.garu@gmail.com
     password: 'hvhdsfakwkhawmwk'
+    from-email: layhak.garu@gmail.com
     properties:
       mail:
         smtp:

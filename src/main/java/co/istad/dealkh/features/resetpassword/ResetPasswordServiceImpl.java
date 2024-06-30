@@ -40,7 +40,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
             resetPasswordRepository.save(resetPassword);
 
-            emailService.sendSimpleEmail(user.getEmail(), "Your OTP Code", "Your OTP code is " + otp);
+            emailService.sendEmail(user.getEmail(), "Your OTP Code", "Your OTP code is " + otp);
             return BaseResponse.ok("OTP sent to your email").setPayload(new ArrayList<>());
         }
         return BaseResponse.notFound("User not found").setPayload(new ArrayList<>());

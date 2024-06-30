@@ -24,7 +24,7 @@ public interface OrderMapper {
 
     @Named("mapProductSlugs")
     default List<String> mapProductSlugs(List<Product> products) {
-        return products.stream().map(Product::getSlug).toList();
+        return products.stream().map(Product::getName).toList();
     }
 
     @Named("mapProductSlugsToProducts")

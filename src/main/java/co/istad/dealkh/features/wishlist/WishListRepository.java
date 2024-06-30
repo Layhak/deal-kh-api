@@ -21,4 +21,7 @@ public interface WishListRepository extends JpaRepository<WishList, Long> {
     //findByCreatedBy(User user)
     List<WishList> findByCreatedBy(User createdBy);
 
+    Optional<WishList> findByProductId(Long id);
+
+
 }

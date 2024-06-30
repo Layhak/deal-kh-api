@@ -16,7 +16,7 @@ public interface WishListService {
 
     WishListResponse updateWishList(String uuid, String username, WishListRequest wishListRequest);
 
-    WishListResponse grantWishListByUuid(String uuid);
+    WishListResponse grantWishListByUuid(String email, String uuid);
 
     WishListResponse denyWishListByUuid(String uuid);
 
