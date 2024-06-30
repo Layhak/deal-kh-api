@@ -139,6 +139,10 @@ public class WishListServiceImpl implements WishListService {
                 )
         );
 
+        if(wishList.getIsGranted().equals(GrantStatus.GRANTED)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "WishList already granted!");
+        }
+
         Product product = productRepository.findById(wishList.getProduct().getId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Product not found!"));

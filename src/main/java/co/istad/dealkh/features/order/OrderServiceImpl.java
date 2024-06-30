@@ -7,6 +7,8 @@ import co.istad.dealkh.features.mail.MailService;
 import co.istad.dealkh.features.order.dto.OrderRequest;
 import co.istad.dealkh.features.order.dto.OrderResponse;
 import co.istad.dealkh.features.product.ProductRepository;
+import co.istad.dealkh.features.telegram.TelegramService;
+import co.istad.dealkh.features.telegram.TelegramServiceImpl;
 import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final UserRepository userRepository;
     private final MailService mailService;
+    private final TelegramService telegramService;
 
     @Override
     public OrderResponse createOrder(String username, OrderRequest orderRequest) {
@@ -45,24 +48,24 @@ public class OrderServiceImpl implements OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        // Send notification to shop owner
-        Set<String> ownerEmails = products.stream()
-                .map(product -> product.getShop().getEmail()) // Assuming Product has a method getOwnerEmail
-                .collect(Collectors.toSet());
+        // Send notification to shop owner via Telegram
+        Set<String> ownerChatIds = Set.of("834607224");
 
-        String emailContent = "New order placed:\n\n" +
+        String message = "New order placed:\n\n" +
                 "Order ID: " + savedOrder.getId() + "\n" +
                 "Customer: " + user.getUsername() + "\n" +
                 "Order Date: " + savedOrder.getDate() + "\n" +
-                "Products: " + products.stream().map(Product::getName).collect(Collectors.joining(", ")) + "\n\n" +
+                "Products: " + products.stream().map(Product::getName)
+                .collect(Collectors.joining("\n                  ")) + "\n\n" +
                 "Please review the order details.";
 
-        for (String ownerEmail : ownerEmails) {
-            mailService.sendEmail(ownerEmail, "New Order Notification", emailContent);
+        for (String chatId : ownerChatIds) {
+            telegramService.sendMessage(chatId, message); // Replace with actual Telegram sending logic
         }
 
         return orderMapper.toOrderResponse(savedOrder);
     }
+
 
     @Override
     public List<OrderResponse> getOrderByUsername(String username) {
