@@ -53,7 +53,7 @@ public class DataInit {
             initUsers();
             initShopTypes();
             initCategories();
-//            initShops();
+            initShops();
             initDiscountTypes();
             initDiscounts();
             logger.info("Data initialized successfully");
@@ -107,12 +107,13 @@ public class DataInit {
             user1.setPassword(passwordEncoder.encode("Admin@100$"));
             images.add(new Image("https://example.com/image1.jpg"));
             images.add(new Image("https://example.com/image2.jpg"));
-            user1.setImages(images);
+            user1.setCovers(images);
 
             user1.setPhoneNumber("0987654321");
             user1.setDob(LocalDate.of(2001, 1, 31));
             user1.setLocation("Phnom Penh");
             user1.setIsDisabled(false);
+            user1.setIsVerified(true);
             user1.setCreatedAt(LocalDateTime.now());
             user1.setRoles(Set.of(roles.get(0), roles.get(1), roles.get(2), roles.get(3)));
             users.add(user1);
@@ -134,11 +135,10 @@ public class DataInit {
 
     private void initShops() {
         if (shopRepository.findAll().isEmpty()) {
-
             Shop shop = new Shop();
             shop.setName("Layhak Online Shop");
             shop.setAddress("Phnom Penh");
-            shop.setDescription("At Radiant Glow Skincare, we believe that everyone deserves to have radiant, healthy skin. Our online shop offers a curated selection of premium skincare products designed to nourish, rejuvenate, and enhance your natural beauty.");
+            shop.setDescription("At Radiant Glow Skincare, we believe that everyone deserves to have radiant, healthy skin.");
             shop.setPhoneNumber("0123456789");
             shop.setEmail("layhakshop@gmail.com");
             shop.setSlug(SlugFormatter.formatSlug(shop.getName()));
@@ -147,10 +147,10 @@ public class DataInit {
             shop.setIsDeleted(false);
             shop.setIsDisabled(false);
             shop.setShopType(shopTypeRepository.findAll().get(0));
-            shop.setUsers(List.of(userRepository.findByUsername("layhak").get()));
+            shop.setUsers(List.of(userRepository.findByUsername("admin").get()));
             shopRepository.save(shop);
         } else {
-            logger.severe("User with email 'layhak@gmail.com' not found");
+            logger.severe("User with email 'admin@gmail.com' not found");
         }
     }
 

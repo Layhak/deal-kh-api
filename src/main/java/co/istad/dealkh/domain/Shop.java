@@ -29,6 +29,7 @@ public class Shop extends Auditable {
     @Column(unique = true)
     private String slug;
 
+    private String profile;
     private String location;
     private String address;
 
@@ -41,6 +42,7 @@ public class Shop extends Auditable {
     @Column
     private String email;
 
+    @Column(columnDefinition = "TEXT")
     @Convert(converter = SocialListConverter.class)
     private List<SocialMedia> socialMedias;
 
@@ -48,14 +50,16 @@ public class Shop extends Auditable {
     private Boolean isDisabled;
     private LocalTime openAt;
     private LocalTime closeAt;
+
     @ManyToOne
     @JoinColumn(name = "shop_type_id", nullable = false)
     private ShopType shopType;
 
+    @Column(columnDefinition = "TEXT")
     @Convert(converter = ImageListConverter.class)
-    private List<Image> images;
+    private List<Image> covers;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany
     @JoinTable(name = "dk_user_shops",
             joinColumns = @JoinColumn(name = "shop_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))

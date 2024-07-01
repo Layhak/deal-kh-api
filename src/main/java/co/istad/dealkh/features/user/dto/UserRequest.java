@@ -39,10 +39,9 @@ public record UserRequest(
         @ValidDob
         String dob,
 
-        List<Image> images,
-
+        String profile,
+        List<Image> covers,
         String location,
-
         Set<String> roles
 //        List<UserShopResponse> shops
 ) {

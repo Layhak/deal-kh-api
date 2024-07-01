@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Set;
 
 public record UserResponse(
-//        Long id,
         String firstName,
         String lastName,
         String username,
         String email,
         String gender,
-        List<ImageResponse> images,
+        String profile,
+        List<ImageResponse> covers,
         String phoneNumber,
         LocalDate dob,
         String location,

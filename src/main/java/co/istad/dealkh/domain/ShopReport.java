@@ -24,6 +24,7 @@ public class ShopReport extends Auditable {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(columnDefinition = "TEXT")
     @Convert(converter = ImageListConverter.class)
     private List<Image> images;
 

@@ -27,7 +27,7 @@ public class Order {
     private User user;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "dk_ordered_products",
+    @JoinTable(name = "dk_orders_products",
             joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id"))
     private List<Product> products;

@@ -28,18 +28,19 @@ public class User extends Auditable {
 
     private String firstName;
     private String lastName;
+    private String gender;
+    private String profile;
 
     private String username;
     @Column(unique = true, nullable = false)
     private String email;
 
-    private String gender;
-
     @Column(nullable = false)
     private String password;
 
+    @Column(columnDefinition = "TEXT")
     @Convert(converter = ImageListConverter.class)
-    private List<Image> images;
+    private List<Image> covers;
 
     @Column(nullable = false, unique = true)
     private String phoneNumber;
@@ -54,6 +55,7 @@ public class User extends Auditable {
     private String verificationToken;
     private LocalTime tokenExpiryDate;
 
+    @Column(columnDefinition = "TEXT")
     @Convert(converter = SocialListConverter.class)
     private List<SocialMedia> socialMedias;
 

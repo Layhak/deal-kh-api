@@ -144,6 +144,9 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.DELETE, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
                                 .requestMatchers(HttpMethod.PATCH, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
 
+                                // banners
+                                .requestMatchers("/api/v1/banners/**").hasAuthority("ROLE_ADMIN")
+
                                 // images
                                 .requestMatchers("/api/v1/images/**").permitAll()
                                 .requestMatchers("/images/**").permitAll()

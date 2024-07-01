@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public interface UserMapper {
 
     @Mapping(source = "roles", target = "roles", qualifiedByName = "roleToString")
-    @Mapping(source = "images", target = "images")
+    @Mapping(source = "covers", target = "covers")
     UserResponse mapToUserResponse(User user);
 
     @Mapping(target = "roles", ignore = true)
@@ -32,7 +32,7 @@ public interface UserMapper {
         return roles.stream().map(Role::getName).collect(Collectors.toSet());
     }
 
-    @Mapping(target = "imageUrl", source = "images")
+    @Mapping(target = "imageUrl", source = "covers")
     UserProfileResponse mapToUserProfileResponse(User user);
 
 

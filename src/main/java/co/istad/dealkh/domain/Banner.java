@@ -1,38 +1,43 @@
 package co.istad.dealkh.domain;
 
-import co.istad.dealkh.converter.ImageListConverter;
-import co.istad.dealkh.domain.json.Image;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "dk_product_scrape")
-public class ProductScrape {
+@Table(name = "dk_banners")
+public class Banner {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
+    @Column(unique = true, nullable = false, updatable = false)
+    private String uuid;
+
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private double price;
-
     private String image;
-
-    private BigDecimal discountPercentage;
-
-    private Double rating;
-
     private String url;
+    private LocalDate expiredAt;
+    private Boolean isExpired;
+
+    @PrePersist
+    protected void onCreate() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID().toString();
+        }
+    }
 
 }

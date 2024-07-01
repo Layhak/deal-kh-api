@@ -28,7 +28,6 @@ public record DiscountCreateRequest(
         @NotNull(message = "IsPercentage is required")
         Boolean isPercentage,
 
-        @NotNull(message = "Expired At is required")
         LocalDate expiredAt,
 
         @NotNull(message = "Discount Type slug is required")

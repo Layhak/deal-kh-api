@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format for dob");
         }
 
-        newUser.setImages(new ArrayList<>());
+        newUser.setCovers(new ArrayList<>());
         newUser.setSocialMedias(new ArrayList<>());
         newUser.setIsDisabled(false);
         newUser.setIsVerified(false);  // Set to false initially
@@ -184,7 +184,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
 
-        List<Image> filteredImages = user.getImages().stream()
+        List<Image> filteredImages = user.getCovers().stream()
                 .filter(image -> !image.getUrl().equals(imageUrl))
                 .collect(Collectors.toList());
 
@@ -199,15 +199,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
-        List<Image> existingImages = user.getImages();
+        List<Image> existingImages = user.getCovers();
 
-        if (user.getImages().isEmpty()) {
-            user.setImages(new ArrayList<>());
+        if (user.getCovers().isEmpty()) {
+            user.setCovers(new ArrayList<>());
         }
         Image newImage = new Image(userProfileRequest.imageUrl());
 
         existingImages.add(newImage);
-        user.setImages(existingImages);
+        user.setCovers(existingImages);
         user.setUpdatedAt(LocalDateTime.now());
         user.setUpdatedBy(username);
 
