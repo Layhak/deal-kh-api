@@ -4,6 +4,7 @@ import co.istad.dealkh.features.auth.dto.AuthResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * TokenGenerator is a component responsible for generating JWT access and refresh tokens.
@@ -89,9 +92,11 @@ public class TokenGenerator {
         if (!customUserDetails.getUser().getIsDisabled()) {
             String refreshToken = createRefreshToken(customUserDetails);
             String accessToken = createAccessToken(customUserDetails);
+            Set<String> roles = customUserDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
             return AuthResponse.builder()
                     .refreshToken(refreshToken)
                     .accessToken(accessToken)
+                    .roles(roles)
                     .build();
         }
         throw new BadCredentialsException("User is disabled");

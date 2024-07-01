@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
@@ -48,6 +49,10 @@ public class User extends Auditable {
     private String location;
 
     private Boolean isDisabled;
+
+    private Boolean isVerified;
+    private String verificationToken;
+    private LocalTime tokenExpiryDate;
 
     @Convert(converter = SocialListConverter.class)
     private List<SocialMedia> socialMedias;

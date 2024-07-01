@@ -11,8 +11,7 @@ public interface UserService {
 
     PageResponse<UserResponse> getAllUsers(int page, int size, String field, String order, Map<String, String> params);
 
-
-    UserResponse createUser(UserCreateRequest userCreateRequest);
+    void createUser(UserCreateRequest userCreateRequest);
 
     UserResponse updateUser(String username, UserUpdateRequest userUpdateRequest);
 
@@ -26,7 +25,6 @@ public interface UserService {
 
     void updatePassword(String username, String oldPassword, UserUpdatePasswordRequest userUpdatePasswordRequest);
 
-
     UserResponse disableUser(String username);
 
     UserResponse enableUser(String username);
@@ -39,5 +37,7 @@ public interface UserService {
 
     PageResponse<UserResponse> getAllSeller(int page, int size, String field, String order);
     PageResponse<UserResponse> getAllAdmin(int page, int size, String field, String order);
+
+    void verifyEmail(String token);
 
 }

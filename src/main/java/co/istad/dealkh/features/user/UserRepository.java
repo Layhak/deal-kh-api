@@ -42,6 +42,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     boolean existsByPhoneNumber(String phoneNumber);
 
+    Optional<User> findByVerificationToken(String verificationToken);
 
 //    boolean existsByPhone(String s);
 //

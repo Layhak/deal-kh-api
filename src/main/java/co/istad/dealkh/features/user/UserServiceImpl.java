@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -38,7 +39,8 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final VerificationService verificationService;
+//    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private void extractFilterParams(@NotNull UserFilter userFilter, Map<String, String> params) {
         userFilter.setUsername(params.get("username"));
@@ -84,16 +86,13 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserResponse createUser(UserCreateRequest userRequest) {
+    public void createUser(UserCreateRequest userRequest) {
         if (userRepository.existsByUsername(userRequest.username())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists: " + userRequest.username());
         }
         if (userRepository.existsByEmail(userRequest.email())) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Email already taken! Try another one.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already taken! Try another one.");
         }
-
         if (userRepository.existsByPhoneNumber(userRequest.phoneNumber())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Phone number already taken! Try another one.");
         }
@@ -102,16 +101,18 @@ public class UserServiceImpl implements UserService {
         }
 
         User newUser = userMapper.mapCreateRequestToUser(userRequest);
-        // Convert the dob string to LocalDate
+
         LocalDate dob;
         try {
             dob = LocalDate.parse(userRequest.dob(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         } catch (DateTimeParseException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format for dob");
         }
+
         newUser.setImages(new ArrayList<>());
         newUser.setSocialMedias(new ArrayList<>());
         newUser.setIsDisabled(false);
+        newUser.setIsVerified(false);  // Set to false initially
         newUser.setEmail(userRequest.email());
         newUser.setDob(dob);
         newUser.setCreatedAt(LocalDateTime.now());
@@ -121,9 +122,18 @@ public class UserServiceImpl implements UserService {
         )));
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
+        // Generate verification token
+        String token = UUID.randomUUID().toString();
+        newUser.setVerificationToken(token);
+        newUser.setTokenExpiryDate(LocalTime.now().plusHours(24)); // Token valid for 24 hours
+
         userRepository.save(newUser);
-        return userMapper.mapToUserResponse(newUser);
+
+        // Send verification email
+        verificationService.sendVerificationEmail(newUser, token);
     }
+
+
 
     @Override
     public UserResponse updateUser(String username, UserUpdateRequest userUpdateRequest) {
@@ -353,6 +363,22 @@ public class UserServiceImpl implements UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No admins found");
         }
         return new PageResponse<>(admins);
+    }
+
+    @Override
+    public void verifyEmail(String token) {
+        User user = userRepository.findByVerificationToken(token)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Invalid token"));
+
+        if (user.getTokenExpiryDate().isAfter(LocalTime.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token expired");
+        }
+
+        user.setIsVerified(true);
+        user.setVerificationToken(null);  // Clear the token
+        user.setTokenExpiryDate(null);    // Clear the expiry date
+        userRepository.save(user);    // Clear the expiry date
     }
 
 }

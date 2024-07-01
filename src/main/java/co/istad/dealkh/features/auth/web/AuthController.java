@@ -81,26 +81,26 @@ public class AuthController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(schema = @Schema(implementation = UserCreateRequest.class),
                             examples = @ExampleObject(value = """
-                                        {
-                                             "firstName": "panda",
-                                             "lastName": "panda",
-                                             "username": "panda",
-                                             "email": "panda@gmail.com",
-                                             "password": "Panda@123",
-                                             "confirmedPassword": "Panda@123",
-                                             "gender": "male",
-                                             "phoneNumber": "0987654321",
-                                             "dob": "2001-01-01",
-                                             "location": "phnom penh"
-                                        }
-                                    """)
+                            {
+                                 "firstName": "panda",
+                                 "lastName": "panda",
+                                 "username": "panda",
+                                 "email": "panda@gmail.com",
+                                 "password": "Panda@123",
+                                 "confirmedPassword": "Panda@123",
+                                 "gender": "male",
+                                 "phoneNumber": "0987654321",
+                                 "dob": "2001-01-01",
+                                 "location": "phnom penh"
+                            }
+                        """)
                     )
             )
     )
-    public BaseResponse<UserResponse> registerUser(
+    public BaseResponse<?> registerUser(
             @Valid @RequestBody UserCreateRequest userRequest) {
-        return BaseResponse.<UserResponse>createSuccess("Successfully create new user!")
-                .setPayload(userService.createUser(userRequest));
+        userService.createUser(userRequest);
+        return BaseResponse.createSuccess("Verification e-mail sent. Please check your inbox.");
     }
 
     @PostMapping("/send-otp")
@@ -116,5 +116,11 @@ public class AuthController {
     @PostMapping("/reset-password")
     public BaseResponse<?> updatePassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
         return resetPasswordService.resetPassword(resetPasswordRequest);
+    }
+
+    @GetMapping("/verify")
+    public BaseResponse<?> verifyEmail(@RequestParam String token) {
+        userService.verifyEmail(token);
+        return BaseResponse.ok("Email verified successfully!");
     }
 }

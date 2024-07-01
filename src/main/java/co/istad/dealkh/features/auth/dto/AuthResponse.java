@@ -2,6 +2,8 @@ package co.istad.dealkh.features.auth.dto;
 
 import lombok.Builder;
 
+import java.util.Set;
+
 /**
  * AuthResponse is a record class that represents an authentication response containing
  * a user ID, an access token, and a refresh token.
@@ -12,14 +14,14 @@ import lombok.Builder;
  * </ul>
  * </p>
  *
- * @param userId       the ID of the authenticated user
  * @param accessToken  the access token issued to the user
  * @param refreshToken the refresh token issued to the user
+ * @param roles       the roles of the authenticated user
  */
 @Builder
 public record AuthResponse(
-//        Long userId,
         String accessToken,
-        String refreshToken
+        String refreshToken,
+        Set<String> roles
 ) {
 }
