@@ -4,6 +4,7 @@ package co.istad.dealkh.features.shop.dto;
 import co.istad.dealkh.domain.json.SocialMedia;
 import co.istad.dealkh.features.image.dto.ImageRequest;
 import co.istad.dealkh.features.image.dto.ImageResponse;
+import co.istad.dealkh.validator.email.ValidEmail;
 import co.istad.dealkh.validator.localtime.ValidLocalTime;
 import co.istad.dealkh.validator.name.ValidName;
 import co.istad.dealkh.validator.phonenumber.ValidPhoneNumber;
@@ -47,7 +48,7 @@ public record ShopCreateRequest(
         @ValidPhoneNumber(message = "Phone number must be 9 or 10 digits long")
         String phoneNumber,
 
-//        @ValidEmail
+        @ValidEmail
         @Size(max = 100, message = "Email must be less than 100 characters")
         String email,
 

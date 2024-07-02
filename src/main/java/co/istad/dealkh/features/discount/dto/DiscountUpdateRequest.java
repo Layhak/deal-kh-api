@@ -18,8 +18,6 @@ import java.time.LocalDate;
  */
 public record DiscountUpdateRequest(
 
-        String name,
-
         @NotNull(message = "Discount Type slug is required")
         String discountTypeSlug,
 

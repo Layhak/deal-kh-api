@@ -2,6 +2,7 @@ package co.istad.dealkh.audit;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -33,15 +34,16 @@ public class EntityAuditorAware implements AuditorAware<String> {
      * Retrieves the current auditor (username) from the security context.
      *
      * @return an {@link Optional} containing the username of the current auditor,
-     * or "Error" if the username is not available.
+     * or "admin" if the username is not available.
      */
     @NotNull
     @Override
     public Optional<String> getCurrentAuditor() {
-        //get the current user from the security context
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        if (securityContext.getAuthentication() != null) {
-            return Optional.of(securityContext.getAuthentication().getName());
+        Authentication authentication = securityContext.getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            return Optional.ofNullable(authentication.getName());
         }
         return Optional.of("admin");
     }

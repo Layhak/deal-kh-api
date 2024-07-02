@@ -80,10 +80,12 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public ShopResponse createShop(ShopCreateRequest shopRequest, List<String> usernames) {
-//        if (shopRepository.existsByEmail(shopRequest.email())) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
-//        }
-//
+
+        if (shopRepository.existsByEmail(shopRequest.email())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Email already exists. Please use another email address.");
+        }
+
         if (shopRepository.existsByPhoneNumber(shopRequest.phoneNumber())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     String.format("Phone number %s already exists",
