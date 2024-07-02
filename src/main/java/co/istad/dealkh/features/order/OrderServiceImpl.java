@@ -48,6 +48,22 @@ public class OrderServiceImpl implements OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
+        Set<String> ownerEmails = products.stream()
+                .map(product -> product.getShop().getEmail())
+                .collect(Collectors.toSet());
+
+        String emailContent = "New order placed:\n\n" +
+                "Order ID: " + savedOrder.getId() + "\n" +
+                "Customer: " + user.getUsername() + "\n" +
+                "Order Date: " + savedOrder.getDate() + "\n" +
+                "Products: " + products.stream().map(Product::getName).collect(Collectors.joining(",\n")) + "\n\n" +
+                "Please review the order details.";
+
+        for (String ownerEmail : ownerEmails) {
+            mailService.sendEmail(ownerEmail, "New Order Notification", emailContent);
+        }
+
+
         // Send notification to shop owner via Telegram
         Set<String> ownerChatIds = Set.of("-1002003901907");
 
