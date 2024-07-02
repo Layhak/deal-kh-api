@@ -70,6 +70,8 @@ public class SecurityConfiguration {
                                 .requestMatchers("/api/v1/product-scrape/**").permitAll()
 
                                 // users
+                                .requestMatchers( "/api/v1/users/profile").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_SELLER", "ROLE_BUYER")
+                                .requestMatchers( "/api/v1/users/cover").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_SELLER", "ROLE_BUYER")
                                 .requestMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/users").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/api/v1/users/me").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN", "ROLE_SELLER", "ROLE_BUYER")

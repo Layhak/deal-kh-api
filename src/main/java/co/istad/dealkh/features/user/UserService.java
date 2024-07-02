@@ -17,11 +17,19 @@ public interface UserService {
 
     void deleteUser(String username);
 
+    UserCoverResponse getUserCover(String username);
+
+    void deleteUserCover(String username,  UserCoverRequest userCoverRequest);
+
+    UserCoverResponse uploadUserCover(String username, UserCoverRequest userCoverRequest);
+
     UserProfileResponse getUserProfile(String username);
 
-    void deleteUserProfile(String username, String imageUrl);
+    void deleteUserProfile(String username, String profile);
 
     UserProfileResponse uploadUserProfile(String username, UserProfileRequest userProfileRequest);
+
+
 
     void updatePassword(String username, String oldPassword, UserUpdatePasswordRequest userUpdatePasswordRequest);
 

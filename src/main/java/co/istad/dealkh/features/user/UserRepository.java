@@ -2,6 +2,7 @@ package co.istad.dealkh.features.user;
 
 import co.istad.dealkh.domain.Role;
 import co.istad.dealkh.domain.User;
+import co.istad.dealkh.domain.json.Image;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,8 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     Optional<User> findByUsername(String username);
 
+    Optional<User> findByUsernameAndProfile(String username, String profile);
+
     User getUserById(Long id);
 
     Optional<Long> findIdByUsername(String username);
@@ -43,6 +46,8 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     boolean existsByPhoneNumber(String phoneNumber);
 
     Optional<User> findByVerificationToken(String verificationToken);
+
+    Optional<User> findByUsernameAndCovers(String username, List<Image> cover);
 
 //    boolean existsByPhone(String s);
 //

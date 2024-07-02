@@ -4,7 +4,7 @@ import co.istad.dealkh.domain.json.Image;
 
 import java.util.List;
 
-public record UserProfileResponse(
-        String profile
+public record UserCoverResponse(
+        List<Image> covers
 ) {
 }

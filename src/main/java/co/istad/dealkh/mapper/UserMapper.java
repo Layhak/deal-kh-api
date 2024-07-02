@@ -32,7 +32,11 @@ public interface UserMapper {
         return roles.stream().map(Role::getName).collect(Collectors.toSet());
     }
 
-    @Mapping(target = "imageUrl", source = "covers")
+    @Mapping(target = "covers", source = "covers")
+    UserCoverResponse mapToUserCoverResponse(User user);
+
+
+    @Mapping(target = "profile", source = "profile")
     UserProfileResponse mapToUserProfileResponse(User user);
 
 

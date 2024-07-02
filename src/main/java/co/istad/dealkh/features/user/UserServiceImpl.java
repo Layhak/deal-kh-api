@@ -12,13 +12,12 @@ import co.istad.dealkh.specification.filter.UserFilter;
 import co.istad.dealkh.specification.filter.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -134,7 +133,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public UserResponse updateUser(String username, UserUpdateRequest userUpdateRequest) {
         User user = userRepository.findByUsername(username)
@@ -171,31 +169,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfileResponse getUserProfile(String username) {
+    public UserCoverResponse getUserCover(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
-        return userMapper.mapToUserProfileResponse(user);
+        return userMapper.mapToUserCoverResponse(user);
     }
 
     @Override
-    public void deleteUserProfile(String username, String imageUrl) {
+    public void deleteUserCover(String username, UserCoverRequest userCoverRequest) {
         // Fetch the user by username
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
+        // Check if the cover exists
+        boolean coverExists = user.getCovers().stream()
+                .anyMatch(img -> img.getUrl().equals(userCoverRequest.cover()));
 
+        // If the cover does not exist, throw a BAD_REQUEST exception
+        if (!coverExists) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cover not found!");
+        }
+
+        // Filter out the cover to be deleted
         List<Image> filteredImages = user.getCovers().stream()
-                .filter(image -> !image.getUrl().equals(imageUrl))
+                .filter(img -> !img.getUrl().equals(userCoverRequest.cover()))
                 .collect(Collectors.toList());
 
-        user.setUpdatedAt(LocalDateTime.now());
-        user.setUpdatedBy(username);
+        // Set the filtered covers back to the user
+        user.setCovers(filteredImages);
 
+        // Save the updated user
         userRepository.save(user);
     }
 
+
+
     @Override
-    public UserProfileResponse uploadUserProfile(String username, UserProfileRequest userProfileRequest) {
+    public UserCoverResponse uploadUserCover(String username, UserCoverRequest userCoverRequest) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 
@@ -204,7 +214,10 @@ public class UserServiceImpl implements UserService {
         if (user.getCovers().isEmpty()) {
             user.setCovers(new ArrayList<>());
         }
-        Image newImage = new Image(userProfileRequest.imageUrl());
+        if (userCoverRequest.cover().isEmpty() || userCoverRequest.cover().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cover image is required");
+        }
+        Image newImage = new Image(userCoverRequest.cover());
 
         existingImages.add(newImage);
         user.setCovers(existingImages);
@@ -213,8 +226,43 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
+        return userMapper.mapToUserCoverResponse(user);
+    }
+
+    @Override
+    public UserProfileResponse getUserProfile(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
         return userMapper.mapToUserProfileResponse(user);
     }
+
+    @Override
+    public void deleteUserProfile(String username, String profile) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+//
+//        if (userRepository.findByUsernameAndProfile(username, profile).isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not allowed to delete this profile");
+//        }
+
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(username);
+        user.setProfile(null);
+        userRepository.save(user);
+    }
+
+    @Override
+    public UserProfileResponse uploadUserProfile(String username, UserProfileRequest userProfileRequest) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(username);
+        user.setProfile(userProfileRequest.profile());
+        userRepository.save(user);
+        return userMapper.mapToUserProfileResponse(user);
+
+    }
+
 
     @Override
     public void updatePassword(String username, String oldPassword, UserUpdatePasswordRequest userUpdatePasswordRequest) {
@@ -259,7 +307,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse addRole(String auth, String username,  UserRoleRequest userRoleRequest) {
+    public UserResponse addRole(String auth, String username, UserRoleRequest userRoleRequest) {
 
         // Check if user exists
         User superAdmin = userRepository.findByUsername(auth)
@@ -281,7 +329,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + userRoleRequest.role()));
 
 
-        if(newRole.getName().equals("SUPER_ADMIN")) {
+        if (newRole.getName().equals("SUPER_ADMIN")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot add SUPER_ADMIN role");
         }
 
@@ -295,7 +343,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse removeRole(String auth, String username,  UserRoleRequest userRoleRequest) {
+    public UserResponse removeRole(String auth, String username, UserRoleRequest userRoleRequest) {
 
         // check authenticate user role
         User superAdmin = userRepository.findByUsername(auth)

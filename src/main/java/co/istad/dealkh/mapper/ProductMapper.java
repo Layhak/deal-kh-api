@@ -19,10 +19,12 @@ public interface ProductMapper {
     @Mapping(target = "seller", source = "product.createdBy")
     @Mapping(target = "category", source = "category", qualifiedByName = "categoryToString")
     @Mapping(target = "shop", source = "shop", qualifiedByName = "shopToString")
+    @Mapping(target = "shopSlug", source = "shop", qualifiedByName = "shopSlugToString")
     @Mapping(target = "location", source = "shop", qualifiedByName = "mapLocation")
     @Mapping(target = "openAt", source = "shop", qualifiedByName = "mapOpenAt")
     @Mapping(target = "closeAt", source = "shop", qualifiedByName = "mapCloseAt")
     @Mapping(target = "discountValue", source = "discount", qualifiedByName = "discountToDouble")
+    @Mapping(target = "isPercentage", source = "discount", qualifiedByName = "discountToBoolean")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "images", source = "images")
     @Mapping(target = "discountPrice", source = "product", qualifiedByName = "toDiscountPrice")
@@ -46,9 +48,22 @@ public interface ProductMapper {
         return shop.getName();
     }
 
+    @Named("shopSlugToString")
+    default String mapShopSlug(Shop shop) {
+        return shop.getSlug();
+    }
+
+
+
+
     @Named("discountToDouble")
     default BigDecimal mapDiscount(Discount discount) {
         return discount.getDiscountValue();
+    }
+
+    @Named("discountToBoolean")
+    default Boolean mapIsPercentage(Discount discount) {
+        return discount.getIsPercentage();
     }
 
     @Named("toDiscountPrice")

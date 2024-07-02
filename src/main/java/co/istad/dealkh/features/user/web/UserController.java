@@ -118,7 +118,33 @@ public class UserController {
         return BaseResponse.<UserResponse>ok("Success get current user info").setPayload(userService.getByUsername(username));
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/cover")
+    @Operation(summary = "Get user cover")
+    public BaseResponse<UserCoverResponse> getUserCover(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        String username = customUserDetails.getUsername();
+        return BaseResponse.<UserCoverResponse>ok("Success get user cover").setPayload(userService.getUserCover(username));
+    }
+
+    @PostMapping("/cover")
+    @Operation(summary = "Upload user cover")
+    public BaseResponse<UserCoverResponse> uploadUserCover(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserCoverRequest userProfileRequest) {
+        String username = customUserDetails.getUsername();
+        return BaseResponse.<UserCoverResponse>ok("Success update user cover").setPayload(userService.uploadUserCover(username, userProfileRequest));
+    }
+
+    @DeleteMapping("/cover")
+    @Operation(summary = "Delete user cover")
+    public BaseResponse<?> deleteUserCover(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserCoverRequest userCoverRequest) {
+        String username = customUserDetails.getUsername();
+        System.out.println(username);
+        userService.deleteUserCover(username, userCoverRequest);
+        return BaseResponse.ok("Successfully delete user cover")
+                .setPayload("No content");
+
+    }
+
+
+     @GetMapping("/profile")
     @Operation(summary = "Get user profile")
     public BaseResponse<UserProfileResponse> getUserProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         String username = customUserDetails.getUsername();
@@ -134,14 +160,16 @@ public class UserController {
 
     @DeleteMapping("/profile")
     @Operation(summary = "Delete user profile image")
-    public BaseResponse<?> deleteUserProfileImage(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody String imageUrl) {
+    public BaseResponse<?> deleteUserProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody String profile) {
         String username = customUserDetails.getUsername();
         System.out.println(username);
-        userService.deleteUserProfile(username, imageUrl);
+        userService.deleteUserProfile(username, profile);
         return BaseResponse.ok("Successfully delete user profile image")
                 .setPayload("No content");
 
     }
+
+
 
     @PutMapping("/updatePassword/{oldPassword}")
     @Operation(summary = "Update user password")
