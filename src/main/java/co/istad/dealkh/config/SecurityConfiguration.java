@@ -89,6 +89,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.PATCH, "/api/v1/discounts/**").hasAuthority("ROLE_SELLER")
 
                                 // products
+                                .requestMatchers(HttpMethod.GET, "/api/v1/products/shop/**").hasAuthority("ROLE_SELLER")
                                 .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasAuthority("ROLE_SELLER")
                                 .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasAuthority("ROLE_SELLER")
