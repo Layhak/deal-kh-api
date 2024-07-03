@@ -1,11 +1,15 @@
 package co.istad.dealkh.features.product;
 
 import co.istad.dealkh.domain.Product;
+import co.istad.dealkh.domain.User;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
 
 import java.util.List;
@@ -22,7 +26,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     Optional<Product> findBySlug(String slug);
 
-
     List<Product> findByCreatedByAndSlug(String username, String slug);
 
     List<Product> findAllBySlugIn(List<String> strings);
@@ -30,4 +33,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     Page<Product> findAllProductByShopSlug(String slug, Pageable pageable);
 
     Optional<Product> findByShopId(Long id);
+
+    Page<Product> findAllByShopUsersUsername(String username, Pageable pageable);
+
 }

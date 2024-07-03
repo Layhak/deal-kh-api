@@ -61,11 +61,11 @@ public record ShopCreateRequest(
         @NotNull(message = "Shop Type Slug  is required")
         String shopType,
 
-
         @NotNull(message = "Location is required")
         String location,
 
-        List<ImageRequest> images,
-        List<SocialMedia> socialMedias
+        List<SocialMedia> socialMedias,
+
+        String profile
 ) {
 }

@@ -141,4 +141,31 @@ public class ProductController {
                 .setPayload(productService.getProductShopOwner(page, size, field, order, slug));
     }
 
+
+    /**
+     * Retrieves all products.
+     * This method uses the {@link PageResponse} class to return a paginated list of products.
+     *
+     * @param page
+     * @param size
+     * @param field
+     * @param order
+     * @param params
+     * @return
+     */
+    @GetMapping("/shop/owner")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all products")
+    BaseResponse<PageResponse<ProductResponse>> getAllProductByShopOwner(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "25") int size,
+            @RequestParam(defaultValue = "name") String field,
+            @RequestParam(defaultValue = "asc") String order,
+            @RequestParam Map<String, String> params
+    ) {
+        return BaseResponse.<PageResponse<ProductResponse>>ok("Successfully retrieved products!")
+                .setPayload(productService.getAllProductByShopOwner(customUserDetails.getUsername(), page, size, field, order, params));
+    }
+
 }

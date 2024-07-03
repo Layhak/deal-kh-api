@@ -114,6 +114,7 @@ public class ShopServiceImpl implements ShopService {
             shop.setSlug(randomSlug);
         }
 
+        shop.setProfile(shopRequest.profile());
         shop.setIsDeleted(false);
         shop.setIsDisabled(false);
 

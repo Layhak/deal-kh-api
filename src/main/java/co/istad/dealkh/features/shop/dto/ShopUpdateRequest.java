@@ -63,6 +63,8 @@ public record ShopUpdateRequest(
         @NotNull(message = "Location is required")
         String location,
 
-        List<ImageRequest> images
+        String profile,
+
+        List<ImageRequest> covers
 ) {
 }

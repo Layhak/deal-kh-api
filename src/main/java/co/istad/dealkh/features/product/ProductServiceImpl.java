@@ -23,6 +23,7 @@ import co.istad.dealkh.validator.formatter.SlugFormatter;
 import co.istad.dealkh.validator.page.ValidatePagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -270,5 +271,70 @@ public class ProductServiceImpl implements ProductService {
         return new PageResponse<>(productResponses);
     }
 
+    @Override
+    public PageResponse<ProductResponse> getAllProductByShopOwner(String username, int page, int size, String field, String order, Map<String, String> params) {
+
+        // Here is for filter product by params
+        ProductFilter productFilter = new ProductFilter();
+        if (params.containsKey("name")) {
+            String name = params.get("name");
+            productFilter.setName(name);
+        }
+
+        if (params.containsKey("discountValue")) {
+            String discountValue = params.get("discountValue");
+            productFilter.setDiscountValue(Double.parseDouble(discountValue));
+        }
+
+        if (params.containsKey("discountType")) {
+            String discountType = params.get("discountType");
+            productFilter.setDiscountType(discountType);
+        }
+
+        if (params.containsKey("category")) {
+            String category = params.get("category");
+            productFilter.setCategory(category);
+        }
+
+        if (params.containsKey("shop")) {
+            String shop = params.get("shop");
+            productFilter.setShop(shop);
+        }
+
+        List<String> validFields = List.of("name", "price", "discountPrice", "description", "shop", "discountValue", "category", "createdAt", "updatedAt", "createdBy", "updateBy");
+
+        if (field == null || field.isEmpty() || !validFields.contains(field)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be one of: name, price, discountPrice, description, shop, discountValue, category, createdAt, updatedAt, createdBy, updateBy");
+        }
+
+        size = PageFilter.DEFAULT_PAGE_LIMIT;
+        if (params.containsKey(PageFilter.PAGE_LIMIT)) {
+            size = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
+        }
+
+        page = PageFilter.DEFAULT_PAGE_NUMBER;
+        if (params.containsKey(PageFilter.PAGE_NUMBER)) {
+            page = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
+        }
+
+        ProductSpecification specification = new ProductSpecification(productFilter);
+
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+
+        // Fetch all products and filter by user control over the shop
+        Page<Product> productsPage = productRepository.findAll(specification, pageable);
+        List<ProductResponse> productResponses = productsPage.stream()
+                .filter(product -> product.getShop().getUsers().stream().anyMatch(user -> user.getUsername().equals(username)))
+                .map(productMapper::mapProductToProductResponseDetail)
+                .collect(Collectors.toList());
+
+        // Create a PageImpl<ProductResponse> object
+        Page<ProductResponse> responsePage = new PageImpl<>(productResponses, pageable, productsPage.getTotalElements());
+
+        // Convert Page<ProductResponse> to PageResponse<ProductResponse>
+        PageResponse<ProductResponse> pageResponse = new PageResponse<>(responsePage);
+
+        return pageResponse;
+    }
 
 }

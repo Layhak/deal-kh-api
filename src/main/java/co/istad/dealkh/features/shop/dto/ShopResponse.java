@@ -1,6 +1,7 @@
 package co.istad.dealkh.features.shop.dto;
 
 
+import co.istad.dealkh.features.image.dto.ImageRequest;
 import co.istad.dealkh.features.image.dto.ImageResponse;
 
 import java.time.LocalDate;
@@ -22,8 +23,9 @@ import java.util.List;
  * @param openAt
  * @param closeAt
  * @param shopType
- * @param images
- * @param users
+ * @param profile
+ * @param covers
+ * @param owners
  * @param location
  */
 public record ShopResponse(

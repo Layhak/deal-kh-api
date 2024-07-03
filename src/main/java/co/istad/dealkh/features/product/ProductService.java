@@ -72,4 +72,18 @@ public interface ProductService {
     PageResponse<ProductResponse> getProductShopOwner(int page, int size, String field, String order, String slug);
 
 
+    /**
+     * Retrieves all products.
+     * This method uses the {@link PageResponse} class to return a paginated list of products.
+     *
+     * @param username
+     * @param page
+     * @param size
+     * @param field
+     * @param order
+     * @param params
+     * @return
+     */
+    PageResponse<ProductResponse> getAllProductByShopOwner(String username, int page, int size, String field, String order, Map<String, String> params);
+
 }
