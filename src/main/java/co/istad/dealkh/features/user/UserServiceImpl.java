@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -160,12 +159,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(String username) {
-        // Check if user exists and delete
-        userRepository.findByUsername(username)
-                .ifPresentOrElse(userRepository::delete,
-                        () -> {
-                            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!");
-                        });
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Remove user entries from the dk_user_shops join table
+        userRepository.deleteUserShopsByUserId(user.getId());
+
+        // Now delete the user
+        userRepository.delete(user);
     }
 
     @Override
@@ -201,7 +202,6 @@ public class UserServiceImpl implements UserService {
         // Save the updated user
         userRepository.save(user);
     }
-
 
 
     @Override

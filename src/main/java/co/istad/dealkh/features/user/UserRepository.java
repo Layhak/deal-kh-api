@@ -1,19 +1,18 @@
 package co.istad.dealkh.features.user;
 
-import co.istad.dealkh.domain.Role;
 import co.istad.dealkh.domain.User;
-import co.istad.dealkh.domain.json.Image;
+import jakarta.transaction.Transactional;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
@@ -38,5 +37,8 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     List<User> findAllByShopsSlug(String slug);
 
-
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM dk_user_shops WHERE user_id = ?1", nativeQuery = true)
+    void deleteUserShopsByUserId(Long userId);
 }

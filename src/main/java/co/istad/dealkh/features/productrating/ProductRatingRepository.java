@@ -1,10 +1,12 @@
 package co.istad.dealkh.features.productrating;
 
+import co.istad.dealkh.domain.Product;
 import co.istad.dealkh.domain.ProductRating;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductRatingRepository extends JpaRepository<ProductRating, Long> {
@@ -24,4 +26,5 @@ public interface ProductRatingRepository extends JpaRepository<ProductRating, Lo
     @Query("SELECT COUNT(pr) FROM ProductRating pr WHERE pr.product.id = :id")
     Long countByProductId(@Param("id") Long id);
 
+    List<ProductRating> findByProduct(Product product);
 }

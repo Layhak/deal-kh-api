@@ -4,6 +4,7 @@ import co.istad.dealkh.domain.*;
 import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.features.discount.DiscountRepository;
 import co.istad.dealkh.features.product.ProductRepository;
+import co.istad.dealkh.features.productrating.ProductRatingRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.dto.*;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
@@ -36,6 +37,7 @@ public class ShopServiceImpl implements ShopService {
     private final ShopTypeRepository shopTypeRepository;
     private final DiscountRepository discountRepository;
     private final UserRepository userRepository;
+    private final ProductRatingRepository productRatingRepository;
     private final ShopMapper shopMapper;
     private final ProductRepository productRepository;
     private final RoleRepository roleRepository;
@@ -162,6 +164,9 @@ public class ShopServiceImpl implements ShopService {
         // Fetch related products and delete them
         List<Product> products = productRepository.findByShop(shop);
         for (Product product : products) {
+            // Fetch and delete related product ratings
+            List<ProductRating> ratings = productRatingRepository.findByProduct(product);
+            productRatingRepository.deleteAll(ratings);
             productRepository.delete(product);
         }
 
