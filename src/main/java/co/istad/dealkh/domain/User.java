@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -73,6 +75,7 @@ public class User extends Auditable {
     private List<Coupon> coupons;
 
     @ManyToMany(mappedBy = "users")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Shop> shops;
 
     // for security

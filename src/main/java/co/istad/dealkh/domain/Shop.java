@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -53,6 +55,7 @@ public class Shop extends Auditable {
 
     @ManyToOne
     @JoinColumn(name = "shop_type_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private ShopType shopType;
 
     @Column(columnDefinition = "TEXT")
@@ -63,5 +66,6 @@ public class Shop extends Auditable {
     @JoinTable(name = "dk_user_shops",
             joinColumns = @JoinColumn(name = "shop_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<User> users;
 }

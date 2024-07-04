@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +40,7 @@ public class ProductFeedback extends Auditable {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Product product;
 
     @PrePersist

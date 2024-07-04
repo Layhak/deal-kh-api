@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 import java.util.UUID;
@@ -44,16 +46,19 @@ public class Product extends Auditable {
     @Convert(converter = ImageListConverter.class)
     private List<Image> images;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinColumn(name = "shop_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Shop shop;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "discount_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Discount discount;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Category category;
 
     @ManyToMany(mappedBy = "products")

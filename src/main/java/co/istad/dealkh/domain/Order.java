@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,6 +32,7 @@ public class Order {
     @JoinTable(name = "dk_orders_products",
             joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Product> products;
 
     @Column(name = "uuid", unique = true, nullable = false, updatable = false)

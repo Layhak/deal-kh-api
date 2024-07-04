@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
@@ -30,11 +32,12 @@ public class Role implements GrantedAuthority {
     private Set<Authority> authorities;
 
     @ManyToMany(mappedBy = "roles")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<User> users;
 
     // ROLE_USER
     @Override
     public String getAuthority() {
-        return "ROLE_"+name;
+        return "ROLE_" + name;
     }
 }
