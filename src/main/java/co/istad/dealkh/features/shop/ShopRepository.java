@@ -30,5 +30,11 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
 
     Page<Shop> findByUsersContains(User user, Pageable pageable);
 
-    List<Shop> findAllShopByCreatedBy(String username);
+    Optional<Shop> findBySlugAndCreatedBy(String slug, String username);
+
+    Optional<Shop> findByProfile(String profile);
+
+    Optional<Shop> findByCovers(List<Shop> covers);
+
+
 }

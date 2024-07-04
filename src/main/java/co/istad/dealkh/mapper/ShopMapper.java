@@ -1,9 +1,11 @@
 package co.istad.dealkh.mapper;
 
 import co.istad.dealkh.domain.Shop;
-import co.istad.dealkh.features.shop.dto.ShopCreateRequest;
-import co.istad.dealkh.features.shop.dto.ShopResponse;
-import co.istad.dealkh.features.shop.dto.ShopUpdateRequest;
+import co.istad.dealkh.domain.User;
+import co.istad.dealkh.features.shop.dto.*;
+import co.istad.dealkh.features.user.dto.SellerResponse;
+import co.istad.dealkh.features.user.dto.UserCoverResponse;
+import co.istad.dealkh.features.user.dto.UserProfileResponse;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", uses = {CustomMapper.class})
@@ -25,4 +27,12 @@ public interface ShopMapper {
     @Mapping(target = "slug", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void mapUpdateShopToShop(@MappingTarget Shop shop, ShopUpdateRequest shopUpdateRequest);
+
+    @Mapping(target = "covers", source = "covers")
+    ShopCoverResponse mapToShopCoverResponse(Shop shop);
+
+
+    @Mapping(target = "profile", source = "profile")
+    ShopProfileResponse mapToShopProfileResponse(Shop shop);
+
 }

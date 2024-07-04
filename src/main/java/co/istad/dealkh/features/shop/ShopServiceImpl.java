@@ -3,10 +3,9 @@ package co.istad.dealkh.features.shop;
 import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.domain.ShopType;
 import co.istad.dealkh.domain.User;
+import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.features.role.RoleRepository;
-import co.istad.dealkh.features.shop.dto.ShopCreateRequest;
-import co.istad.dealkh.features.shop.dto.ShopResponse;
-import co.istad.dealkh.features.shop.dto.ShopUpdateRequest;
+import co.istad.dealkh.features.shop.dto.*;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
 import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.mapper.ShopMapper;
@@ -26,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -147,7 +147,8 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public void deleteShop(String slug, String username) {
-        Shop shop = shopRepository.findBySlug(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+        Shop shop = shopRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
         if (shop.getUsers().stream().noneMatch(user -> user.getUsername().equals(username))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to delete this shop");
         }
@@ -271,5 +272,128 @@ public class ShopServiceImpl implements ShopService {
         shop.getUsers().remove(user);
         shopRepository.save(shop);
         return shopMapper.toShopResponse(shop);
+    }
+
+
+    @Override
+    public ShopCoverResponse getAllShopCover(String slug) {
+        Shop shop = shopRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "cover not found!"));
+        return shopMapper.mapToShopCoverResponse(shop);
+    }
+
+    @Override
+    public void deleteShopCover(String username, String slug, ShopCoverRequest shopCoverRequest) {
+
+        userRepository.findAllByShopsSlug(slug)
+                .stream()
+                .filter(user -> user.getUsername().equals(username)).findFirst()
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.FORBIDDEN, "You are not the owner of this shop"));
+
+        Shop shop = shopRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "shop not found!"));
+
+        // Check if the cover exists
+        boolean coverExists = shop.getCovers().stream()
+                .anyMatch(img -> img.getUrl().equals(shopCoverRequest.cover()));
+
+        // If the cover does not exist, throw a BAD_REQUEST exception
+        if (!coverExists) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cover not found!");
+        }
+
+        // Filter out the cover to be deleted
+        List<Image> filteredImages = shop.getCovers().stream()
+                .filter(img -> !img.getUrl().equals(shopCoverRequest.cover()))
+                .collect(Collectors.toList());
+
+        // Set the filtered covers back to the user
+        shop.setCovers(filteredImages);
+
+        // Save the updated user
+        shopRepository.save(shop);
+
+    }
+
+    @Override
+    public ShopCoverResponse uploadShopCover(String username, String slug, ShopCoverRequest shopCoverRequest) {
+
+        userRepository.findAllByShopsSlug(slug)
+                .stream()
+                .filter(user -> user.getUsername().equals(username)).findFirst()
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.FORBIDDEN, "You are not the owner of this shop"));
+
+
+        Shop shop = shopRepository.findBySlugAndCreatedBy(slug, username)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "shop not found!"));
+
+        List<Image> existingImages = shop.getCovers();
+
+        if (shop.getCovers().isEmpty()) {
+            shop.setCovers(new ArrayList<>());
+        }
+        if (shopCoverRequest.cover().isEmpty() || shopCoverRequest.cover().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cover is required");
+        }
+        Image newImage = new Image(shopCoverRequest.cover());
+
+        existingImages.add(newImage);
+        shop.setCovers(existingImages);
+        shop.setUpdatedAt(LocalDateTime.now());
+        shop.setUpdatedBy(username);
+
+        shopRepository.save(shop);
+
+        return shopMapper.mapToShopCoverResponse(shop);
+    }
+
+    @Override
+    public ShopProfileResponse getShopProfile(String slug) {
+        Shop shop = shopRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found!"));
+        return shopMapper.mapToShopProfileResponse(shop);
+    }
+
+    @Override
+    public void deleteShopProfile(String username, String slug, String profile) {
+
+        userRepository.findAllByShopsSlug(slug)
+                .stream()
+                .filter(user -> user.getUsername().equals(username)).findFirst()
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.FORBIDDEN, "You are not the owner of this shop"));
+
+        Shop shop = shopRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found!"));
+
+        shop.setUpdatedAt(LocalDateTime.now());
+        shop.setUpdatedBy(username);
+        shop.setProfile(null);
+        shopRepository.save(shop);
+    }
+
+    @Override
+    public ShopProfileResponse uploadShopProfile(String username, String slug, ShopProfileRequest shopProfileRequest) {
+
+        userRepository.findAllByShopsSlug(slug)
+                .stream()
+                .filter(user -> user.getUsername().equals(username)).findFirst()
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.FORBIDDEN, "You are not the owner of this shop"));
+
+        Shop shop = shopRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found!"));
+
+
+        shop.setUpdatedAt(LocalDateTime.now());
+        shop.setUpdatedBy(username);
+        shop.setProfile(shopProfileRequest.profile());
+        shopRepository.save(shop);
+        return shopMapper.mapToShopProfileResponse(shop);
     }
 }

@@ -1,8 +1,11 @@
 package co.istad.dealkh.features.shop;
 
-import co.istad.dealkh.features.shop.dto.ShopCreateRequest;
-import co.istad.dealkh.features.shop.dto.ShopResponse;
-import co.istad.dealkh.features.shop.dto.ShopUpdateRequest;
+import co.istad.dealkh.domain.Shop;
+import co.istad.dealkh.features.shop.dto.*;
+import co.istad.dealkh.features.user.dto.UserCoverRequest;
+import co.istad.dealkh.features.user.dto.UserCoverResponse;
+import co.istad.dealkh.features.user.dto.UserProfileRequest;
+import co.istad.dealkh.features.user.dto.UserProfileResponse;
 import co.istad.dealkh.paging.PageResponse;
 
 import java.util.List;
@@ -33,5 +36,18 @@ public interface ShopService {
     ShopResponse addOwnerToShop(String slug, String username, String owner);
 
     ShopResponse removeOwnerFromShop(String slug, String username, String owner);
+
+
+    ShopCoverResponse getAllShopCover(String slug);
+
+    void deleteShopCover(String username, String slug, ShopCoverRequest shopCoverRequest);
+
+    ShopCoverResponse uploadShopCover(String username, String slug, ShopCoverRequest shopCoverRequest);
+
+    ShopProfileResponse getShopProfile(String slug);
+
+    void deleteShopProfile(String username, String slug, String profile);
+
+    ShopProfileResponse uploadShopProfile(String username, String slug, ShopProfileRequest shopProfileRequest);
 
 }

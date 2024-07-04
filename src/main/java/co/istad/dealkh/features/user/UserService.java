@@ -30,8 +30,6 @@ public interface UserService {
 
     UserProfileResponse uploadUserProfile(String username, UserProfileRequest userProfileRequest);
 
-
-
     void updatePassword(String username, String oldPassword, UserUpdatePasswordRequest userUpdatePasswordRequest);
 
     UserResponse disableUser(String username);

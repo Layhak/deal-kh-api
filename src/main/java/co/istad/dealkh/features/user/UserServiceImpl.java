@@ -238,6 +238,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserProfile(String username, String profile) {
+
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
 //

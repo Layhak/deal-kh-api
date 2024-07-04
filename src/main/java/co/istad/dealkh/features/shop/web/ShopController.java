@@ -3,9 +3,9 @@ package co.istad.dealkh.features.shop.web;
 
 import co.istad.dealkh.base.BaseResponse;
 import co.istad.dealkh.features.shop.ShopService;
-import co.istad.dealkh.features.shop.dto.ShopCreateRequest;
-import co.istad.dealkh.features.shop.dto.ShopResponse;
-import co.istad.dealkh.features.shop.dto.ShopUpdateRequest;
+import co.istad.dealkh.features.shop.dto.*;
+import co.istad.dealkh.features.user.dto.UserProfileRequest;
+import co.istad.dealkh.features.user.dto.UserProfileResponse;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -163,4 +163,49 @@ public class ShopController {
         return BaseResponse.<ShopResponse>ok("Successfully remove owner from shop!")
                 .setPayload(shopService.removeOwnerFromShop(slug, username, customUserDetails.getUsername()));
     }
+
+    @GetMapping("/{slug}/profile")
+    @Operation(summary = "Get shop profile")
+    public BaseResponse<ShopProfileResponse> getShopProfile(@PathVariable String slug) {
+        return BaseResponse.<ShopProfileResponse>ok("Successfully get shop profile!")
+                .setPayload(shopService.getShopProfile(slug));
+    }
+
+    @PostMapping("/{slug}/profile")
+    @Operation(summary = "Upload shop profile")
+    public BaseResponse<ShopProfileResponse> uploadShopProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug,  @RequestBody ShopProfileRequest shopProfileRequest) {
+        return BaseResponse.<ShopProfileResponse>ok("Successfully upload shop profile!")
+                .setPayload(shopService.uploadShopProfile(customUserDetails.getUsername(), slug, shopProfileRequest));
+    }
+
+    @DeleteMapping("/{slug}/profile")
+    @Operation(summary = "Delete shop profile")
+    public BaseResponse<?> deleteShopProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug, @RequestBody String profile) {
+        shopService.deleteShopProfile(customUserDetails.getUsername(),slug, profile);
+        return BaseResponse.ok("Profile has been remove!");
+    }
+
+
+
+    @GetMapping("/{slug}/cover")
+    @Operation(summary = "Get shop cover")
+    public BaseResponse<ShopCoverResponse> getShopCover(@PathVariable String slug) {
+        return BaseResponse.<ShopCoverResponse>ok("Successfully get shop profile!")
+                .setPayload(shopService.getAllShopCover(slug));
+    }
+
+    @PostMapping("/{slug}/cover")
+    @Operation(summary = "Upload shop cover")
+    public BaseResponse<ShopCoverResponse> uploadShopCover(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug,  @RequestBody ShopCoverRequest shopCoverRequest) {
+        return BaseResponse.<ShopCoverResponse>ok("Successfully upload shop profile!")
+                .setPayload(shopService.uploadShopCover(customUserDetails.getUsername(), slug, shopCoverRequest));
+    }
+
+    @DeleteMapping("/{slug}/cover")
+    @Operation(summary = "Delete shop cover")
+    public BaseResponse<?> deleteShopCover(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug, @RequestBody ShopCoverRequest shopCoverRequest) {
+        shopService.deleteShopCover(customUserDetails.getUsername(),slug, shopCoverRequest);
+        return BaseResponse.ok("Cover has been remove!");
+    }
+
 }
