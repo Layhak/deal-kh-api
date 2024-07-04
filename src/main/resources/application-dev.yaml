@@ -33,10 +33,10 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-#    generate-ddl: true
-#    properties:
-#      hibernate:
-#        format_sql: true
+    generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
 springdoc:
   swagger-ui:
     path: /

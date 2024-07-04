@@ -2,6 +2,7 @@ package co.istad.dealkh.features.discount;
 
 import co.istad.dealkh.domain.Discount;
 import co.istad.dealkh.domain.DiscountType;
+import co.istad.dealkh.domain.Shop;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -12,7 +13,7 @@ import java.util.Optional;
 public interface DiscountRepository extends JpaRepository<Discount, Long>, JpaSpecificationExecutor<Discount> {
     boolean existsByDiscountValue(BigDecimal value);
 
-    boolean existsByDiscountValueAndDiscountTypeSlugAndShopSlug(BigDecimal value, String discountTypeSlug,String shopSlug);
+    boolean existsByDiscountValueAndDiscountTypeSlugAndShopSlug(BigDecimal value, String discountTypeSlug, String shopSlug);
 //    Optional<Discount> findByName(String discountName);
 
 //    boolean existsByName(String name);
@@ -32,4 +33,6 @@ public interface DiscountRepository extends JpaRepository<Discount, Long>, JpaSp
     List<Discount> findAllByCreatedBy(String username);
 
     List<Double> findAllDiscountValueByDiscountTypeSlugAndShopSlug(String slug, String shopSlug);
+
+    List<Discount> findByShop(Shop shop);
 }

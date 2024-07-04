@@ -5,10 +5,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -39,8 +40,10 @@ public class Coupon extends Auditable {
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "shop_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Shop shop;
 
     @ManyToMany(mappedBy = "coupons")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<User> users;
 }

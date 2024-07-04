@@ -1,9 +1,9 @@
 package co.istad.dealkh.features.shop;
 
-import co.istad.dealkh.domain.Shop;
-import co.istad.dealkh.domain.ShopType;
-import co.istad.dealkh.domain.User;
+import co.istad.dealkh.domain.*;
 import co.istad.dealkh.domain.json.Image;
+import co.istad.dealkh.features.discount.DiscountRepository;
+import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.dto.*;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -33,8 +34,10 @@ public class ShopServiceImpl implements ShopService {
 
     private final ShopRepository shopRepository;
     private final ShopTypeRepository shopTypeRepository;
+    private final DiscountRepository discountRepository;
     private final UserRepository userRepository;
     private final ShopMapper shopMapper;
+    private final ProductRepository productRepository;
     private final RoleRepository roleRepository;
 
     @Override
@@ -75,7 +78,6 @@ public class ShopServiceImpl implements ShopService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
         return shopMapper.toShopResponse(shop);
     }
-
 
 
     @Override
@@ -145,13 +147,32 @@ public class ShopServiceImpl implements ShopService {
         return shopMapper.toShopResponse(shop);
     }
 
+
     @Override
+    @Transactional
     public void deleteShop(String slug, String username) {
         Shop shop = shopRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+
+        // Check if the user has permission to delete the shop
         if (shop.getUsers().stream().noneMatch(user -> user.getUsername().equals(username))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to delete this shop");
         }
+
+        // Fetch related products and delete them
+        List<Product> products = productRepository.findByShop(shop);
+        for (Product product : products) {
+            productRepository.delete(product);
+        }
+
+        // Fetch related discounts and set their shop reference to null
+        List<Discount> discounts = discountRepository.findByShop(shop);
+        for (Discount discount : discounts) {
+            discount.setShop(null);
+            discountRepository.save(discount);
+        }
+
+        // Now delete the shop
         shopRepository.delete(shop);
     }
 

@@ -75,7 +75,7 @@ public class User extends Auditable {
     private List<Coupon> coupons;
 
     @ManyToMany(mappedBy = "users")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private List<Shop> shops;
 
     // for security
