@@ -17,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -264,6 +265,13 @@ public class UserController {
     ) {
         return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieve all admins!")
                 .setPayload(userService.getAllAdmin(page, size, field, order));
+    }
+
+    @GetMapping("/{slug}/owners")
+    @Operation(summary = "Get all owner shop")
+    public BaseResponse<List<SellerResponse>> getAllOwnerShop(@PathVariable String slug) {
+        return BaseResponse.<List<SellerResponse>>ok("Successfully retrieve all owners!")
+                .setPayload(userService.getAllOwnerShop(slug));
     }
 
 }

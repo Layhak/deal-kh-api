@@ -3,6 +3,7 @@ package co.istad.dealkh.features.user;
 import co.istad.dealkh.features.user.dto.*;
 import co.istad.dealkh.paging.PageResponse;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserService {
@@ -47,5 +48,7 @@ public interface UserService {
     PageResponse<UserResponse> getAllAdmin(int page, int size, String field, String order);
 
     void verifyEmail(String token);
+
+    List<SellerResponse> getAllOwnerShop(String slug);
 
 }

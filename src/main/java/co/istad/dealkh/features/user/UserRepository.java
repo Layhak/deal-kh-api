@@ -24,18 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     @NotNull
     Page<User> findAll(@NotNull Pageable pageable);
 
-    //get all disable users
-    List<User> findAllByIsDisabledFalse();
-
-    List<User> findAllByIsDisabledTrue();
-
     Optional<User> findByUsername(String username);
-
-    Optional<User> findByUsernameAndProfile(String username, String profile);
-
-    User getUserById(Long id);
-
-    Optional<Long> findIdByUsername(String username);
 
     Optional<User> findByEmail(String email);
 
@@ -47,9 +36,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     Optional<User> findByVerificationToken(String verificationToken);
 
-    Optional<User> findByUsernameAndCovers(String username, List<Image> cover);
+    List<User> findAllByShopsSlug(String slug);
 
-//    boolean existsByPhone(String s);
-//
-////    boolean existsByPhone(String s);
+
 }

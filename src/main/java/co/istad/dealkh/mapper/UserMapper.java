@@ -39,5 +39,9 @@ public interface UserMapper {
     @Mapping(target = "profile", source = "profile")
     UserProfileResponse mapToUserProfileResponse(User user);
 
+    @Mapping(target = "name", source = "username")
+    SellerResponse mapToSellerResponse(User user);
+
+
 
 }

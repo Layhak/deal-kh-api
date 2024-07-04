@@ -429,4 +429,12 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);    // Clear the expiry date
     }
 
+    @Override
+    public List<SellerResponse> getAllOwnerShop(String slug) {
+        return userRepository.findAllByShopsSlug(slug)
+                .stream()
+                .map(userMapper::mapToSellerResponse)
+                .toList();
+    }
+
 }
