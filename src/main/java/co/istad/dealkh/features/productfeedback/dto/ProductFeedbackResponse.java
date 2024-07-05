@@ -8,14 +8,16 @@ import java.util.List;
  * ProductFeedbackResponse is a response object for a product feedback.
  * It contains the ID, description, product ID, user ID, and images.
  *
- * @param id
+ * @param uuid
  * @param description
- * @param productId
- * @param userId
+ * @param profile
+ * @param productName
+ * @param username
  * @param images
  */
 public record ProductFeedbackResponse(
         String uuid,
+        String profile,
         String description,
         String productName,
         String username,

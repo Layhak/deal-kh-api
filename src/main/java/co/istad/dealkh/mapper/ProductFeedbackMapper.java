@@ -14,6 +14,7 @@ import org.mapstruct.*;
 public interface ProductFeedbackMapper {
     @Mapping(target = "productName", source = "product.name")
     @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "profile", source = "user.profile")
     ProductFeedbackResponse toProductFeedbackResponse(ProductFeedback productFeedback);
 
     @Mapping(target = "product.name", source = "productSlug")

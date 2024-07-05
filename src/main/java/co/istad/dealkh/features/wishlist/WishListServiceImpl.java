@@ -62,14 +62,11 @@ public class WishListServiceImpl implements WishListService {
                 HttpStatus.NOT_FOUND,
                 String.format("Product with slug %s not found! ", wishListRequest.productSlug())
         ));
-        DiscountType discountType = discountTypeRepository.findBySlug(wishListRequest.discountTypeSlug()).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                String.format("DiscountType with uuid %s not found! ", wishListRequest.discountTypeSlug())
-        ));
 
+        newWishList.setDiscountPercentage(wishListRequest.discountPercentage());
+        newWishList.setDescription(wishListRequest.description());
         newWishList.setUser(user);
         newWishList.setProduct(product);
-        newWishList.setDiscountType(discountType);
         wishListRepository.save(newWishList);
 
         return wishListMapper.mapToWishListResponse(newWishList);

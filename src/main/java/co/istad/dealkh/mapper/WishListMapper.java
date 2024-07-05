@@ -9,16 +9,15 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = {DiscountMapper.class})
 public interface WishListMapper {
 
-    @Mapping(source = "wishList.uuid", target = "id")
+    @Mapping(source = "wishList.uuid", target = "uuid")
     @Mapping(source = "user.username", target = "username")
+    @Mapping(source = "user.profile", target = "profile")
     @Mapping(source = "product.name", target = "productName")
-    @Mapping(source = "discountType.slug", target = "discountTypeSlug")
     @Mapping(source = "isGranted", target = "isGranted", qualifiedByName = "mapGrantStatusToString")
     WishListResponse mapToWishListResponse(WishList wishList);
 
 
     @Mapping(source = "productSlug", target = "product.slug")
-    @Mapping(source = "discountTypeSlug", target = "discountType.slug")
     WishList mapRequestToWishList(WishListRequest wishListRequest);
 
     @Mapping(target = "id", ignore = true)

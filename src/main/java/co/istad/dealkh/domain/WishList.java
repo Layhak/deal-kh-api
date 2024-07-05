@@ -32,15 +32,14 @@ public class WishList extends Auditable {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Product product;
 
-    Double discountPercentage;
+    private Double discountPercentage;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
 
     @Column(name = "uuid", unique = true, nullable = false, updatable = false)
     private String uuid;
-
-    @ManyToOne
-    @JoinColumn(name = "discountType_id", nullable = false)
-    private DiscountType discountType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
