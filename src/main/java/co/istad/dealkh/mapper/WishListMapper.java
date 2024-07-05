@@ -16,7 +16,6 @@ public interface WishListMapper {
     @Mapping(source = "isGranted", target = "isGranted", qualifiedByName = "mapGrantStatusToString")
     WishListResponse mapToWishListResponse(WishList wishList);
 
-
     @Mapping(source = "productSlug", target = "product.slug")
     WishList mapRequestToWishList(WishListRequest wishListRequest);
 

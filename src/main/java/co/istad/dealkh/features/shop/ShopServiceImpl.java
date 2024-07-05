@@ -346,37 +346,45 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public ShopCoverResponse uploadShopCover(String username, String slug, ShopCoverRequest shopCoverRequest) {
-
+        // Ensure the user has permission to modify the shop
         userRepository.findAllByShopsSlug(slug)
                 .stream()
                 .filter(user -> user.getUsername().equals(username)).findFirst()
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.FORBIDDEN, "You are not the owner of this shop"));
 
-
+        // Fetch the shop and ensure it exists
         Shop shop = shopRepository.findBySlugAndCreatedBy(slug, username)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "shop not found!"));
+                        HttpStatus.NOT_FOUND, "Shop not found!"));
 
+        // Initialize the covers list if it's null
         List<Image> existingImages = shop.getCovers();
-
-        if (shop.getCovers().isEmpty()) {
-            shop.setCovers(new ArrayList<>());
+        if (existingImages == null) {
+            existingImages = new ArrayList<>();
         }
+
+        // Check if the cover request is valid
         if (shopCoverRequest.cover().isEmpty() || shopCoverRequest.cover().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cover is required");
         }
-        Image newImage = new Image(shopCoverRequest.cover());
 
+        // Create a new image and add it to the covers list
+        Image newImage = new Image(shopCoverRequest.cover());
         existingImages.add(newImage);
+
+        // Update the shop entity with the new cover
         shop.setCovers(existingImages);
         shop.setUpdatedAt(LocalDateTime.now());
         shop.setUpdatedBy(username);
 
+        // Save the updated shop entity
         shopRepository.save(shop);
 
+        // Return the response
         return shopMapper.mapToShopCoverResponse(shop);
     }
+
 
     @Override
     public ShopProfileResponse getShopProfile(String slug) {
