@@ -2,6 +2,7 @@ package co.istad.dealkh.features.productrating;
 
 import co.istad.dealkh.features.productrating.dto.ProductRatingRequest;
 import co.istad.dealkh.features.productrating.dto.ProductRatingResponse;
+import co.istad.dealkh.features.productrating.dto.ProductRatingUpdateRequest;
 
 import java.util.List;
 
@@ -17,6 +18,8 @@ public interface ProductRatingService {
      * @return
      */
     ProductRatingResponse rateProduct(String username, ProductRatingRequest productRatingRequest);
+
+    ProductRatingResponse updateProductRating(String username, String productSlug, ProductRatingUpdateRequest productRatingUpdateRequestRequest);
 
     /**
      * Retrieves all product ratings.

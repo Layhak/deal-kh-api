@@ -7,6 +7,7 @@ import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.product.ProductService;
 import co.istad.dealkh.features.productrating.dto.ProductRatingRequest;
 import co.istad.dealkh.features.productrating.dto.ProductRatingResponse;
+import co.istad.dealkh.features.productrating.dto.ProductRatingUpdateRequest;
 import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.mapper.ProductRatingMapper;
 import lombok.RequiredArgsConstructor;
@@ -80,6 +81,28 @@ public class ProductRatingServiceImpl implements ProductRatingService {
         productRepository.save(product);
 
         return productRatingMapper.mapProductRatingToProductRatingResponse(newProductRating);
+    }
+
+    @Override
+    public ProductRatingResponse updateProductRating(String username, String productSlug, ProductRatingUpdateRequest productRatingUpdateRequestRequest) {
+
+        ProductRating productRating = productRatingRepository.findByUserUsernameAndProductSlug(username, productSlug)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Product rating not found!"
+                ));
+
+        if (productRatingRepository.findByUserUsernameAndProductSlug(username, productSlug).isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You're not this resource owner!");
+        }
+
+        productRating.setUpdatedAt(LocalDateTime.now());
+        productRating.setUpdatedBy(username);
+        productRatingMapper.mapProductRatingUpdateRequest(productRating, productRatingUpdateRequestRequest);
+        productRatingRepository.save(productRating);
+
+        return productRatingMapper.mapProductRatingToProductRatingResponse(productRating);
     }
 
     /**

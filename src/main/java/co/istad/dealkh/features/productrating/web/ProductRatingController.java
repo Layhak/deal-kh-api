@@ -3,6 +3,7 @@ package co.istad.dealkh.features.productrating.web;
 import co.istad.dealkh.features.productrating.ProductRatingService;
 import co.istad.dealkh.features.productrating.dto.ProductRatingRequest;
 import co.istad.dealkh.features.productrating.dto.ProductRatingResponse;
+import co.istad.dealkh.features.productrating.dto.ProductRatingUpdateRequest;
 import co.istad.dealkh.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class ProductRatingController {
      * @param productRatingRequest
      * @return
      */
-    @PostMapping("")
+    @PostMapping()
     ProductRatingResponse rateProduct(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody @Valid ProductRatingRequest productRatingRequest) {
         return productRatingService.rateProduct(customUserDetails.getUsername(), productRatingRequest);
     }
@@ -46,8 +47,13 @@ public class ProductRatingController {
      *
      * @return
      */
-    @GetMapping("")
+    @GetMapping()
     List<ProductRatingResponse> getAllProductRatings() {
         return productRatingService.getAllProductRating();
+    }
+
+    @PutMapping("/{productSlug}")
+    ProductRatingResponse updateProductRating(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String productSlug, @RequestBody ProductRatingUpdateRequest productRatingUpdateRequest) {
+        return productRatingService.updateProductRating(customUserDetails.getUsername(), productSlug, productRatingUpdateRequest);
     }
 }
