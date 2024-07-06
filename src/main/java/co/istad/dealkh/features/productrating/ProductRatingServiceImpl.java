@@ -118,4 +118,13 @@ public class ProductRatingServiceImpl implements ProductRatingService {
                 .map(productRatingMapper::mapProductRatingToProductRatingResponse)
                 .toList();
     }
+
+    @Override
+    public List<ProductRatingResponse> getProductRatingByProductSlug(String productSlug) {
+        return productRatingRepository.findAllByProduct(productRepository.findBySlug(productSlug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found!")))
+                .stream()
+                .map(productRatingMapper::mapProductRatingToProductRatingResponse)
+                .toList();
+
+    }
 }

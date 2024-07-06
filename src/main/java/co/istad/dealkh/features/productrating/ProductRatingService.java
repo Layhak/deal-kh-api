@@ -27,4 +27,6 @@ public interface ProductRatingService {
      * @return
      */
     List<ProductRatingResponse> getAllProductRating();
+
+    List<ProductRatingResponse> getProductRatingByProductSlug(String productSlug);
 }

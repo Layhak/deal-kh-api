@@ -56,4 +56,9 @@ public class ProductRatingController {
     ProductRatingResponse updateProductRating(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String productSlug, @RequestBody ProductRatingUpdateRequest productRatingUpdateRequest) {
         return productRatingService.updateProductRating(customUserDetails.getUsername(), productSlug, productRatingUpdateRequest);
     }
+
+    @GetMapping("/{productSlug}")
+    List<ProductRatingResponse> getProductRatingByProductSlug(@PathVariable String productSlug) {
+        return productRatingService.getProductRatingByProductSlug(productSlug);
+    }
 }
