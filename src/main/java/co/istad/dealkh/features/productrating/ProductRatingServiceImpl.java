@@ -65,8 +65,8 @@ public class ProductRatingServiceImpl implements ProductRatingService {
                     HttpStatus.BAD_REQUEST, "Rating must be between 0 and 5!"
             );
         }
-
-        if (newProductRating.isRated()) {
+        // Check if the user has already rated the product
+        if (productRatingRepository.findByUserUsernameAndProductSlug(username, productRatingRequest.productSlug()).isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "You have already rated this product!"
             );
