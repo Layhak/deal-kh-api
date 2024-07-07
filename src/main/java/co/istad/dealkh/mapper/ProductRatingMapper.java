@@ -12,6 +12,7 @@ public interface ProductRatingMapper {
     //    @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "productName", source = "product.name")
     @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "isRated", source = "isRated")
     ProductRatingResponse mapProductRatingToProductRatingResponse(ProductRating productRating);
 
     ProductRating mapProductRatingRequestToProductRating(ProductRatingRequest productRatingRequest);
