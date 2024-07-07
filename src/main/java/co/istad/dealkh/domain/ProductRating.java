@@ -19,7 +19,9 @@ public class ProductRating extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double ratingValue;
+    private double ratingValue = 0;
+
+    private boolean isRated = false;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")

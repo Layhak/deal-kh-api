@@ -66,7 +66,7 @@ public class ProductRatingServiceImpl implements ProductRatingService {
             );
         }
 
-        if (productRatingRepository.findByUserUsernameAndProductSlug(username, productRatingRequest.productSlug()).isPresent()) {
+        if (newProductRating.isRated()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "You have already rated this product!"
             );
@@ -75,6 +75,7 @@ public class ProductRatingServiceImpl implements ProductRatingService {
         newProductRating.setUser(user);
         newProductRating.setProduct(product);
         newProductRating.setCreatedAt(LocalDateTime.now());
+        newProductRating.setRated(true);
         productRatingRepository.save(newProductRating);
 
         product.setRatingAvg(productService.getProductRatingAvg(product.getId()));

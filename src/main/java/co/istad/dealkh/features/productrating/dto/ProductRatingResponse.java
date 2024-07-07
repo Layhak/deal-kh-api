@@ -13,6 +13,7 @@ public record ProductRatingResponse(
         double ratingValue,
         String username,
         String productName,
+        boolean isRated,
         LocalDateTime createdAt
 ) {
 }

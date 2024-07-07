@@ -24,6 +24,8 @@ public class ShopRating extends Auditable {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    private boolean isRated = false;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
