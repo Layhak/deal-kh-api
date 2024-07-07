@@ -21,6 +21,7 @@ public class ProductRating extends Auditable {
 
     private double ratingValue = 0;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isRated = false;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
