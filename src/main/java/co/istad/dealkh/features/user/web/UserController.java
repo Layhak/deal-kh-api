@@ -81,7 +81,7 @@ public class UserController {
         return BaseResponse.ok("Delete user success").setPayload(new ArrayList<>());
     }
 
-    @PutMapping("/{username}")
+    @PutMapping
     @Operation(summary = "Update user", description = "Update user with username", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = UserUpdateRequest.class), examples = @ExampleObject(value = """
                          {
                            "dob": "2001-07-01",
@@ -96,8 +96,8 @@ public class UserController {
                            ]
                          }
             """))))
-    BaseResponse<UserResponse> updateUser(@PathVariable String username, @RequestBody UserUpdateRequest updateRequest) {
-        return BaseResponse.<UserResponse>ok("update success").setPayload(userService.updateUser(username, updateRequest));
+    BaseResponse<UserResponse> updateUser(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserUpdateRequest updateRequest) {
+        return BaseResponse.<UserResponse>ok("update success").setPayload(userService.updateUser(customUserDetails.getUsername(), updateRequest));
     }
 
     @PatchMapping("/{username}/disable")

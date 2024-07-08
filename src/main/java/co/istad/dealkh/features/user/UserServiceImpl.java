@@ -143,6 +143,10 @@ public class UserServiceImpl implements UserService {
                     "Username already exists! Try another one.");
         }
 
+        if(userRepository.existsByPhoneNumber(userUpdateRequest.phoneNumber()) && !user.getPhoneNumber().equals(userUpdateRequest.phoneNumber())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Phone number already taken! Try another one.");
+        }
+
         user.setUpdatedAt(LocalDateTime.now());
         user.setUpdatedBy(username);
 
