@@ -2,6 +2,7 @@ package co.istad.dealkh.mapper;
 
 import co.istad.dealkh.domain.*;
 import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
+import co.istad.dealkh.features.productrating.ProductRatingRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
@@ -23,6 +24,7 @@ public class CustomMapper {
     private final DiscountTypeRepository discountTypeRepository;
     private final ShopRepository shopRepository;
     private final ShopTypeRepository shopTypeRepository;
+    private final ProductRatingRepository productRatingRepository;
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     @Named("stringToRole")
@@ -70,4 +72,10 @@ public class CustomMapper {
         return shopTypeRepository.findBySlug(shopTypeSlug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop type slug not found: " + shopTypeSlug));
     }
+
+    @Named("mapRatingCount")
+    public Long mapRatingCount(Product product) {
+        return productRatingRepository.countByProduct(product);
+    }
+
 }

@@ -5,6 +5,7 @@ import co.istad.dealkh.domain.ProductRating;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.product.ProductService;
+import co.istad.dealkh.features.productrating.dto.ProductRatingCount;
 import co.istad.dealkh.features.productrating.dto.ProductRatingRequest;
 import co.istad.dealkh.features.productrating.dto.ProductRatingResponse;
 import co.istad.dealkh.features.productrating.dto.ProductRatingUpdateRequest;
@@ -127,5 +128,13 @@ public class ProductRatingServiceImpl implements ProductRatingService {
                 .map(productRatingMapper::mapProductRatingToProductRatingResponse)
                 .toList();
 
+    }
+
+    @Override
+    public ProductRatingCount countByProductSlug(String productSlug) {
+        return new ProductRatingCount(productRatingRepository.countByProduct(
+                productRepository.findBySlug(productSlug)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "Product not found!"))));
     }
 }

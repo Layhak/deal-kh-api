@@ -59,7 +59,6 @@ public class ProductServiceImpl implements ProductService {
     private final ShopRepository shopRepository;
     private final ProductRatingRepository productRatingRepository;
 
-
     /**
      * Creates a new product based on the provided request.
      *
@@ -70,7 +69,6 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse createProduct(ProductCreateRequest productCreateRequest) {
 
         Product newProduct = productMapper.mapProductRequestToProduct(productCreateRequest);
-
 
         Shop shop = shopRepository.findBySlug(productCreateRequest.shopSlug())
                 .orElseThrow(() -> new ResponseStatusException(

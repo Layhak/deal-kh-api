@@ -1,6 +1,8 @@
 package co.istad.dealkh.features.productrating.web;
 
+import co.istad.dealkh.base.BaseResponse;
 import co.istad.dealkh.features.productrating.ProductRatingService;
+import co.istad.dealkh.features.productrating.dto.ProductRatingCount;
 import co.istad.dealkh.features.productrating.dto.ProductRatingRequest;
 import co.istad.dealkh.features.productrating.dto.ProductRatingResponse;
 import co.istad.dealkh.features.productrating.dto.ProductRatingUpdateRequest;
@@ -60,5 +62,11 @@ public class ProductRatingController {
     @GetMapping("/{productSlug}")
     List<ProductRatingResponse> getProductRatingByProductSlug(@PathVariable String productSlug) {
         return productRatingService.getProductRatingByProductSlug(productSlug);
+    }
+
+    @GetMapping("/{slug}/count")
+    BaseResponse<ProductRatingCount> getCountByProductSlug(@PathVariable String slug) {
+        return BaseResponse.<ProductRatingCount>ok("Get all total product rating")
+                .setPayload(productRatingService.countByProductSlug(slug));
     }
 }

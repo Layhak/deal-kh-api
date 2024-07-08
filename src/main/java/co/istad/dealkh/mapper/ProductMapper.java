@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = CustomMapper.class)
 public interface ProductMapper {
 
     @Mapping(target = "seller", source = "product.createdBy")
@@ -30,6 +30,7 @@ public interface ProductMapper {
     @Mapping(target = "discountPrice", source = "product", qualifiedByName = "toDiscountPrice")
     @Mapping(target = "discountType", source = "discount", qualifiedByName = "discountToDiscountType")
     @Mapping(target = "expiredAt", source = "discount", qualifiedByName = "discountToExpiredAt")
+    @Mapping(target = "ratingCount", source = "product", qualifiedByName = "mapRatingCount") // Use the mapTotalRating method
     ProductResponse mapProductToProductResponseDetail(Product product);
 
     Product mapProductRequestToProduct(ProductCreateRequest productCreateRequest);
@@ -52,9 +53,6 @@ public interface ProductMapper {
     default String mapShopSlug(Shop shop) {
         return shop.getSlug();
     }
-
-
-
 
     @Named("discountToDouble")
     default BigDecimal mapDiscount(Discount discount) {

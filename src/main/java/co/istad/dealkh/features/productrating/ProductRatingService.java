@@ -1,5 +1,6 @@
 package co.istad.dealkh.features.productrating;
 
+import co.istad.dealkh.features.productrating.dto.ProductRatingCount;
 import co.istad.dealkh.features.productrating.dto.ProductRatingRequest;
 import co.istad.dealkh.features.productrating.dto.ProductRatingResponse;
 import co.istad.dealkh.features.productrating.dto.ProductRatingUpdateRequest;
@@ -29,4 +30,6 @@ public interface ProductRatingService {
     List<ProductRatingResponse> getAllProductRating();
 
     List<ProductRatingResponse> getProductRatingByProductSlug(String productSlug);
+
+    ProductRatingCount countByProductSlug(String productSlug);
 }

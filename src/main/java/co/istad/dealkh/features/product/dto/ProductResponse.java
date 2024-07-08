@@ -19,6 +19,7 @@ public record ProductResponse(
         double price,
         double discountPrice,
         double ratingAvg,
+        Long ratingCount,
         String description,
         List<ImageResponse> images,
         String shop,
