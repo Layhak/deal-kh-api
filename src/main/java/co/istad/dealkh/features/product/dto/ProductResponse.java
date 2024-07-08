@@ -25,6 +25,7 @@ public record ProductResponse(
         String shop,
         String shopSlug,
         String location,
+        Long totalRating,
         LocalTime openAt,
         LocalTime closeAt,
         BigDecimal discountValue,

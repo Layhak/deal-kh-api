@@ -14,20 +14,15 @@ import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.mapper.ProductMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
-import co.istad.dealkh.security.CustomUserDetails;
 import co.istad.dealkh.specification.filter.PageFilter;
 import co.istad.dealkh.specification.filter.ProductFilter;
 import co.istad.dealkh.specification.filter.ProductSpecification;
-import co.istad.dealkh.validator.formatter.NameFormatter;
-import co.istad.dealkh.validator.formatter.SlugFormatter;
-import co.istad.dealkh.validator.page.ValidatePagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -82,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
                         String.format("Discount with name %s not found! ", productCreateRequest.discountUuid())
                 ));
 
-        if(discountRepository.findByShopSlugAndUuid(productCreateRequest.shopSlug(), productCreateRequest.discountUuid()).isEmpty()) {
+        if (discountRepository.findByShopSlugAndUuid(productCreateRequest.shopSlug(), productCreateRequest.discountUuid()).isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
                     "You have not create this discount yet!");
@@ -172,12 +167,12 @@ public class ProductServiceImpl implements ProductService {
         }
 
         size = PageFilter.DEFAULT_PAGE_LIMIT;
-        if(params.containsKey(PageFilter.PAGE_LIMIT)) {
+        if (params.containsKey(PageFilter.PAGE_LIMIT)) {
             size = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
         }
 
         page = PageFilter.DEFAULT_PAGE_NUMBER;
-        if(params.containsKey(PageFilter.PAGE_NUMBER)) {
+        if (params.containsKey(PageFilter.PAGE_NUMBER)) {
             page = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
         }
 
@@ -201,7 +196,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product product = productRepository.findBySlug(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found! ", slug)));
 
-        if(productRepository.findByCreatedByAndSlug(username, slug).isEmpty()){
+        if (productRepository.findByCreatedByAndSlug(username, slug).isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
                     "You're not this resource owner!");
@@ -224,9 +219,9 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(String username, String slug) {
 
 
-        Product product = productRepository.findBySlug(slug).orElseThrow(() -> new  ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found! ", slug)));
+        Product product = productRepository.findBySlug(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found! ", slug)));
 
-        if(productRepository.findByCreatedByAndSlug(username, slug).isEmpty()){
+        if (productRepository.findByCreatedByAndSlug(username, slug).isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
                     "You're not this resource owner!");
@@ -256,10 +251,10 @@ public class ProductServiceImpl implements ProductService {
     public PageResponse<ProductResponse> getProductShopOwner(int page, int size, String field, String order, String slug) {
 
         // Here is validate pagination
-        if (page < 0){
+        if (page < 0) {
             page = PageFilter.DEFAULT_PAGE_NUMBER;
         }
-        if(size < 0){
+        if (size < 0) {
             size = PageFilter.DEFAULT_PAGE_LIMIT;
         }
 
@@ -333,6 +328,11 @@ public class ProductServiceImpl implements ProductService {
         PageResponse<ProductResponse> pageResponse = new PageResponse<>(responsePage);
 
         return pageResponse;
+    }
+
+    @Override
+    public Long getTotalRatingsBySlug(String productSlug) {
+        return productRatingRepository.countByProductSlug(productSlug);
     }
 
 }

@@ -45,6 +45,7 @@ public interface ProductService {
 
     /**
      * Updates a product based on its ID.
+     *
      * @param username
      * @param slug
      * @param productUpdateRequest
@@ -86,4 +87,6 @@ public interface ProductService {
      */
     PageResponse<ProductResponse> getAllProductByShopOwner(String username, int page, int size, String field, String order, Map<String, String> params);
 
+
+    Long getTotalRatingsBySlug(String productSlug);
 }
