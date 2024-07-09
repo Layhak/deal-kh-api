@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -32,7 +33,7 @@ public class WishList extends Auditable {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Product product;
 
-    private Double discountPercentage;
+    private BigDecimal discountPercentage;
 
     @Column(columnDefinition = "TEXT")
     private String description;

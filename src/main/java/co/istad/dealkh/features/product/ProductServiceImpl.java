@@ -1,9 +1,6 @@
 package co.istad.dealkh.features.product;
 
-import co.istad.dealkh.domain.Category;
-import co.istad.dealkh.domain.Discount;
-import co.istad.dealkh.domain.Product;
-import co.istad.dealkh.domain.Shop;
+import co.istad.dealkh.domain.*;
 import co.istad.dealkh.features.category.CategoryRepository;
 import co.istad.dealkh.features.discount.DiscountRepository;
 import co.istad.dealkh.features.product.dto.ProductCreateRequest;
@@ -11,6 +8,7 @@ import co.istad.dealkh.features.product.dto.ProductResponse;
 import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
 import co.istad.dealkh.features.productrating.ProductRatingRepository;
 import co.istad.dealkh.features.shop.ShopRepository;
+import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.mapper.ProductMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
@@ -53,6 +51,7 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final ShopRepository shopRepository;
     private final ProductRatingRepository productRatingRepository;
+    private final UserRepository userRepository;
 
     /**
      * Creates a new product based on the provided request.
@@ -196,11 +195,13 @@ public class ProductServiceImpl implements ProductService {
 
         Product product = productRepository.findBySlug(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found! ", slug)));
 
-        if (productRepository.findByCreatedByAndSlug(username, slug).isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "You're not this resource owner!");
+
+        boolean isUserAssociatedWithShop = product.getShop().getUsers().stream()
+                .anyMatch(user -> user.getUsername().equals(username));
+        if (!isUserAssociatedWithShop) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
         }
+
 
         product.setUpdatedAt(LocalDateTime.now());
         product.setUpdatedBy(username);
@@ -221,10 +222,10 @@ public class ProductServiceImpl implements ProductService {
 
         Product product = productRepository.findBySlug(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found! ", slug)));
 
-        if (productRepository.findByCreatedByAndSlug(username, slug).isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "You're not this resource owner!");
+        boolean isUserAssociatedWithShop = product.getShop().getUsers().stream()
+                .anyMatch(user -> user.getUsername().equals(username));
+        if (!isUserAssociatedWithShop) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
         }
 
         productRepository.delete(product);

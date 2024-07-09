@@ -1,6 +1,7 @@
 package co.istad.dealkh.features.wishlist.web;
 
 import co.istad.dealkh.base.BaseResponse;
+import co.istad.dealkh.domain.Product;
 import co.istad.dealkh.features.wishlist.WishListService;
 import co.istad.dealkh.features.wishlist.dto.WishListRequest;
 import co.istad.dealkh.features.wishlist.dto.WishListResponse;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -99,4 +101,14 @@ public class WishListController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return BaseResponse.<PageResponse<WishListResponse>>ok("Successfully get wish list with username:" + customUserDetails.getUsername()).setPayload(wishListService.getWishListByUsername(page, size, field, order, params, customUserDetails.getUsername()));
     }
+
+    @GetMapping("/{slug}/shop")
+    @Operation(summary = "Get wish list by username")
+    BaseResponse<List<WishListResponse>> getWishListByUsername(
+            @PathVariable String slug) {
+        return BaseResponse.<List<WishListResponse>>ok("Successfully get all wish list!").setPayload(wishListService.getWishListByShop(slug));
+    }
+
+
+
 }

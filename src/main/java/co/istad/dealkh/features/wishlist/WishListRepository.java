@@ -1,7 +1,9 @@
 package co.istad.dealkh.features.wishlist;
 
+import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.domain.WishList;
+import com.fasterxml.jackson.databind.introspect.AnnotationCollector;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,10 +20,10 @@ public interface WishListRepository extends JpaRepository<WishList, Long> {
 
     Page<WishList> findByUser(User user, Pageable pageable);
 
-    //findByCreatedBy(User user)
-    List<WishList> findByCreatedBy(User createdBy);
 
     Optional<WishList> findByProductId(Long id);
 
+    List<WishList> findAllByProduct_Shop_Slug(String slug);
 
+    Optional<WishList> findByUserUsernameAndProductSlug(String username, String s);
 }

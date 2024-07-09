@@ -58,6 +58,12 @@ public class WishListServiceImpl implements WishListService {
                         HttpStatus.NOT_FOUND,
                         String.format("User with username %s not found! ", username)
                 ));
+
+        if(wishListRepository.findByUserUsernameAndProductSlug(username, wishListRequest.productSlug()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already wished this product!");
+        }
+
+
         Product product = productRepository.findBySlug(wishListRequest.productSlug()).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 String.format("Product with slug %s not found! ", wishListRequest.productSlug())
@@ -230,5 +236,23 @@ public class WishListServiceImpl implements WishListService {
                 wishesPage.hasPrevious(),   // Whether there's a previous page
                 wishesPage.hasNext()        // Whether there's a next page
         );
+    }
+
+    @Override
+    public List<WishListResponse> getWishListByShop(String slug) {
+
+        // Check if there are products for the given shop slug to avoid returning multiple results error.
+        List<Product> products = productRepository.findAllByShopSlug(slug);
+        if (products.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    String.format("No products found for shop slug %s!", slug)
+            );
+        }
+
+        return wishListRepository.findAllByProduct_Shop_Slug(slug)
+                .stream()
+                .map(wishListMapper::mapToWishListResponse)
+                .collect(Collectors.toList());
     }
 }

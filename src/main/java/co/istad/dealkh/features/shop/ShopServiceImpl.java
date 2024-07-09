@@ -9,6 +9,7 @@ import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.dto.*;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
 import co.istad.dealkh.features.user.UserRepository;
+import co.istad.dealkh.features.user.VerificationService;
 import co.istad.dealkh.mapper.ShopMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,6 +43,7 @@ public class ShopServiceImpl implements ShopService {
     private final ShopMapper shopMapper;
     private final ProductRepository productRepository;
     private final RoleRepository roleRepository;
+    private final VerificationService verificationService;
 
     @Override
     public PageResponse<ShopResponse> getAllShop(int page, int size, String field, String order) {
@@ -268,6 +271,11 @@ public class ShopServiceImpl implements ShopService {
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found!")));
             userRepository.save(user);
         }
+
+
+        // Generate verification token
+        String token = UUID.randomUUID().toString();
+        verificationService.sendVerificationEmail(user, token);
 
         shop.setUpdatedBy(username);
         shop.setUpdatedAt(LocalDateTime.now());

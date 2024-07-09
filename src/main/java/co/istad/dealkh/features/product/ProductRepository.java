@@ -33,4 +33,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     Page<Product> findAllByShopUsersUsername(String username, Pageable pageable);
 
     List<Product> findByShop(Shop shop);
+
+    Optional<Product> findByShopSlug(String shopSlug);
+    List<Product> findAllByShopSlug(String slug);
 }

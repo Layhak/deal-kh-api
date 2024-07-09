@@ -31,4 +31,5 @@ public interface ProductRatingRepository extends JpaRepository<ProductRating, Lo
     Collection<ProductRating> findAllByProduct(Product product);
 
     Long countByProduct(Product product);
+    Long countByProductSlug(String productSlug);
 }
