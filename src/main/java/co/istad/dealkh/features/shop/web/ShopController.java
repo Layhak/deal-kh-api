@@ -186,7 +186,6 @@ public class ShopController {
     }
 
 
-
     @GetMapping("/{slug}/cover")
     @Operation(summary = "Get shop cover")
     public BaseResponse<ShopCoverResponse> getShopCover(@PathVariable String slug) {
@@ -206,6 +205,29 @@ public class ShopController {
     public BaseResponse<?> deleteShopCover(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug, @RequestBody ShopCoverRequest shopCoverRequest) {
         shopService.deleteShopCover(customUserDetails.getUsername(),slug, shopCoverRequest);
         return BaseResponse.ok("Cover has been remove!");
+    }
+
+    @PostMapping("/{slug}/approve")
+    @Operation(summary = "Approve shop")
+    public BaseResponse<?> approveShop(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug,  @RequestParam Boolean isApproved) {
+        shopService.verifyShop(slug, customUserDetails.getUsername(), isApproved);
+        if(isApproved){
+            return BaseResponse.ok("Shop has been approved!");
+        }
+        return BaseResponse.ok("Shop has been rejected!");
+    }
+
+    @GetMapping("/requesting")
+    @Operation(summary = "Get all shops requesting")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<PageResponse<ShopResponse>> getAllShopRequesting(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "25") int size,
+            @RequestParam(defaultValue = "name") String field,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        return BaseResponse.<PageResponse<ShopResponse>>ok("Successfully retrieved all shops requesting!")
+                .setPayload(shopService.getAllShopRequest(page, size, field, order));
     }
 
 }

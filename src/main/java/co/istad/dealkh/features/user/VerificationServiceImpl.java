@@ -15,7 +15,6 @@ public class VerificationServiceImpl implements VerificationService {
     public void sendVerificationEmail(User user, String token) {
         String subject = "Verify your email address";
         String verificationUrl = "https://dealkh-api.istad.co/api/v1/auth/verify?token=" + token;
-        String body = "Please verify your email by clicking the following link: " + verificationUrl;
 
         mailService.sendEmail(user.getEmail(), subject, verificationUrl, "verify");
     }

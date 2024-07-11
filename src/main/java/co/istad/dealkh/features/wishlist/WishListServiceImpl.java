@@ -164,7 +164,7 @@ public class WishListServiceImpl implements WishListService {
                 "Product Name: " + wishList.getProduct().getName() + "\n\n" +
                 "Thank you for using our service!";
 
-        mailService.sendEmail(userEmail, "Congratulation! Wishlist Item Granted.", userEmailContent, "order");
+        mailService.sendEmail(userEmail, "Congratulation! Wishlist Item Granted.", userEmailContent, "granted");
 
         return wishListMapper.mapToWishListResponse(wishList);
     }
@@ -178,7 +178,20 @@ public class WishListServiceImpl implements WishListService {
                 )
         );
         wishList.setIsGranted(GrantStatus.DENIED);
+
+        // Email the user who created the wishlist
+        String userEmail = wishList.getUser().getEmail();
+        String userEmailContent = "Dear " + wishList.getUser().getUsername() + ",\n\n" +
+                "Your wishlist item has been denied!\n" +
+                "Shop: " + wishList.getProduct().getShop().getName() + "\n" +
+                "Discount: " + wishList.getDiscountPercentage() + "%\n" +
+                "Product Name: " + wishList.getProduct().getName() + "\n\n" +
+                "Thank you for using our service!";
+
+        mailService.sendEmail(userEmail, "Unfortunately! Wishlist Item Denied.", userEmailContent, "deny");
+
         wishListRepository.save(wishList);
+
         return wishListMapper.mapToWishListResponse(wishList);
     }
 

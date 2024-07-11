@@ -1,6 +1,7 @@
 package co.istad.dealkh.features.shop;
 
 import co.istad.dealkh.domain.Shop;
+import co.istad.dealkh.domain.enumType.ShopVerify;
 import co.istad.dealkh.features.shop.dto.*;
 import co.istad.dealkh.features.user.dto.UserCoverRequest;
 import co.istad.dealkh.features.user.dto.UserCoverResponse;
@@ -50,7 +51,7 @@ public interface ShopService {
 
     ShopProfileResponse uploadShopProfile(String username, String slug, ShopProfileRequest shopProfileRequest);
 
-    PageResponse<ShopResponse> findAllShopRequest(Boolean request, int page, int size, String field, String order);
+    PageResponse<ShopResponse> getAllShopRequest(int page, int size, String field, String order);
 
     void verifyShop(String slug, String username, Boolean verified);
 }

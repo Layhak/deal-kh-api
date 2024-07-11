@@ -119,6 +119,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/v1/wishlists/{uuid}/grant").hasAuthority("ROLE_SELLER")
                         .requestMatchers(HttpMethod.POST, "/api/v1/wishlists/{uuid}/deny").hasAuthority("ROLE_SELLER")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/wishlists/**").hasAuthority("ROLE_BUYER")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/wishlists/**").hasAuthority("ROLE_BUYER")
 
                         // categories
                         .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()

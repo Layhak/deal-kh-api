@@ -29,7 +29,6 @@ import java.util.List;
  * @param location
  */
 public record ShopResponse(
-
         String name,
         String slug,
         String address,
@@ -45,6 +44,7 @@ public record ShopResponse(
         List<ImageResponse> covers,
         List<String> owners,
         String location,
+        String isVerified,
         LocalDate createdAt,
         LocalDate updatedAt,
         String createdBy,

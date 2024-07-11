@@ -3,6 +3,7 @@ package co.istad.dealkh.features.shop;
 import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.domain.ShopType;
 import co.istad.dealkh.domain.User;
+import co.istad.dealkh.domain.enumType.ShopVerify;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,7 +31,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
 
     Optional<Shop> findBySlugAndCreatedBy(String slug, String username);
 
-    Page<Shop> findAllByIsVerified(Boolean isVerified, Pageable pageable);
+    Page<Shop> findAllByIsVerified(ShopVerify isVerified, Pageable pageable);
 
 
 

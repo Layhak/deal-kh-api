@@ -91,10 +91,10 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public ShopResponse createShop(ShopCreateRequest shopRequest, List<String> usernames) {
 
-        if (shopRepository.existsByEmail(shopRequest.email())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Email already exists. Please use another email address.");
-        }
+//        if (shopRepository.existsByEmail(shopRequest.email())) {
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST, "Email already exists. Please use another email address.");
+//        }
 
         if (shopRepository.existsByPhoneNumber(shopRequest.phoneNumber())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -128,10 +128,11 @@ public class ShopServiceImpl implements ShopService {
         shop.setProfile(shopRequest.profile());
         shop.setIsDeleted(false);
         shop.setIsDisabled(false);
-        shop.setIsVerified(ShopVerify.REQUESTING); // Set isVerified to false
+        shop.setIsVerified(ShopVerify.REQUESTING);
 
+        // Send verification email
+        mailService.sendEmail(shop.getEmail(), "Waiting for approval", shop.getName(), "requesting");
         Shop savedShop = shopRepository.save(shop);
-
         return shopMapper.toShopResponse(savedShop);
     }
 
@@ -439,18 +440,21 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public PageResponse<ShopResponse> findAllShopRequest(Boolean request, int page, int size, String field, String order) {
+    public PageResponse<ShopResponse> getAllShopRequest(int page, int size, String field, String order) {
 
         ValidatePagination.validatePageAndSize(page, size, field, order);
 
         Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
-        Page<ShopResponse> shops = shopRepository.findAllByIsVerified(request, pageable).map(shopMapper::toShopResponse);
+        Page<ShopResponse> shops = shopRepository.findAllByIsVerified(ShopVerify.REQUESTING, pageable).map(shopMapper::toShopResponse);
 
         return new PageResponse<>(shops);
     }
 
     @Override
     public void verifyShop(String slug, String username, Boolean isApproved) {
+
+        String dealkh = "https://dealkh.istad.co/login";
+
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
@@ -475,9 +479,11 @@ public class ShopServiceImpl implements ShopService {
                     userRepository.save(userInShop);
                 }
             });
+            mailService.sendEmail(shop.getEmail(), "shop approved", dealkh, "congrats");
 
         } else {
-
+            shop.setIsVerified(ShopVerify.REJECTED);
+            mailService.sendEmail(shop.getEmail(), "Shop Rejected", "Your shop has been rejected", "reject");
         }
 
         shopRepository.save(shop);

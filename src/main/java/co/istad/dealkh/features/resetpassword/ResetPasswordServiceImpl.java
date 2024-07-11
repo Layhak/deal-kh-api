@@ -31,7 +31,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             Integer otp = generateOtp();
-            Date expireDate = new Date(System.currentTimeMillis() + 60 * 1000); // 1 minute
+            Date expireDate = new Date(System.currentTimeMillis() + 5 * 60 * 1000); // 5 minute
 
             ResetPassword resetPassword = new ResetPassword();
             resetPassword.setOtp(otp);
@@ -40,7 +40,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
             resetPasswordRepository.save(resetPassword);
 
-            emailService.sendEmail(user.getEmail(), "Your OTP Code", "Your OTP code is " + otp, "otp");
+            emailService.sendEmail(user.getEmail(), "Verification", otp.toString(), "otp");
             return BaseResponse.ok("OTP sent to your email").setPayload(new ArrayList<>());
         }
         return BaseResponse.notFound("User not found").setPayload(new ArrayList<>());

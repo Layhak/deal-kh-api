@@ -43,7 +43,7 @@ public class Shop extends Auditable {
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(columnDefinition = "TEXT")

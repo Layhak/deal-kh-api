@@ -285,11 +285,12 @@ public class ProductServiceImpl implements ProductService {
             productFilter.setDiscountType(discountType);
         }
 
+        System.out.println("Discount Type: " + productFilter.getDiscountType());
+
         if (params.containsKey("category")) {
             String category = params.get("category");
             productFilter.setCategory(category);
         }
-
         if (params.containsKey("shop")) {
             String shop = params.get("shop");
             productFilter.setShop(shop);
@@ -298,7 +299,7 @@ public class ProductServiceImpl implements ProductService {
         List<String> validFields = List.of("name", "price", "discountPrice", "description", "shop", "discountValue", "category", "createdAt", "updatedAt", "createdBy", "updateBy");
 
         if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be one of: name, price, discountPrice, description, shop, discountValue, category, createdAt, updatedAt, createdBy, updateBy");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, name, price, discountPrice, description, shop, discountValue, category, createdAt, updatedAt, createdBy, updateBy");
         }
 
         size = PageFilter.DEFAULT_PAGE_LIMIT;

@@ -2,6 +2,8 @@ package co.istad.dealkh.mapper;
 
 import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.domain.User;
+import co.istad.dealkh.domain.enumType.GrantStatus;
+import co.istad.dealkh.domain.enumType.ShopVerify;
 import co.istad.dealkh.features.shop.dto.*;
 import co.istad.dealkh.features.user.dto.SellerResponse;
 import co.istad.dealkh.features.user.dto.UserCoverResponse;
@@ -15,6 +17,7 @@ public interface ShopMapper {
     @Mapping(target = "shopType", source = "shopType", qualifiedByName = "shopTypeToString")
     @Mapping(target = "slug", source = "slug")
     @Mapping(target = "profile", source = "profile")
+    @Mapping(target = "isVerified", source = "isVerified", qualifiedByName = "mapIsVerifiedToString")
     ShopResponse toShopResponse(Shop shop);
 
     @Mapping(source = "openAt", target = "openAt", qualifiedByName = "stringToLocalTime")
@@ -35,4 +38,8 @@ public interface ShopMapper {
     @Mapping(target = "profile", source = "profile")
     ShopProfileResponse mapToShopProfileResponse(Shop shop);
 
+    @Named("mapIsVerifiedToString")
+    static String mapIsVerifiedToString(ShopVerify shopVerify) {
+        return shopVerify == null ? null : shopVerify.name();
+    }
 }

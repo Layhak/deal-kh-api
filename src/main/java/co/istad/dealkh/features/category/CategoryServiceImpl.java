@@ -113,7 +113,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with slug %s not found! ", slug)));
 
         category.setUpdatedAt(LocalDateTime.now());
-        System.out.println("USERNAME:"+username);
         category.setUpdatedBy(username);
 
         categoryMapper.mapCategoryUpdateRequest(category, categoryUpdateRequest);

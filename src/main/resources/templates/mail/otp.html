@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
+        * { box-sizing: border-box; }
+        body {
+            background-color: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Open Sans', sans-serif;
+        }
+        .c-email {
+            width: 600px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0px 7px 22px 0px rgba(0, 0, 0, .1);
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .c-email__header {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        .c-email__header img {
+            width: 150px; /* Adjusted width for better visibility */
+            height: auto;
+            display: block;
+            margin: 0 auto 10px auto; /* Centered and added margin below */
+        }
+        .c-email__header__title {
+            font-size: 24px;
+            margin: 10px 0; /* Adjusted margin */
+            color: #333;
+        }
+        .c-email__content {
+            padding: 20px;
+            text-align: center;
+            color: #333;
+        }
+        .c-email__content p {
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 10px 0;
+        }
+        .c-email__code, .otp {
+            font-size: 48px;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            letter-spacing: 5px;
+        }
+        .c-email__footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            border-top: 1px solid #ddd;
+        }
+        .text-italic {
+            font-style: italic;
+        }
+
+    </style>
+</head>
+<body>
+<div class="c-email">
+    <div class="c-email__header">
+        <img class="logo" src="http://dealkh-api.istad.co:80/images/3cc9b0d1-8794-4f77-946a-c4a5dd662130.png" alt="DealKH Logo">
+        <h1 class="c-email__header__title">Verification Email</h1>
+    </div>
+    <div class="c-email__content">
+        <p>Use this code to finish setting up this recovery email:</p>
+        <div class="otp" th:text="${content}"></div>
+        <p class="text-italic">This code will expire in 5 minutes.</p>
+        <p>If you have any questions, please contact <strong>co.istad.dealkh@gmail.com</strong></p>
+    </div>
+    <div class="c-email__footer">
+        You received this email to let you know about important changes to your account and services.<br>
+        © 2024 DealKH, Address, City, Country
+    </div>
+</div>
+</body>
+</html>
