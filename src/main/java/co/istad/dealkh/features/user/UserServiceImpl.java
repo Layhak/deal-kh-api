@@ -146,7 +146,13 @@ public class UserServiceImpl implements UserService {
         if(userRepository.existsByPhoneNumber(userUpdateRequest.phoneNumber()) && !user.getPhoneNumber().equals(userUpdateRequest.phoneNumber())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Phone number already taken! Try another one.");
         }
-
+        LocalDate dob;
+        try {
+            dob = LocalDate.parse(userUpdateRequest.dob(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        } catch (DateTimeParseException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format for dob");
+        }
+        user.setDob(dob);
         user.setUpdatedAt(LocalDateTime.now());
         user.setUpdatedBy(username);
 

@@ -1,36 +1,48 @@
 package co.istad.dealkh.features.mail;
 
 import co.istad.dealkh.config.MailProperties;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
-import java.util.Properties;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Service
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
 
     private final MailProperties mailProperties;
+    private final JavaMailSender javaMailSender;
+    private final SpringTemplateEngine templateEngine;
 
     @Override
-    public void sendEmail(String to, String subject, String content) {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(mailProperties.getHost());
-        mailSender.setPort(mailProperties.getPort());
-        mailSender.setUsername(mailProperties.getUsername());
-        mailSender.setPassword(mailProperties.getPassword());
+    public void sendEmail(String to, String subject, String content, String template) {
+        try {
+            String htmlContent = loadHtmlTemplate(content, template);
+            sendHtmlEmail(to, subject, htmlContent);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send email", e);
+        }
+    }
 
-        Properties props = mailSender.getJavaMailProperties();
-        props.putAll(mailProperties.getProperties());
+    private String loadHtmlTemplate(String content, String template) {
+        Context context = new Context();
+        context.setVariable("content", content);
+        return templateEngine.process(template, context);
+    }
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(content);
-        message.setFrom(mailProperties.getFromEmail());  // Use dynamic from email
+    private void sendHtmlEmail(String to, String subject, String htmlContent) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
 
-        mailSender.send(message);
+        helper.setText(htmlContent, true); // true indicates HTML
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setFrom(mailProperties.getFromEmail());
+
+        javaMailSender.send(mimeMessage);
     }
 }

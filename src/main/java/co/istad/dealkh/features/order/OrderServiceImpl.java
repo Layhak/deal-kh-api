@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
                 "Please review the order details.";
 
         for (String ownerEmail : ownerEmails) {
-            mailService.sendEmail(ownerEmail, "New Order Notification", emailContent);
+            mailService.sendEmail(ownerEmail, "New Order Notification", emailContent, "order");
         }
 
 

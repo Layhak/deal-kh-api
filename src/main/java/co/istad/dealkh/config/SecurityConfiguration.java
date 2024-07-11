@@ -115,7 +115,7 @@ public class SecurityConfiguration {
 
                         // wishlists
                         .requestMatchers(HttpMethod.GET, "/api/v1/wishlists/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/wishlists/**").hasAuthority("ROLE_BUYER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/wishlists/**").hasAnyAuthority("ROLE_SELLER", "ROLE_BUYER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/v1/wishlists/{uuid}/grant").hasAuthority("ROLE_SELLER")
                         .requestMatchers(HttpMethod.POST, "/api/v1/wishlists/{uuid}/deny").hasAuthority("ROLE_SELLER")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/wishlists/**").hasAuthority("ROLE_BUYER")

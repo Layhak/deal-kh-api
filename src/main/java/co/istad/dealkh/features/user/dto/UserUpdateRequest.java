@@ -1,5 +1,6 @@
 package co.istad.dealkh.features.user.dto;
 
+import co.istad.dealkh.validator.dateofbirth.ValidDob;
 import co.istad.dealkh.validator.phonenumber.ValidPhoneNumber;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,8 +27,8 @@ public record UserUpdateRequest(
         @ValidPhoneNumber(message = "Phone number must be 9 or 10 digits long")
         String phoneNumber,
 
-        @NotNull(message = "Date of birth is required")
-        LocalDate dob,
+        @ValidDob
+        String dob,
 
         String location
 

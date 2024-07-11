@@ -1,8 +1,10 @@
 package co.istad.dealkh.features.shop;
 
 import co.istad.dealkh.domain.*;
+import co.istad.dealkh.domain.enumType.ShopVerify;
 import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.features.discount.DiscountRepository;
+import co.istad.dealkh.features.mail.MailService;
 import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.productrating.ProductRatingRepository;
 import co.istad.dealkh.features.role.RoleRepository;
@@ -44,6 +46,7 @@ public class ShopServiceImpl implements ShopService {
     private final ProductRepository productRepository;
     private final RoleRepository roleRepository;
     private final VerificationService verificationService;
+    private final MailService mailService;
 
     @Override
     public PageResponse<ShopResponse> getAllShop(int page, int size, String field, String order) {
@@ -107,6 +110,7 @@ public class ShopServiceImpl implements ShopService {
                 .toList();
 
         shop.setUsers(users);
+
         // Generate a unique slug for the shop
         // If the slug already exists, append a unique suffix to the slug
         if (shopRequest.slug() != null && !shopRequest.slug().isEmpty() && !shopRequest.slug().isBlank()) {
@@ -124,18 +128,13 @@ public class ShopServiceImpl implements ShopService {
         shop.setProfile(shopRequest.profile());
         shop.setIsDeleted(false);
         shop.setIsDisabled(false);
+        shop.setIsVerified(ShopVerify.REQUESTING); // Set isVerified to false
 
         Shop savedShop = shopRepository.save(shop);
 
-        users.stream().filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals("BUYER"))).forEach(user -> {
-            user.getRoles()
-                    .add(roleRepository.findByName("SELLER")
-                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found")));
-            userRepository.save(user);
-        });
-
         return shopMapper.toShopResponse(savedShop);
     }
+
 
     @Override
     public ShopResponse updateShop(String slug, ShopUpdateRequest shopRequest, String username) {
@@ -438,4 +437,50 @@ public class ShopServiceImpl implements ShopService {
         shopRepository.save(shop);
         return shopMapper.mapToShopProfileResponse(shop);
     }
+
+    @Override
+    public PageResponse<ShopResponse> findAllShopRequest(Boolean request, int page, int size, String field, String order) {
+
+        ValidatePagination.validatePageAndSize(page, size, field, order);
+
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+        Page<ShopResponse> shops = shopRepository.findAllByIsVerified(request, pageable).map(shopMapper::toShopResponse);
+
+        return new PageResponse<>(shops);
+    }
+
+    @Override
+    public void verifyShop(String slug, String username, Boolean isApproved) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Check if the user has the ADMIN or SUPER_ADMIN role
+        boolean hasPermission = user.getRoles().stream()
+                .anyMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("SUPER_ADMIN"));
+
+        if (!hasPermission) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to verify shops");
+        }
+
+        Shop shop = shopRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+
+        if (isApproved) {
+            shop.setIsVerified(ShopVerify.APPROVED);
+            // Add SELLER role to users
+            shop.getUsers().forEach(userInShop -> {
+                if (userInShop.getRoles().stream().noneMatch(role -> role.getName().equals("SELLER"))) {
+                    userInShop.getRoles().add(roleRepository.findByName("SELLER")
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found")));
+                    userRepository.save(userInShop);
+                }
+            });
+
+        } else {
+
+        }
+
+        shopRepository.save(shop);
+    }
+
 }

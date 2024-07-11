@@ -112,10 +112,6 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with slug %s not found! ", slug)));
 
-        if (categoryRepository.findByCreatedByAndSlug(username, slug).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
-        }
-
         category.setUpdatedAt(LocalDateTime.now());
         System.out.println("USERNAME:"+username);
         category.setUpdatedBy(username);
@@ -139,9 +135,6 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Category with slug %s not found! ", slug)));
 
-        if (categoryRepository.findByCreatedByAndSlug(username, slug).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
-        }
         categoryRepository.delete(category);
     }
 }

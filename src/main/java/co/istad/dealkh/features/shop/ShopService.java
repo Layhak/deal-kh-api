@@ -50,4 +50,7 @@ public interface ShopService {
 
     ShopProfileResponse uploadShopProfile(String username, String slug, ShopProfileRequest shopProfileRequest);
 
+    PageResponse<ShopResponse> findAllShopRequest(Boolean request, int page, int size, String field, String order);
+
+    void verifyShop(String slug, String username, Boolean verified);
 }

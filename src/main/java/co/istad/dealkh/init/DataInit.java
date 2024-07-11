@@ -1,6 +1,7 @@
 package co.istad.dealkh.init;
 
 import co.istad.dealkh.domain.*;
+import co.istad.dealkh.domain.enumType.ShopVerify;
 import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.features.authority.AuthorityRepository;
 import co.istad.dealkh.features.category.CategoryRepository;
@@ -50,7 +51,7 @@ public class DataInit {
         try {
             initAuthorities();
             initRoles();
-            initUsers();
+//            initUsers();
             initShopTypes();
             initCategories();
             initShops();
@@ -146,6 +147,7 @@ public class DataInit {
             shop.setCloseAt(LocalTime.of(17, 30, 0));
             shop.setIsDeleted(false);
             shop.setIsDisabled(false);
+            shop.setIsVerified(ShopVerify.APPROVED);
             shop.setShopType(shopTypeRepository.findAll().get(0));
             shop.setUsers(List.of(userRepository.findByUsername("admin").get()));
             shopRepository.save(shop);

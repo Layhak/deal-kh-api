@@ -17,4 +17,6 @@ public interface ProductFeedbackRepository extends JpaRepository<ProductFeedback
     Optional<ProductFeedback> findByUuid(String uuid);
 
     Optional<ProductFeedback> findByUserUsername(String username);
+
+    Optional<ProductFeedback> findByUserUsernameAndProductSlug(String username, String productSlug);
 }

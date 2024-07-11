@@ -46,7 +46,7 @@ public class WishListController {
     PageResponse<WishListResponse> getAllWishList(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int size,
-            @RequestParam(defaultValue = "name") String field,
+            @RequestParam(defaultValue = "discountPercentage") String field,
             @RequestParam(defaultValue = "asc") String order,
             @RequestParam Map<String, String> params
     ) {
@@ -62,8 +62,8 @@ public class WishListController {
 
     @DeleteMapping("/{uuid}")
     @Operation(summary = "Delete wish list")
-    BaseResponse<?> deleteWishList(@PathVariable String uuid) {
-        wishListService.deleteWishList(uuid);
+    BaseResponse<?> deleteWishList(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String uuid) {
+        wishListService.deleteWishList(customUserDetails.getUsername(), uuid);
         return BaseResponse.ok("Successfully delete wish list with uuid:" + uuid).setPayload("");
     }
 

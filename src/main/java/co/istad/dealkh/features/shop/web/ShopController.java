@@ -53,7 +53,7 @@ public class ShopController {
     @Operation(summary = "Create new shop")
     @ResponseStatus(HttpStatus.CREATED)
     public BaseResponse<ShopResponse> createShop(@RequestBody @Valid ShopCreateRequest shopRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return BaseResponse.<ShopResponse>createSuccess("Successfully created new shop!")
+        return BaseResponse.<ShopResponse>createSuccess("Waiting for approval!")
                 .setPayload(shopService.createShop(shopRequest, List.of(customUserDetails.getUsername())));
     }
 

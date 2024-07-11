@@ -37,17 +37,6 @@ public class WishListServiceImpl implements WishListService {
     private final DiscountTypeRepository discountTypeRepository;
     private final MailService mailService;
 
-//    private void validateSortingParams(String field, String order) {
-//        List<String> validFields = Arrays.asList("discountTypeSlug", "productName", "discountPercentage");
-//
-//        if (field == null || field.isEmpty() || !validFields.contains(field)) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be  discountTypeSlug, productName or discountPercentage");
-//        }
-//        if (order != null && !order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
-//        }
-//    }
-
     @Override
     public WishListResponse addWishList(String username, WishListRequest wishListRequest) {
 
@@ -103,15 +92,21 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public void deleteWishList(String uuid) {
+    public void deleteWishList(String username, String uuid) {
 
-        wishListRepository.findByUuid(uuid)
+
+
+        WishList wishList = wishListRepository.findByUuid(uuid)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         String.format("WishList with uuid %s not found! ", uuid)
                 ));
 
-        wishListRepository.deleteByUuid(uuid);
+        if (!wishList.getUser().getUsername().equals(username)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
+        }
+
+        wishListRepository.delete(wishList);
     }
 
     @Override
@@ -169,7 +164,7 @@ public class WishListServiceImpl implements WishListService {
                 "Product Name: " + wishList.getProduct().getName() + "\n\n" +
                 "Thank you for using our service!";
 
-        mailService.sendEmail(userEmail, "Congratulation! Wishlist Item Granted.", userEmailContent);
+        mailService.sendEmail(userEmail, "Congratulation! Wishlist Item Granted.", userEmailContent, "order");
 
         return wishListMapper.mapToWishListResponse(wishList);
     }

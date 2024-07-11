@@ -3,6 +3,8 @@ package co.istad.dealkh.domain;
 import co.istad.dealkh.audit.Auditable;
 import co.istad.dealkh.converter.ImageListConverter;
 import co.istad.dealkh.converter.SocialListConverter;
+import co.istad.dealkh.domain.enumType.GrantStatus;
+import co.istad.dealkh.domain.enumType.ShopVerify;
 import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.domain.json.SocialMedia;
 import jakarta.persistence.*;
@@ -48,10 +50,15 @@ public class Shop extends Auditable {
     @Convert(converter = SocialListConverter.class)
     private List<SocialMedia> socialMedias;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 15)
+    private ShopVerify isVerified = ShopVerify.REQUESTING;
+
     private Boolean isDeleted;
     private Boolean isDisabled;
     private LocalTime openAt;
     private LocalTime closeAt;
+
 
     @ManyToOne
     @JoinColumn(name = "shop_type_id", nullable = false)

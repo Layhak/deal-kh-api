@@ -19,9 +19,10 @@ public class MailController {
     public String sendEmail(
             @RequestParam String to,
             @RequestParam String subject,
-            @RequestParam String text
+            @RequestParam String text,
+            @RequestParam String path
     ) {
-        emailService.sendEmail(to, subject, text);
+        emailService.sendEmail(to, subject, text, path);
         return "Email sent!";
     }
 }

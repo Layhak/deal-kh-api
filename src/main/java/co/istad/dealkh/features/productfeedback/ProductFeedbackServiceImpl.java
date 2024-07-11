@@ -7,6 +7,7 @@ import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackRequest;
 import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackResponse;
 import co.istad.dealkh.features.productfeedback.dto.ProductFeedbackUpdate;
+import co.istad.dealkh.features.productrating.ProductRatingRepository;
 import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.mapper.ProductFeedbackMapper;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ public class ProductFeedbackServiceImpl implements ProductFeedbackService {
     private final ProductFeedbackMapper productFeedbackMapper;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final ProductRatingRepository productRatingRepository;
 
     /**
      * Retrieves all product feedback for a given product ID.
@@ -63,6 +65,18 @@ public class ProductFeedbackServiceImpl implements ProductFeedbackService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "User not found"));
+
+        // Check if the user has already rated the product
+        if (productRatingRepository.findByUserUsernameAndProductSlug(username, productFeedbackRequest.productSlug()).isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "You have to rate product before leave a feedback!"
+            );
+        }
+        if(productFeedbackRepository.findByUserUsernameAndProductSlug(username, productFeedbackRequest.productSlug()).isPresent()){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "You can this product only one time!"
+            );
+        }
 
         Product product = productRepository.findBySlug(productFeedbackRequest.productSlug())
                 .orElseThrow(() -> new ResponseStatusException(

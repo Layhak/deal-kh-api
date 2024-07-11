@@ -14,8 +14,6 @@ import java.util.Optional;
 @Repository
 public interface ShopRepository extends JpaRepository<Shop, Long> {
 
-    boolean existsByName(String name);
-
     boolean existsByEmail(String email);
 
     List<Shop> findByShopType(ShopType shopType1);
@@ -32,9 +30,9 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
 
     Optional<Shop> findBySlugAndCreatedBy(String slug, String username);
 
-    Optional<Shop> findByProfile(String profile);
+    Page<Shop> findAllByIsVerified(Boolean isVerified, Pageable pageable);
 
-    Optional<Shop> findByCovers(List<Shop> covers);
+
 
 
 }

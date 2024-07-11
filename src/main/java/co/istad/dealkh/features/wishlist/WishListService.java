@@ -15,7 +15,7 @@ public interface WishListService {
 
     PageResponse<WishListResponse> getAllWishList(int page, int size, String field, String order, Map<String, String> params);
 
-    void deleteWishList(String uuid);
+    void deleteWishList(String username, String uuid);
 
     WishListResponse updateWishList(String uuid, String username, WishListRequest wishListRequest);
 
