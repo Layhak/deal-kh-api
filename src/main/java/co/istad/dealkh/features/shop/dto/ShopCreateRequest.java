@@ -48,7 +48,6 @@ public record ShopCreateRequest(
         @ValidPhoneNumber(message = "Phone number must be 9 or 10 digits long")
         String phoneNumber,
 
-        @ValidEmail
         @Size(max = 100, message = "Email must be less than 100 characters")
         String email,
 

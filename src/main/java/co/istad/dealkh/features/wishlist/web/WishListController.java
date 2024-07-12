@@ -64,7 +64,8 @@ public class WishListController {
     @Operation(summary = "Delete wish list")
     BaseResponse<?> deleteWishList(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String uuid) {
         wishListService.deleteWishList(customUserDetails.getUsername(), uuid);
-        return BaseResponse.ok("Successfully delete wish list with uuid:" + uuid).setPayload("");
+        return BaseResponse.ok("Successfully delete wish list with uuid:" + uuid)
+                .setPayload("Delete Wishlist");
     }
 
     @PostMapping("/{uuid}/grant")

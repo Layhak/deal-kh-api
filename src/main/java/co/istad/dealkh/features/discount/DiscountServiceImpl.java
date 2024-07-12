@@ -4,6 +4,7 @@ package co.istad.dealkh.features.discount;
 import co.istad.dealkh.domain.Discount;
 import co.istad.dealkh.domain.DiscountType;
 import co.istad.dealkh.domain.Shop;
+import co.istad.dealkh.domain.enumType.ShopVerify;
 import co.istad.dealkh.features.discount.dto.DiscountCreateRequest;
 import co.istad.dealkh.features.discount.dto.DiscountResponseDetail;
 import co.istad.dealkh.features.discount.dto.DiscountUpdateRequest;
@@ -72,9 +73,11 @@ public class DiscountServiceImpl implements DiscountService {
                         HttpStatus.NOT_FOUND,
                         String.format("Shop with slug %s not found! ", discountCreateRequest.shopSlug())));
 
-//        if (discountRepository.existsByDiscountValueAndDiscountTypeSlugAndShopSlug(discountCreateRequest.discountValue(), discountCreateRequest.discountTypeSlug(), shop.getSlug())) {
-//            throw new ResponseStatusException(HttpStatus.CONFLICT, "Discount value already exists for this discount type");
-//        }
+        boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
+        }
 
         Discount newDiscount = discountMapper.mapDiscountRequestToDiscount(discountCreateRequest);
 

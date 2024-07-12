@@ -52,7 +52,6 @@ public class WishListServiceImpl implements WishListService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already wished this product!");
         }
 
-
         Product product = productRepository.findBySlug(wishListRequest.productSlug()).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 String.format("Product with slug %s not found! ", wishListRequest.productSlug())

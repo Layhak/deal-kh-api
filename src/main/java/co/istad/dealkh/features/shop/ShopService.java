@@ -52,6 +52,8 @@ public interface ShopService {
     ShopProfileResponse uploadShopProfile(String username, String slug, ShopProfileRequest shopProfileRequest);
 
     PageResponse<ShopResponse> getAllShopRequest(int page, int size, String field, String order);
+    PageResponse<ShopResponse> getAllShopApproved(int page, int size, String field, String order);
+    PageResponse<ShopResponse> getAllShopRejected(int page, int size, String field, String order);
 
     void verifyShop(String slug, String username, Boolean verified);
 }

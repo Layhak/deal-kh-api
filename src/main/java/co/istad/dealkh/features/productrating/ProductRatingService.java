@@ -32,4 +32,6 @@ public interface ProductRatingService {
     List<ProductRatingResponse> getProductRatingByProductSlug(String productSlug);
 
     ProductRatingCount countByProductSlug(String productSlug);
+
+    void deleteByRating(String username, String productSlug);
 }

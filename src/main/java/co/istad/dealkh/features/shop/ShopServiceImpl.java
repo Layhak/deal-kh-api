@@ -65,6 +65,13 @@ public class ShopServiceImpl implements ShopService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         Page<Shop> shops = shopRepository.findByUsersContains(user, pageable);
+
+        boolean isApproved = shops.stream().anyMatch(shop -> shop.getIsVerified().equals(ShopVerify.APPROVED));
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
+        }
+
         return new PageResponse<>(shops.map(shopMapper::toShopResponse));
     }
 
@@ -77,6 +84,13 @@ public class ShopServiceImpl implements ShopService {
         if (!shop.getUsers().contains(user)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of this shop");
         }
+
+        boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
+        }
+
         return shopMapper.toShopResponse(shop);
     }
 
@@ -84,17 +98,19 @@ public class ShopServiceImpl implements ShopService {
     public ShopResponse getShopBySlug(String slug) {
         Shop shop = shopRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+
+        boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
+        }
+
         return shopMapper.toShopResponse(shop);
     }
 
 
     @Override
     public ShopResponse createShop(ShopCreateRequest shopRequest, List<String> usernames) {
-
-//        if (shopRepository.existsByEmail(shopRequest.email())) {
-//            throw new ResponseStatusException(
-//                    HttpStatus.BAD_REQUEST, "Email already exists. Please use another email address.");
-//        }
 
         if (shopRepository.existsByPhoneNumber(shopRequest.phoneNumber())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -125,6 +141,10 @@ public class ShopServiceImpl implements ShopService {
             shop.setSlug(randomSlug);
         }
 
+        if (shopRepository.existsByEmail(shopRequest.email())) {
+            shop.setEmail(shopRequest.email());
+        }
+
         shop.setProfile(shopRequest.profile());
         shop.setIsDeleted(false);
         shop.setIsDisabled(false);
@@ -145,6 +165,12 @@ public class ShopServiceImpl implements ShopService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to update this shop");
         }
 
+        boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
+        }
+
         shop.setUpdatedAt(LocalDateTime.now());
         shop.setUpdatedBy(username);
         shopMapper.mapUpdateShopToShop(shop, shopRequest);
@@ -162,6 +188,12 @@ public class ShopServiceImpl implements ShopService {
         // Check if the user has permission to delete the shop
         if (shop.getUsers().stream().noneMatch(user -> user.getUsername().equals(username))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to delete this shop");
+        }
+
+        boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
         // Fetch related products and delete them
@@ -217,6 +249,13 @@ public class ShopServiceImpl implements ShopService {
         ShopType shopType1 = shopTypeRepository.findByName(shopType)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop type not found"));
         List<Shop> shops = shopRepository.findByShopType(shopType1);
+
+        boolean isApproved = shops.stream().anyMatch(shop -> shop.getIsVerified().equals(ShopVerify.APPROVED));
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
+        }
+
         return shops.stream().map(shopMapper::toShopResponse).toList();
     }
 
@@ -265,6 +304,12 @@ public class ShopServiceImpl implements ShopService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are already a member of this shop");
         }
 
+        boolean isApproved =  shop.getIsVerified().equals(ShopVerify.APPROVED);
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
+        }
+
         //if that user don't have the seller role yet then add it
         if (user.getRoles().stream().noneMatch(role -> role.getName().equals("SELLER"))) {
             user.getRoles().add(roleRepository.findByName("SELLER")
@@ -301,6 +346,12 @@ public class ShopServiceImpl implements ShopService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of this shop");
         }
 
+        boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
+        }
+
         shop.setUpdatedBy(username);
         shop.setUpdatedAt(LocalDateTime.now());
         shop.getUsers().remove(user);
@@ -314,6 +365,13 @@ public class ShopServiceImpl implements ShopService {
         Shop shop = shopRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "cover not found!"));
+
+        boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
+        }
+
         return shopMapper.mapToShopCoverResponse(shop);
     }
 
@@ -337,6 +395,12 @@ public class ShopServiceImpl implements ShopService {
         // If the cover does not exist, throw a BAD_REQUEST exception
         if (!coverExists) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cover not found!");
+        }
+
+        boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
         // Filter out the cover to be deleted
@@ -377,6 +441,12 @@ public class ShopServiceImpl implements ShopService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cover is required");
         }
 
+        boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
+        }
+
         // Create a new image and add it to the covers list
         Image newImage = new Image(shopCoverRequest.cover());
         existingImages.add(newImage);
@@ -413,6 +483,12 @@ public class ShopServiceImpl implements ShopService {
         Shop shop = shopRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found!"));
 
+        boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
+        }
+
         shop.setUpdatedAt(LocalDateTime.now());
         shop.setUpdatedBy(username);
         shop.setProfile(null);
@@ -431,6 +507,11 @@ public class ShopServiceImpl implements ShopService {
         Shop shop = shopRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found!"));
 
+        boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
+
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
+        }
 
         shop.setUpdatedAt(LocalDateTime.now());
         shop.setUpdatedBy(username);
@@ -446,6 +527,28 @@ public class ShopServiceImpl implements ShopService {
 
         Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
         Page<ShopResponse> shops = shopRepository.findAllByIsVerified(ShopVerify.REQUESTING, pageable).map(shopMapper::toShopResponse);
+
+        return new PageResponse<>(shops);
+    }
+
+    @Override
+    public PageResponse<ShopResponse> getAllShopApproved(int page, int size, String field, String order) {
+
+        ValidatePagination.validatePageAndSize(page, size, field, order);
+
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+        Page<ShopResponse> shops = shopRepository.findAllByIsVerified(ShopVerify.APPROVED, pageable).map(shopMapper::toShopResponse);
+
+        return new PageResponse<>(shops);
+    }
+
+    @Override
+    public PageResponse<ShopResponse> getAllShopRejected(int page, int size, String field, String order) {
+
+        ValidatePagination.validatePageAndSize(page, size, field, order);
+
+        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+        Page<ShopResponse> shops = shopRepository.findAllByIsVerified(ShopVerify.REJECTED, pageable).map(shopMapper::toShopResponse);
 
         return new PageResponse<>(shops);
     }

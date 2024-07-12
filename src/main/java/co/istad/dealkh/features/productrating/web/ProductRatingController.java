@@ -69,4 +69,12 @@ public class ProductRatingController {
         return BaseResponse.<ProductRatingCount>ok("Get all total product rating")
                 .setPayload(productRatingService.countByProductSlug(slug));
     }
+
+    @DeleteMapping("/{productSlug}")
+    BaseResponse<?> deleteByRating(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String productSlug) {
+
+        productRatingService.deleteByRating(customUserDetails.getUsername(), productSlug);
+        return BaseResponse.ok("Successfully deleted product rating!")
+                .setPayload("Delete Rating");
+    }
 }

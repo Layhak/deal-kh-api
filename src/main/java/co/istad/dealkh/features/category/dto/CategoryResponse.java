@@ -17,6 +17,7 @@ public record CategoryResponse(
         String name,
         String slug,
         String icon,
+        String banner,
         String createdBy,
         LocalDate createdAt,
         String updatedBy,

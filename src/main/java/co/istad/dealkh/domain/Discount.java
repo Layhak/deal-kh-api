@@ -43,7 +43,7 @@ public class Discount extends Auditable {
     private String uuid;
 
     @ManyToOne
-    @JoinColumn(name = "shop_id")
+    @JoinColumn(name = "shop_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Shop shop;
 

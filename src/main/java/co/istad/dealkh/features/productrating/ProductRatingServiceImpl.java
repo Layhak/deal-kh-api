@@ -137,4 +137,19 @@ public class ProductRatingServiceImpl implements ProductRatingService {
                         .orElseThrow(() -> new ResponseStatusException(
                                 HttpStatus.NOT_FOUND, "Product not found!"))));
     }
+
+    @Override
+    public void deleteByRating(String username, String productSlug) {
+
+        ProductRating productRating = productRatingRepository.findByUserUsernameAndProductSlug(username, productSlug)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Product rating not found!"
+                ));
+        if (productRatingRepository.findByUserUsernameAndProductSlug(username, productSlug).isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You're not this resource owner!");
+        }
+        productRatingRepository.delete(productRating);
+    }
 }

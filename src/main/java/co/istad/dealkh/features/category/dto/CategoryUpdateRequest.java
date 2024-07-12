@@ -16,7 +16,10 @@ public record CategoryUpdateRequest(
 
         @NotBlank(message = "Name is required")
         String name,
-        String icon
+
+        String icon,
+
+        String banner
 
 ) {
 }

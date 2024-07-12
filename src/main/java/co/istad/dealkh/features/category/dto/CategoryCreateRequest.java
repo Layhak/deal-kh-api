@@ -17,6 +17,8 @@ public record CategoryCreateRequest(
         @NotBlank(message = "Name is required")
         String name,
 
-        String icon
+        String icon,
+
+        String banner
 ) {
 }

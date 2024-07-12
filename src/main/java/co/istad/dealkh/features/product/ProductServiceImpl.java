@@ -1,6 +1,7 @@
 package co.istad.dealkh.features.product;
 
 import co.istad.dealkh.domain.*;
+import co.istad.dealkh.domain.enumType.ShopVerify;
 import co.istad.dealkh.features.category.CategoryRepository;
 import co.istad.dealkh.features.discount.DiscountRepository;
 import co.istad.dealkh.features.product.dto.ProductCreateRequest;
@@ -69,14 +70,19 @@ public class ProductServiceImpl implements ProductService {
                         HttpStatus.NOT_FOUND,
                         String.format("Shop with name %s not found! ", productCreateRequest.shopSlug())));
 
+        boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
 
-        Discount discount = discountRepository.findByShopSlugAndUuid(productCreateRequest.shopSlug(), productCreateRequest.discountUuid())
+        if(!isApproved) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
+        }
+
+        Discount discount = discountRepository.findByUuid(productCreateRequest.discountUuid())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("Discount with name %s not found! ", productCreateRequest.discountUuid())
+                        String.format("Discount with uuid %s not found! ", productCreateRequest.discountUuid())
                 ));
 
-        if (discountRepository.findByShopSlugAndUuid(productCreateRequest.shopSlug(), productCreateRequest.discountUuid()).isEmpty()) {
+        if (discountRepository.findByUuid(productCreateRequest.discountUuid()).isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
                     "You have not create this discount yet!");

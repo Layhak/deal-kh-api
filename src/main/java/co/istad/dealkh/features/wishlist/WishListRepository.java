@@ -17,11 +17,7 @@ public interface WishListRepository extends JpaRepository<WishList, Long> {
 
     void deleteByUuid(String uuid);
 
-
     Page<WishList> findByUser(User user, Pageable pageable);
-
-
-    Optional<WishList> findByProductId(Long id);
 
     List<WishList> findAllByProduct_Shop_Slug(String slug);
 

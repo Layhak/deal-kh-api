@@ -230,4 +230,32 @@ public class ShopController {
                 .setPayload(shopService.getAllShopRequest(page, size, field, order));
     }
 
+    @GetMapping("/approved")
+    @Operation(summary = "Get all shops approved")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<PageResponse<ShopResponse>> getAllShopApproved(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "25") int size,
+            @RequestParam(defaultValue = "name") String field,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        return BaseResponse.<PageResponse<ShopResponse>>ok("Successfully retrieved all shops approval!")
+                .setPayload(shopService.getAllShopApproved(page, size, field, order));
+    }
+
+    @GetMapping("/rejected")
+    @Operation(summary = "Get all shops rejected")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<PageResponse<ShopResponse>> getAllShopRejected(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "25") int size,
+            @RequestParam(defaultValue = "name") String field,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        return BaseResponse.<PageResponse<ShopResponse>>ok("Successfully retrieved all shops rejection!")
+                .setPayload(shopService.getAllShopRejected(page, size, field, order));
+    }
+
+
+
 }
