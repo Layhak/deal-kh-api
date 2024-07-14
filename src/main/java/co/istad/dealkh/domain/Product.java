@@ -31,7 +31,7 @@ public class Product extends Auditable {
     @Column(name = "slug", unique = true, nullable = false, updatable = false)
     private String slug;
 
-    private double ratingAvg;
+    private double ratingAvg = 0;
 
     @Column(nullable = false)
     private double price;

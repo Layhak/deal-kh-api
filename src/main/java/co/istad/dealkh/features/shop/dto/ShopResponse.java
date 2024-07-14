@@ -27,6 +27,7 @@ import java.util.List;
  * @param covers
  * @param owners
  * @param location
+ * @param ratingAvg
  */
 public record ShopResponse(
         String name,
@@ -35,6 +36,8 @@ public record ShopResponse(
         String description,
         String phoneNumber,
         String email,
+        double ratingAvg,
+        Long ratingCount,
         Boolean isDeleted,
         Boolean isDisabled,
         LocalTime openAt,

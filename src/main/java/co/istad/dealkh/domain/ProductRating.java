@@ -19,7 +19,7 @@ public class ProductRating extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double ratingValue = 0;
+    private double ratingValue;
 
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isRated = false;

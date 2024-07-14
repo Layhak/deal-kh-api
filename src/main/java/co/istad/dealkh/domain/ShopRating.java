@@ -19,19 +19,17 @@ public class ShopRating extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double ratingValue;
+    private double ratingValue = 0;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isRated;
 
-    private boolean isRated = false;
-
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "shop_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Shop shop;

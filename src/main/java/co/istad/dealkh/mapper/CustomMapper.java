@@ -5,6 +5,7 @@ import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
 import co.istad.dealkh.features.productrating.ProductRatingRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.ShopRepository;
+import co.istad.dealkh.features.shoprating.ShopRatingRepository;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
@@ -26,6 +27,7 @@ public class CustomMapper {
     private final ShopTypeRepository shopTypeRepository;
     private final ProductRatingRepository productRatingRepository;
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private final ShopRatingRepository shopRatingRepository;
 
     @Named("stringToRole")
     public Role mapRole(String roleName) {
@@ -76,6 +78,11 @@ public class CustomMapper {
     @Named("mapRatingCount")
     public Long mapRatingCount(Product product) {
         return productRatingRepository.countByProduct(product);
+    }
+
+    @Named("mapShopRatingCount")
+    public Long mapShopRatingCount(Shop shop) {
+        return shopRatingRepository.countByShop(shop);
     }
 
 }

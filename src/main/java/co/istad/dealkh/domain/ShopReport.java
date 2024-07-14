@@ -12,6 +12,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -22,6 +23,9 @@ public class ShopReport extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "uuid", unique = true, nullable = false, updatable = false)
+    private String uuid;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -39,4 +43,11 @@ public class ShopReport extends Auditable {
     @JoinColumn(name = "shop_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Shop shop;
+
+    @PrePersist
+    protected void onCreate() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID().toString();
+        }
+    }
 }
