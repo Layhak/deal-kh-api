@@ -1,12 +1,7 @@
 package co.istad.dealkh.specification.filter;
 
 import co.istad.dealkh.domain.Product;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import lombok.Data;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
@@ -23,8 +18,8 @@ public record ProductSpecification(ProductFilter productFilter) implements Speci
             predicates.add(name);
         }
 
-        if (productFilter.getCategory() != null) {
-            Predicate category = criteria.like(criteria.upper(product.join("category", JoinType.LEFT).get("name")), "%" + productFilter.getCategory().toUpperCase() + "%");
+        if (productFilter.getCategorySlug() != null) {
+            Predicate category = criteria.like(criteria.upper(product.join("category", JoinType.LEFT).get("slug")), "%" + productFilter.getCategorySlug().toUpperCase() + "%");
             predicates.add(category);
         }
 
