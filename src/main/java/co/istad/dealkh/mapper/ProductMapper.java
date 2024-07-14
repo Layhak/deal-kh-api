@@ -17,7 +17,8 @@ import java.time.LocalTime;
 public interface ProductMapper {
 
     @Mapping(target = "seller", source = "product.createdBy")
-    @Mapping(target = "category", source = "category", qualifiedByName = "categoryToString")
+    @Mapping(target = "categoryName", source = "category.name")
+    @Mapping(target = "categorySlug", source = "category.slug")
     @Mapping(target = "shop", source = "shop", qualifiedByName = "shopToString")
     @Mapping(target = "shopSlug", source = "shop", qualifiedByName = "shopSlugToString")
     @Mapping(target = "location", source = "shop", qualifiedByName = "mapLocation")
@@ -30,7 +31,8 @@ public interface ProductMapper {
     @Mapping(target = "discountPrice", source = "product", qualifiedByName = "toDiscountPrice")
     @Mapping(target = "discountType", source = "discount", qualifiedByName = "discountToDiscountType")
     @Mapping(target = "expiredAt", source = "discount", qualifiedByName = "discountToExpiredAt")
-    @Mapping(target = "ratingCount", source = "product", qualifiedByName = "mapRatingCount") // Use the mapTotalRating method
+    @Mapping(target = "ratingCount", source = "product", qualifiedByName = "mapRatingCount")
+        // Use the mapTotalRating method
     ProductResponse mapProductToProductResponseDetail(Product product);
 
     Product mapProductRequestToProduct(ProductCreateRequest productCreateRequest);
@@ -66,7 +68,7 @@ public interface ProductMapper {
 
     @Named("toDiscountPrice")
     default BigDecimal mapDiscountPrice(Product product) {
-        if(product.getDiscount().getIsPercentage()) {
+        if (product.getDiscount().getIsPercentage()) {
             BigDecimal price = BigDecimal.valueOf(product.getPrice());
             BigDecimal discountValue = product.getDiscount().getDiscountValue();
             BigDecimal discountRate = discountValue.divide(BigDecimal.valueOf(100));
