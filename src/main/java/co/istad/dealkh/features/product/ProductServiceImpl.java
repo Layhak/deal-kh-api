@@ -1,6 +1,9 @@
 package co.istad.dealkh.features.product;
 
-import co.istad.dealkh.domain.*;
+import co.istad.dealkh.domain.Category;
+import co.istad.dealkh.domain.Discount;
+import co.istad.dealkh.domain.Product;
+import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.domain.enumType.ShopVerify;
 import co.istad.dealkh.features.category.CategoryRepository;
 import co.istad.dealkh.features.discount.DiscountRepository;
@@ -72,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
 
         boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -156,9 +159,9 @@ public class ProductServiceImpl implements ProductService {
 
         System.out.println("Discount Type: " + productFilter.getDiscountType());
 
-        if (params.containsKey("category")) {
-            String category = params.get("category");
-            productFilter.setCategory(category);
+        if (params.containsKey("categorySlug")) {
+            String category = params.get("categorySlug");
+            productFilter.setCategorySlug(category);
         }
         if (params.containsKey("shop")) {
             String shop = params.get("shop");
@@ -295,7 +298,7 @@ public class ProductServiceImpl implements ProductService {
 
         if (params.containsKey("category")) {
             String category = params.get("category");
-            productFilter.setCategory(category);
+            productFilter.setCategorySlug(category);
         }
         if (params.containsKey("shop")) {
             String shop = params.get("shop");

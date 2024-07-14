@@ -11,6 +11,7 @@ public class ProductFilter {
     private String name;
     private double discountValue;
     private String discountType;
-    private String category;
+    private String categoryName;
+    private String categorySlug;
     private String shop;
 }

@@ -39,7 +39,7 @@ public class ProductRatingController {
      * @param productRatingRequest
      * @return
      */
-    @PostMapping()
+    @PostMapping
     ProductRatingResponse rateProduct(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody @Valid ProductRatingRequest productRatingRequest) {
         return productRatingService.rateProduct(customUserDetails.getUsername(), productRatingRequest);
     }
@@ -49,7 +49,7 @@ public class ProductRatingController {
      *
      * @return
      */
-    @GetMapping()
+    @GetMapping
     List<ProductRatingResponse> getAllProductRatings() {
         return productRatingService.getAllProductRating();
     }
