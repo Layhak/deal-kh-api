@@ -13,8 +13,10 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,7 +147,7 @@ public class UserController {
     }
 
 
-     @GetMapping("/profile")
+    @GetMapping("/profile")
     @Operation(summary = "Get user profile")
     public BaseResponse<UserProfileResponse> getUserProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         String username = customUserDetails.getUsername();
@@ -169,7 +171,6 @@ public class UserController {
                 .setPayload("No content");
 
     }
-
 
 
     @PutMapping("/updatePassword/{oldPassword}")
@@ -274,4 +275,16 @@ public class UserController {
                 .setPayload(userService.getAllOwnerShop(slug));
     }
 
+    @PostMapping("/resend-verification-token")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<Void> resendVerificationToken(@RequestParam("email") String email) {
+        try {
+            userService.resendVerificationToken(email);
+            return BaseResponse.<Void>ok("Verification token resent successfully");
+        } catch (ResponseStatusException e) {
+            return BaseResponse.<Void>badRequest(e.getReason());
+        } catch (Exception e) {
+            return BaseResponse.<Void>badRequest("An error occurred while resending the verification token.");
+        }
+    }
 }

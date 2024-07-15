@@ -12,6 +12,7 @@ import co.istad.dealkh.specification.filter.UserFilter;
 import co.istad.dealkh.specification.filter.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -38,7 +39,9 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final VerificationService verificationService;
-//    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    //    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    @Value("${app.frontend.verify-url}")
+    private String verifyUrl;
 
     private void extractFilterParams(@NotNull UserFilter userFilter, Map<String, String> params) {
         userFilter.setUsername(params.get("username"));
@@ -123,12 +126,13 @@ public class UserServiceImpl implements UserService {
         // Generate verification token
         String token = UUID.randomUUID().toString();
         newUser.setVerificationToken(token);
-        newUser.setTokenExpiryDate(LocalTime.now().plusHours(24)); // Token valid for 24 hours
+
+        newUser.setTokenExpiryDate(LocalTime.now().plusHours(24).withNano(0)); // Token valid for 24 hours
 
         userRepository.save(newUser);
 
         // Send verification email
-        verificationService.sendVerificationEmail(newUser, token);
+        verificationService.sendVerificationEmail(newUser, token, verifyUrl);
     }
 
 
@@ -143,7 +147,7 @@ public class UserServiceImpl implements UserService {
                     "Username already exists! Try another one.");
         }
 
-        if(userRepository.existsByPhoneNumber(userUpdateRequest.phoneNumber()) && !user.getPhoneNumber().equals(userUpdateRequest.phoneNumber())) {
+        if (userRepository.existsByPhoneNumber(userUpdateRequest.phoneNumber()) && !user.getPhoneNumber().equals(userUpdateRequest.phoneNumber())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Phone number already taken! Try another one.");
         }
         LocalDate dob;
@@ -448,4 +452,29 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    @Override
+    public void resendVerificationToken(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with email: " + email);
+        }
+
+        User user = optionalUser.get();
+
+        if (user.getIsVerified()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is already verified.");
+        }
+
+        // Generate a new verification token
+        String token = UUID.randomUUID().toString();
+        user.setVerificationToken(token);
+        user.setTokenExpiryDate(LocalTime.now().plusHours(24)); // Token valid for 24 hours
+        user.setLastEmailSentAt(LocalDateTime.now());
+
+        // Save the user with the new token and expiry date
+        userRepository.save(user);
+
+        // Send verification email
+        verificationService.sendVerificationEmail(user, token, verifyUrl);
+    }
 }

@@ -13,6 +13,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
@@ -55,6 +56,7 @@ public class User extends Auditable {
 
     private Boolean isVerified;
     private String verificationToken;
+    private LocalDateTime lastEmailSentAt;
     private LocalTime tokenExpiryDate;
 
     @Column(columnDefinition = "TEXT")

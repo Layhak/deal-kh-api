@@ -1,3 +1,7 @@
+app:
+  frontend:
+    verify-url: http://localhost:3000/verify/
+
 # our own configuration for the file storage
 file:
   storage-dir: "filestorage/images/"
@@ -32,7 +36,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     generate-ddl: true
     properties:
       hibernate:
