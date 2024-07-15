@@ -9,7 +9,6 @@ import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.productrating.ProductRatingRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.dto.*;
-//import co.istad.dealkh.features.shoprating.ShopRatingRepository;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
 import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.features.user.VerificationService;
@@ -594,6 +593,11 @@ public class ShopServiceImpl implements ShopService {
         }
 
         shopRepository.save(shop);
+    }
+
+    @Override
+    public Double getShopRatingAverage(String slug) {
+        return 0.0;
     }
 
 //    @Override
