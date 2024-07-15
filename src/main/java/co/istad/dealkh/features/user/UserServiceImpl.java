@@ -444,12 +444,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByVerificationToken(token)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Invalid token"));
-        if (user.getTokenExpiryDate() == null || LocalTime.now().isAfter(user.getTokenExpiryDate())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token expired or invalid");
-        }
-//        if (user.getTokenExpiryDate().isAfter(LocalTime.now())) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token expired");
+//        if (user.getTokenExpiryDate() == null || LocalTime.now().isAfter(user.getTokenExpiryDate())) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token expired or invalid");
 //        }
+        if (user.getTokenExpiryDate().isAfter(LocalTime.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token expired");
+        }
 
         user.setIsVerified(true);
         user.setVerificationToken(null);  // Clear the token
