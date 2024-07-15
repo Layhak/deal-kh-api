@@ -3,8 +3,10 @@ package co.istad.dealkh.features.productrating;
 import co.istad.dealkh.domain.Product;
 import co.istad.dealkh.domain.ProductRating;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,5 +29,11 @@ public interface ProductRatingRepository extends JpaRepository<ProductRating, Lo
     Collection<ProductRating> findAllByProduct(Product product);
 
     Long countByProduct(Product product);
+
     Long countByProductSlug(String productSlug);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM ProductRating pr WHERE pr.product = :product")
+    void deleteByProduct(Product product);
 }

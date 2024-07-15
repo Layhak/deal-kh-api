@@ -35,4 +35,5 @@ public interface DiscountRepository extends JpaRepository<Discount, Long>, JpaSp
     List<Double> findAllDiscountValueByDiscountTypeSlugAndShopSlug(String slug, String shopSlug);
 
     List<Discount> findByShop(Shop shop);
+
 }
