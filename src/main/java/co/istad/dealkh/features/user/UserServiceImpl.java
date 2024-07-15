@@ -81,10 +81,21 @@ public class UserServiceImpl implements UserService {
 
         Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
 
-        Page<UserResponse> users = userRepository.findAll(specification, pageable).map(userMapper::mapToUserResponse);
+        Page<User> userPage = userRepository.findAll(specification, pageable);
+
+        // Check and update tokenExpiryDate for each user in the retrieved page
+        userPage.getContent().forEach(user -> {
+            LocalTime tokenExpiryDate = user.getTokenExpiryDate();
+            if (tokenExpiryDate != null && (tokenExpiryDate.getNano() < 0 || tokenExpiryDate.getNano() > 999999999)) {
+                user.setTokenExpiryDate(tokenExpiryDate.withNano(0));
+                userRepository.save(user);
+            }
+        });
+
+        Page<UserResponse> users = userPage.map(userMapper::mapToUserResponse);
+
         return new PageResponse<>(users);
     }
-
 
     @Override
     public void createUser(UserCreateRequest userRequest) {
@@ -433,10 +444,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByVerificationToken(token)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Invalid token"));
-
-        if (user.getTokenExpiryDate().isAfter(LocalTime.now())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token expired");
+        if (user.getTokenExpiryDate() == null || LocalTime.now().isAfter(user.getTokenExpiryDate())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token expired or invalid");
         }
+//        if (user.getTokenExpiryDate().isAfter(LocalTime.now())) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token expired");
+//        }
 
         user.setIsVerified(true);
         user.setVerificationToken(null);  // Clear the token
@@ -468,7 +481,7 @@ public class UserServiceImpl implements UserService {
         // Generate a new verification token
         String token = UUID.randomUUID().toString();
         user.setVerificationToken(token);
-        user.setTokenExpiryDate(LocalTime.now().plusHours(24)); // Token valid for 24 hours
+        user.setTokenExpiryDate(LocalTime.now().plusHours(24).withNano(0)); // Token valid for 24 hours
         user.setLastEmailSentAt(LocalDateTime.now());
 
         // Save the user with the new token and expiry date

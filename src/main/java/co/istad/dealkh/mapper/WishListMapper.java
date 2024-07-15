@@ -13,6 +13,7 @@ public interface WishListMapper {
     @Mapping(source = "user.username", target = "username")
     @Mapping(source = "user.profile", target = "profile")
     @Mapping(source = "product.name", target = "productName")
+    @Mapping(source = "product.slug", target = "productSlug")
     @Mapping(source = "isGranted", target = "isGranted", qualifiedByName = "mapGrantStatusToString")
     WishListResponse mapToWishListResponse(WishList wishList);
 

@@ -49,11 +49,11 @@ public class DataInit {
     @PostConstruct
     void initData() {
         try {
-            initAuthorities();
-            initRoles();
-            initUsers();
-            initShopTypes();
-            initCategories();
+//            initAuthorities();
+//            initRoles();
+//            initUsers();
+//            initShopTypes();
+//            initCategories();
 //            initDiscountTypes();
 //            initDiscounts();
 //            initShops();
