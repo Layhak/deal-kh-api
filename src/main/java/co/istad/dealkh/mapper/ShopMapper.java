@@ -18,6 +18,7 @@ public interface ShopMapper {
     @Mapping(target = "slug", source = "slug")
     @Mapping(target = "profile", source = "profile")
     @Mapping(target = "isVerified", source = "isVerified", qualifiedByName = "mapIsVerifiedToString")
+    @Mapping(target = "ratingCount", source = "shop", qualifiedByName = "mapShopRatingCount")
     ShopResponse toShopResponse(Shop shop);
 
     @Mapping(source = "openAt", target = "openAt", qualifiedByName = "stringToLocalTime")

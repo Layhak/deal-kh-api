@@ -56,4 +56,6 @@ public interface ShopService {
     PageResponse<ShopResponse> getAllShopRejected(int page, int size, String field, String order);
 
     void verifyShop(String slug, String username, Boolean verified);
+
+    Double getShopRatingAverage(String slug);
 }

@@ -15,10 +15,6 @@ public interface ProductRatingRepository extends JpaRepository<ProductRating, Lo
 
     Optional<ProductRating> findByUserUsernameAndProductSlug(String username, String productSlug);
 
-    ProductRating findProductRatingById(Long id);
-
-//    @Query("select sum(pr.ratingValue) from ProductRating pr where pr.product.id = :id")
-//    Double findRatingValueByProductId(@Param("id") Long id);
 
     @Query("SELECT COALESCE(SUM(pr.ratingValue), 0) FROM ProductRating pr WHERE pr.product.id = :id")
     Double findRatingValueByProductId(@Param("id") Long id);

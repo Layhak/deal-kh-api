@@ -9,6 +9,7 @@ import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.productrating.ProductRatingRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.dto.*;
+//import co.istad.dealkh.features.shoprating.ShopRatingRepository;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
 import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.features.user.VerificationService;
@@ -49,6 +50,7 @@ public class ShopServiceImpl implements ShopService {
     private final MailService mailService;
     @Value("${app.frontend.verify-url}")
     private String verifyUrl;
+//    private final ShopRatingRepository shopRatingRepository;
 
     @Override
     public PageResponse<ShopResponse> getAllShop(int page, int size, String field, String order) {
@@ -593,5 +595,18 @@ public class ShopServiceImpl implements ShopService {
 
         shopRepository.save(shop);
     }
+
+//    @Override
+//    public Double getShopRatingAverage(String slug) {
+//
+//        return shopRatingRepository.calculateAverageRatingByShopSlug(slug);
+////        Double totalRating = shopRatingRepository.findRatingValueByShopSlug(slug);
+////        Long ratingCount = productRatingRepository.countByProductSlug(slug);
+////
+////        if (ratingCount == 0) {
+////            return 0.0;
+////        }
+////        return totalRating / ratingCount;
+//    }
 
 }

@@ -145,11 +145,25 @@ public class ProductRatingServiceImpl implements ProductRatingService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Product rating not found!"
                 ));
-        if (productRatingRepository.findByUserUsernameAndProductSlug(username, productSlug).isEmpty()) {
+
+        if (!productRating.getUser().getUsername().equals(username)) {
             throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "You're not this resource owner!");
+                    HttpStatus.FORBIDDEN, "You're not the owner of this resource!"
+            );
         }
+
         productRatingRepository.delete(productRating);
+
+        // Recalculate the average rating for the product
+        Double averageRating = productService.getProductRatingAvg(productRating.getProduct().getId());
+        if (averageRating == null) {
+            averageRating = 0.0; // Set default value if there are no ratings left
+        }
+
+        // Update the product's average rating
+        Product product = productRating.getProduct();
+        product.setRatingAvg(averageRating);
+        productRepository.save(product);
     }
+
 }

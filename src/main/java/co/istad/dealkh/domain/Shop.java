@@ -34,6 +34,7 @@ public class Shop extends Auditable {
     private String slug;
 
     private String profile;
+    private double ratingAvg = 0;
     private String location;
     private String address;
 

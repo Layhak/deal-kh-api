@@ -148,6 +148,7 @@ public class DataInit {
             shop.setCloseAt(LocalTime.of(17, 30, 0));
             shop.setIsDeleted(false);
             shop.setIsDisabled(false);
+            shop.setRatingAvg(0.0);
             shop.setIsVerified(ShopVerify.APPROVED);
             shop.setShopType(shopTypeRepository.findAll().get(0));
             shop.setUsers(List.of(userRepository.findByUsername("admin").get()));
