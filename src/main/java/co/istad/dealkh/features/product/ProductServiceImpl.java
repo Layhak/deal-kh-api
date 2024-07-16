@@ -232,7 +232,11 @@ public class ProductServiceImpl implements ProductService {
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
             product.setCategory(category);
         }
-
+        if (productUpdateRequest.discountUuid() != null) {
+            Discount discount = discountRepository.findByUuid(productUpdateRequest.discountUuid())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount not found"));
+            product.setDiscount(discount);
+        }
         productRepository.save(product);
 
         return productMapper.mapProductToProductResponseDetail(product);
