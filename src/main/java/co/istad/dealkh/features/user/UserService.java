@@ -1,5 +1,6 @@
 package co.istad.dealkh.features.user;
 
+import co.istad.dealkh.features.shop.dto.ShopSocialMediaRequest;
 import co.istad.dealkh.features.user.dto.*;
 import co.istad.dealkh.paging.PageResponse;
 
@@ -51,4 +52,6 @@ public interface UserService {
     List<SellerResponse> getAllOwnerShop(String slug);
 
     void resendVerificationToken(String email);
+
+    void uploadSocialMedia(String username, UserSocialMediaRequest userSocialMediaRequest);
 }

@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface ShopReportService {
 
-    ShopReportResponse reportShop(ShopReportRequest shopReportRequest);
+    ShopReportResponse reportShop(String username, ShopReportRequest shopReportRequest);
 
-    List<ShopReportResponse> getAllShopReport();
+    List<ShopReportResponse> getAllShopReport(String shopSlug);
 
-    ShopReportResponse getShopReportById(String uuid);
+    ShopReportResponse getShopReportByUuid(String uuid);
 
     ShopReportResponse updateShopReport(String username, String uuid, ShopReportUpdateRequest shopReportUpdateRequest);
 

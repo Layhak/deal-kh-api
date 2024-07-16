@@ -1,9 +1,12 @@
 package co.istad.dealkh.features.user;
 
 import co.istad.dealkh.domain.Role;
+import co.istad.dealkh.domain.Shop;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.domain.json.Image;
+import co.istad.dealkh.domain.json.SocialMedia;
 import co.istad.dealkh.features.role.RoleRepository;
+import co.istad.dealkh.features.shop.dto.ShopSocialMediaRequest;
 import co.istad.dealkh.features.user.dto.*;
 import co.istad.dealkh.mapper.UserMapper;
 import co.istad.dealkh.paging.PageResponse;
@@ -266,10 +269,6 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User has not been found!"));
-//
-//        if (userRepository.findByUsernameAndProfile(username, profile).isEmpty()) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not allowed to delete this profile");
-//        }
 
         user.setUpdatedAt(LocalDateTime.now());
         user.setUpdatedBy(username);
@@ -489,5 +488,30 @@ public class UserServiceImpl implements UserService {
 
         // Send verification email
         verificationService.sendVerificationEmail(user, token, verifyUrl);
+    }
+
+    @Override
+    public void uploadSocialMedia(String username, UserSocialMediaRequest userSocialMediaRequest) {
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with username: " + username));
+
+        List<SocialMedia> existingSocialMedia = user.getSocialMedias();
+
+       if(user.getSocialMedias().isEmpty()) {
+           user.setSocialMedias(new ArrayList<>());
+       }
+
+       SocialMedia socialMedia = new SocialMedia();
+       socialMedia.setSocialName(userSocialMediaRequest.name());
+       socialMedia.setSocialLink(userSocialMediaRequest.link());
+
+       existingSocialMedia.add(socialMedia);
+       user.setSocialMedias(existingSocialMedia);
+       user.setUpdatedAt(LocalDateTime.now());
+       user.setUpdatedBy(username);
+
+       userRepository.save(user);
+
     }
 }

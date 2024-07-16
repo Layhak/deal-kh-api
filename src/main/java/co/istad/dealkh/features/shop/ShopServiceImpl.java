@@ -3,6 +3,7 @@ package co.istad.dealkh.features.shop;
 import co.istad.dealkh.domain.*;
 import co.istad.dealkh.domain.enumType.ShopVerify;
 import co.istad.dealkh.domain.json.Image;
+import co.istad.dealkh.domain.json.SocialMedia;
 import co.istad.dealkh.features.discount.DiscountRepository;
 import co.istad.dealkh.features.mail.MailService;
 import co.istad.dealkh.features.product.ProductRepository;
@@ -598,6 +599,32 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public Double getShopRatingAverage(String slug) {
         return 0.0;
+    }
+
+    @Override
+    public void uploadSocialMedia(String username, String slug, ShopSocialMediaRequest shopSocialMediaRequest) {
+
+        userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Shop shop = shopRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+
+        List<SocialMedia> socialMedias = shop.getSocialMedias();
+
+        if (shop.getSocialMedias().isEmpty()) {
+            shop.setSocialMedias(new ArrayList<>());
+        }
+        if (shopSocialMediaRequest.link().isEmpty() || shopSocialMediaRequest.link().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Social media is required");
+        }
+        SocialMedia newSocialMedia = new SocialMedia(shopSocialMediaRequest.name(), shopSocialMediaRequest.link());
+
+        socialMedias.add(newSocialMedia);
+        shop.setSocialMedias(socialMedias);
+        shop.setUpdatedAt(LocalDateTime.now());
+        shop.setUpdatedBy(username);
+        shopRepository.save(shop);
     }
 
 //    @Override

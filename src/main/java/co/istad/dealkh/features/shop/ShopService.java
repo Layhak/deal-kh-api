@@ -58,4 +58,6 @@ public interface ShopService {
     void verifyShop(String slug, String username, Boolean verified);
 
     Double getShopRatingAverage(String slug);
+
+    void uploadSocialMedia(String username, String slug, ShopSocialMediaRequest shopSocialMediaRequest);
 }

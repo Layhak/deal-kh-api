@@ -1,6 +1,8 @@
 package co.istad.dealkh.features.user.web;
 
 import co.istad.dealkh.base.BaseResponse;
+import co.istad.dealkh.domain.User;
+import co.istad.dealkh.features.shop.dto.ShopSocialMediaRequest;
 import co.istad.dealkh.features.user.UserService;
 import co.istad.dealkh.features.user.dto.*;
 import co.istad.dealkh.paging.PageResponse;
@@ -286,5 +288,13 @@ public class UserController {
         } catch (Exception e) {
             return BaseResponse.<Void>badRequest("An error occurred while resending the verification token.");
         }
+    }
+
+    @PostMapping("/social")
+    @Operation(summary = "upload social media")
+    public BaseResponse<?> uploadSocialMedia(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserSocialMediaRequest userSocialMediaRequest) {
+        String username = customUserDetails.getUsername();
+        userService.uploadSocialMedia(username, userSocialMediaRequest);
+        return BaseResponse.ok("Successfully upload social media!");
     }
 }

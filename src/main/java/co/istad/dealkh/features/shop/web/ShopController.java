@@ -256,6 +256,14 @@ public class ShopController {
                 .setPayload(shopService.getAllShopRejected(page, size, field, order));
     }
 
+    @PostMapping("/{slug}/social")
+    @Operation(summary = "Upload social media")
+    @ResponseStatus(HttpStatus.OK)
+    BaseResponse<?> uploadSocialMedia(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug, @RequestBody @Valid ShopSocialMediaRequest shopSocialMediaRequest) {
+        shopService.uploadSocialMedia(customUserDetails.getUsername(), slug, shopSocialMediaRequest);
+        return BaseResponse.ok("Successfully upload social media!");
+    }
+
 
 
 }

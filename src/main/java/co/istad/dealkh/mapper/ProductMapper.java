@@ -22,6 +22,7 @@ public interface ProductMapper {
     @Mapping(target = "shop", source = "shop", qualifiedByName = "shopToString")
     @Mapping(target = "shopSlug", source = "shop", qualifiedByName = "shopSlugToString")
     @Mapping(target = "location", source = "shop", qualifiedByName = "mapLocation")
+    @Mapping(target = "address", source = "shop", qualifiedByName = "mapAddress")
     @Mapping(target = "openAt", source = "shop", qualifiedByName = "mapOpenAt")
     @Mapping(target = "closeAt", source = "shop", qualifiedByName = "mapCloseAt")
     @Mapping(target = "discountValue", source = "discount", qualifiedByName = "discountToDouble")
@@ -97,6 +98,13 @@ public interface ProductMapper {
     default String mapLocation(Shop shop) {
         return shop.getLocation();
     }
+
+    @Named("mapAddress")
+    default String mapAddress(Shop shop) {
+        return shop.getAddress();
+    }
+
+
 
     @Named("mapOpenAt")
     default LocalTime mapOpenAt(Shop shop) {

@@ -1,6 +1,7 @@
 package co.istad.dealkh.features.shop.dto;
 
 
+import co.istad.dealkh.domain.json.SocialMedia;
 import co.istad.dealkh.features.image.dto.ImageRequest;
 import co.istad.dealkh.features.image.dto.ImageResponse;
 
@@ -45,6 +46,7 @@ public record ShopResponse(
         String shopType,
         String profile,
         List<ImageResponse> covers,
+        List<SocialMedia> socialMedias,
         List<String> owners,
         String location,
         String isVerified,
