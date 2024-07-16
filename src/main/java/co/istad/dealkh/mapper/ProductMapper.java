@@ -30,6 +30,7 @@ public interface ProductMapper {
     @Mapping(target = "images", source = "images")
     @Mapping(target = "discountPrice", source = "product", qualifiedByName = "toDiscountPrice")
     @Mapping(target = "discountType", source = "discount", qualifiedByName = "discountToDiscountType")
+    @Mapping(target = "discountTypeSlug", source = "discount", qualifiedByName = "discountToDiscountTypeSlug")
     @Mapping(target = "expiredAt", source = "discount", qualifiedByName = "discountToExpiredAt")
     @Mapping(target = "ratingCount", source = "product", qualifiedByName = "mapRatingCount")
         // Use the mapTotalRating method
@@ -80,6 +81,11 @@ public interface ProductMapper {
     @Named("discountToDiscountType")
     default String mapDiscountType(Discount discount) {
         return discount.getDiscountType().getName();
+    }
+
+    @Named("discountToDiscountTypeSlug")
+    default String mapDiscountTypeSlug(Discount discount) {
+        return discount.getDiscountType().getSlug();
     }
 
     @Named("discountToExpiredAt")

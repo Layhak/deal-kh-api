@@ -1,18 +1,17 @@
 package co.istad.dealkh.features.product;
 
-import co.istad.dealkh.domain.Category;
-import co.istad.dealkh.domain.Discount;
-import co.istad.dealkh.domain.Product;
-import co.istad.dealkh.domain.Shop;
+import co.istad.dealkh.domain.*;
 import co.istad.dealkh.domain.enumType.ShopVerify;
 import co.istad.dealkh.features.category.CategoryRepository;
 import co.istad.dealkh.features.discount.DiscountRepository;
 import co.istad.dealkh.features.product.dto.ProductCreateRequest;
 import co.istad.dealkh.features.product.dto.ProductResponse;
 import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
+import co.istad.dealkh.features.productfeedback.ProductFeedbackRepository;
 import co.istad.dealkh.features.productrating.ProductRatingRepository;
 import co.istad.dealkh.features.shop.ShopRepository;
 import co.istad.dealkh.features.user.UserRepository;
+import co.istad.dealkh.features.wishlist.WishListRepository;
 import co.istad.dealkh.mapper.ProductMapper;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.paging.Pagination;
@@ -26,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -56,6 +56,8 @@ public class ProductServiceImpl implements ProductService {
     private final ShopRepository shopRepository;
     private final ProductRatingRepository productRatingRepository;
     private final UserRepository userRepository;
+    private final WishListRepository wishListRepository;
+    private final ProductFeedbackRepository productFeedbackRepository;
 
     /**
      * Creates a new product based on the provided request.
@@ -232,9 +234,8 @@ public class ProductServiceImpl implements ProductService {
      * @param slug
      */
     @Override
+    @Transactional
     public void deleteProduct(String username, String slug) {
-
-
         Product product = productRepository.findBySlug(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found! ", slug)));
 
         boolean isUserAssociatedWithShop = product.getShop().getUsers().stream()
@@ -242,6 +243,18 @@ public class ProductServiceImpl implements ProductService {
         if (!isUserAssociatedWithShop) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
         }
+
+        // Remove wishlists that reference this product
+        List<WishList> wishLists = wishListRepository.findByProduct(product);
+        wishListRepository.deleteAll(wishLists);
+
+        // Remove product ratings that reference this product
+        List<ProductRating> productRatings = productRatingRepository.findByProduct(product);
+        productRatingRepository.deleteAll(productRatings);
+
+        // Remove product feedbacks that reference this product
+        List<ProductFeedback> productFeedbacks = productFeedbackRepository.findByProduct(product);
+        productFeedbackRepository.deleteAll(productFeedbacks);
 
         productRepository.delete(product);
     }

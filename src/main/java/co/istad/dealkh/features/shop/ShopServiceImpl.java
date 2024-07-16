@@ -9,7 +9,6 @@ import co.istad.dealkh.features.product.ProductRepository;
 import co.istad.dealkh.features.productrating.ProductRatingRepository;
 import co.istad.dealkh.features.role.RoleRepository;
 import co.istad.dealkh.features.shop.dto.*;
-import co.istad.dealkh.features.shoprating.ShopRatingRepository;
 import co.istad.dealkh.features.shoptype.ShopTypeRepository;
 import co.istad.dealkh.features.user.UserRepository;
 import co.istad.dealkh.features.user.VerificationService;
@@ -19,6 +18,7 @@ import co.istad.dealkh.paging.Pagination;
 import co.istad.dealkh.validator.formatter.SlugFormatter;
 import co.istad.dealkh.validator.page.ValidatePagination;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -48,7 +47,9 @@ public class ShopServiceImpl implements ShopService {
     private final RoleRepository roleRepository;
     private final VerificationService verificationService;
     private final MailService mailService;
-    private final ShopRatingRepository shopRatingRepository;
+    @Value("${app.frontend.verify-url}")
+    private String verifyUrl;
+//    private final ShopRatingRepository shopRatingRepository;
 
     @Override
     public PageResponse<ShopResponse> getAllShop(int page, int size, String field, String order) {
@@ -70,7 +71,7 @@ public class ShopServiceImpl implements ShopService {
 
         boolean isApproved = shops.stream().anyMatch(shop -> shop.getIsVerified().equals(ShopVerify.APPROVED));
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -89,7 +90,7 @@ public class ShopServiceImpl implements ShopService {
 
         boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -103,7 +104,7 @@ public class ShopServiceImpl implements ShopService {
 
         boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -169,7 +170,7 @@ public class ShopServiceImpl implements ShopService {
 
         boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -194,7 +195,7 @@ public class ShopServiceImpl implements ShopService {
 
         boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -254,7 +255,7 @@ public class ShopServiceImpl implements ShopService {
 
         boolean isApproved = shops.stream().anyMatch(shop -> shop.getIsVerified().equals(ShopVerify.APPROVED));
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -306,9 +307,9 @@ public class ShopServiceImpl implements ShopService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are already a member of this shop");
         }
 
-        boolean isApproved =  shop.getIsVerified().equals(ShopVerify.APPROVED);
+        boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -322,7 +323,7 @@ public class ShopServiceImpl implements ShopService {
 
         // Generate verification token
         String token = UUID.randomUUID().toString();
-        verificationService.sendVerificationEmail(user, token);
+        verificationService.sendVerificationEmail(user, token, verifyUrl);
 
         shop.setUpdatedBy(username);
         shop.setUpdatedAt(LocalDateTime.now());
@@ -350,7 +351,7 @@ public class ShopServiceImpl implements ShopService {
 
         boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -370,7 +371,7 @@ public class ShopServiceImpl implements ShopService {
 
         boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -401,7 +402,7 @@ public class ShopServiceImpl implements ShopService {
 
         boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -445,7 +446,7 @@ public class ShopServiceImpl implements ShopService {
 
         boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -487,7 +488,7 @@ public class ShopServiceImpl implements ShopService {
 
         boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -511,7 +512,7 @@ public class ShopServiceImpl implements ShopService {
 
         boolean isApproved = shop.getIsVerified().equals(ShopVerify.APPROVED);
 
-        if(!isApproved) {
+        if (!isApproved) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not approved yet");
         }
 
@@ -596,15 +597,20 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public Double getShopRatingAverage(String slug) {
-
-        return shopRatingRepository.calculateAverageRatingByShopSlug(slug);
-//        Double totalRating = shopRatingRepository.findRatingValueByShopSlug(slug);
-//        Long ratingCount = productRatingRepository.countByProductSlug(slug);
-//
-//        if (ratingCount == 0) {
-//            return 0.0;
-//        }
-//        return totalRating / ratingCount;
+        return 0.0;
     }
+
+//    @Override
+//    public Double getShopRatingAverage(String slug) {
+//
+//        return shopRatingRepository.calculateAverageRatingByShopSlug(slug);
+////        Double totalRating = shopRatingRepository.findRatingValueByShopSlug(slug);
+////        Long ratingCount = productRatingRepository.countByProductSlug(slug);
+////
+////        if (ratingCount == 0) {
+////            return 0.0;
+////        }
+////        return totalRating / ratingCount;
+//    }
 
 }

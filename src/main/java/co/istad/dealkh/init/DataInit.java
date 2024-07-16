@@ -49,14 +49,14 @@ public class DataInit {
     @PostConstruct
     void initData() {
         try {
-            initAuthorities();
-            initRoles();
+//            initAuthorities();
+//            initRoles();
 //            initUsers();
-            initShopTypes();
-            initCategories();
-            initShops();
-            initDiscountTypes();
-            initDiscounts();
+//            initShopTypes();
+//            initCategories();
+//            initDiscountTypes();
+//            initDiscounts();
+//            initShops();
             logger.info("Data initialized successfully");
         } catch (Exception e) {
             logger.severe("Error in data initialization: " + e.getMessage());
@@ -109,7 +109,8 @@ public class DataInit {
             images.add(new Image("https://example.com/image1.jpg"));
             images.add(new Image("https://example.com/image2.jpg"));
             user1.setCovers(images);
-
+            user1.setProfile("https://dealkh-api.istad.co/images/3cc9b0d1-8794-4f77-946a-c4a5dd662130.png");
+//            user1.setTokenExpiryDate(LocalTime.now().plusHours(24)); // Token valid for 24 hours
             user1.setPhoneNumber("0987654321");
             user1.setDob(LocalDate.of(2001, 1, 31));
             user1.setLocation("Phnom Penh");

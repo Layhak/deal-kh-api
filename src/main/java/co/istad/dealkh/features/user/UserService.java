@@ -20,7 +20,7 @@ public interface UserService {
 
     UserCoverResponse getUserCover(String username);
 
-    void deleteUserCover(String username,  UserCoverRequest userCoverRequest);
+    void deleteUserCover(String username, UserCoverRequest userCoverRequest);
 
     UserCoverResponse uploadUserCover(String username, UserCoverRequest userCoverRequest);
 
@@ -43,10 +43,12 @@ public interface UserService {
     PageResponse<UserResponse> getAllBuyer(int page, int size, String field, String order);
 
     PageResponse<UserResponse> getAllSeller(int page, int size, String field, String order);
+
     PageResponse<UserResponse> getAllAdmin(int page, int size, String field, String order);
 
     void verifyEmail(String token);
 
     List<SellerResponse> getAllOwnerShop(String slug);
 
+    void resendVerificationToken(String email);
 }

@@ -12,10 +12,13 @@ public class VerificationServiceImpl implements VerificationService {
     private final MailService mailService;
 
     @Override
-    public void sendVerificationEmail(User user, String token) {
-        String subject = "Verify your email address";
-        String verificationUrl = "https://dealkh-api.istad.co/api/v1/auth/verify?token=" + token;
+    public void sendVerificationEmail(User user, String token, String verifyUrl) {
+        String recipientAddress = user.getEmail();
+        String subject = "Email Verification";
+        String confirmationUrl = verifyUrl + token;
+        String message = "Please click the link below to verify your email address:\n" + confirmationUrl;
 
-        mailService.sendEmail(user.getEmail(), subject, verificationUrl, "verify");
+        // Use MailService to send the email
+        mailService.sendEmail(recipientAddress, subject, confirmationUrl, "verify");
     }
 }

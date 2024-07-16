@@ -31,6 +31,7 @@ public record ProductResponse(
         BigDecimal discountValue,
         Boolean isPercentage,
         String discountType,
+        String discountTypeSlug,
         LocalDate expiredAt,
         String categoryName,
         String categorySlug,

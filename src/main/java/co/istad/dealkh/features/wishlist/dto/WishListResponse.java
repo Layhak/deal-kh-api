@@ -6,6 +6,7 @@ public record WishListResponse(
         String uuid,
         String profile,
         String productName,
+        String productSlug,
         String username,
         BigDecimal discountPercentage,
         String description,

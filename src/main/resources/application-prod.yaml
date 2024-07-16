@@ -1,3 +1,6 @@
+app:
+  frontend:
+    verify-url: https://dealkh.istad.co/verify/
 # our own configuration for the file storage
 file:
   storage-dir: "filestorage/images/"
