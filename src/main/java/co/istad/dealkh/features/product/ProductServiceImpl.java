@@ -141,8 +141,6 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public PageResponse<ProductResponse> getAllProducts(int page, int size, String field, String order, Map<String, String> params) {
-
-        // Here is for filter product by params
         ProductFilter productFilter = new ProductFilter();
         if (params.containsKey("name")) {
             String name = params.get("name");
@@ -159,7 +157,10 @@ public class ProductServiceImpl implements ProductService {
             productFilter.setDiscountType(discountType);
         }
 
-        System.out.println("Discount Type: " + productFilter.getDiscountType());
+        if (params.containsKey("discountTypeSlug")) {
+            String discountTypeSlug = params.get("discountTypeSlug");
+            productFilter.setDiscountType(discountTypeSlug);
+        }
 
         if (params.containsKey("categorySlug")) {
             String category = params.get("categorySlug");
@@ -176,10 +177,14 @@ public class ProductServiceImpl implements ProductService {
             productFilter.setRatingAvg(Double.parseDouble(ratingAvg));
         }
 
-        List<String> validFields = List.of("name", "price", "discountPrice", "description", "shop", "discountValue", "category", "createdAt", "updatedAt", "createdBy", "updateBy");
+        List<String> validFields = List.of("name", "price", "ratingAvg", "discountPrice", "shop", "discountValue", "category", "createdAt", "updatedAt", "createdBy", "updateBy");
 
         if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, name, price, discountPrice, description, shop, discountValue, category, createdAt, updatedAt, createdBy, updateBy");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be name, price, discountPrice, shop, discountValue, category, createdAt, updatedAt, createdBy, updateBy, ratingAvg");
+        }
+
+        if (order != null && !order.equals("asc") && !order.equals("desc")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
         }
 
         size = PageFilter.DEFAULT_PAGE_LIMIT;
@@ -199,6 +204,7 @@ public class ProductServiceImpl implements ProductService {
         Page<ProductResponse> products = productRepository.findAll(specification, pageable).map(productMapper::mapProductToProductResponseDetail);
         return new PageResponse<>(products);
     }
+
 
     /**
      * Updates a product based on its ID.

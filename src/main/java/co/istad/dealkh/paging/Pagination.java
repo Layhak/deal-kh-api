@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 public interface Pagination {
     int page_limit = 25;
     int page_number = 1;
-    Sort DEFAULT_SORT = Sort.by(Sort.Order.asc("id"));
+    Sort DEFAULT_SORT = Sort.by(Sort.Order.asc("name"));
 
     static Pageable getPageable(int pageNumber, int pageSize, Sort sort) {
         if (pageNumber < page_number) {

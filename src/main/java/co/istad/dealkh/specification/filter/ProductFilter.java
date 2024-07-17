@@ -15,4 +15,5 @@ public class ProductFilter {
     private String categorySlug;
     private String shop;
     private double ratingAvg;
+    private String discountTypeSlug;
 }
