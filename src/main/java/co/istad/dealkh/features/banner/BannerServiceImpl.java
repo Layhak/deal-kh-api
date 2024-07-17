@@ -26,10 +26,15 @@ public class BannerServiceImpl implements BannerService {
 
         Banner banner = bannerMapper.mapBannerRequestToBanner(bannerCreateRequest);
 
+        if(bannerCreateRequest.expiredAt().isBefore(LocalDate.now())){
+            banner.setIsExpired(true);
+        }
+        banner.setIsExpired(banner.getIsExpired());
         banner.setIsExpired(banner.getExpiredAt().isBefore(LocalDate.now()));
-
         banner.setDescription(bannerCreateRequest.description());
         banner.setIsExpired(banner.getIsExpired());
+
+
         bannerRepository.save(banner);
 
         return bannerMapper.mapBannerToBannerResponse(banner);
@@ -49,5 +54,13 @@ public class BannerServiceImpl implements BannerService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Banner uuid not found"));
         bannerRepository.delete(banner);
+    }
+
+    @Override
+    public List<BannerResponse> getAllBannerByBannerType(String bannerType) {
+        return bannerRepository.findAllByBannerType(bannerType)
+                .stream()
+                .map(bannerMapper::mapBannerToBannerResponse)
+                .toList();
     }
 }

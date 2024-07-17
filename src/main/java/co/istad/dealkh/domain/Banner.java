@@ -29,9 +29,10 @@ public class Banner {
     private String description;
 
     private String image;
-    private String url;
+    private String shopLink;
     private LocalDate expiredAt;
     private Boolean isExpired;
+    private String bannerType;
 
     @PrePersist
     protected void onCreate() {
