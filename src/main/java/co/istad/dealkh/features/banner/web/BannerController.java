@@ -36,9 +36,9 @@ public class BannerController {
     }
 
     @GetMapping("/types")
-    public BaseResponse<List<BannerResponse>> getAllBannerByType(@RequestParam String bannerType) {
+    public BaseResponse<List<BannerResponse>> getAllBannerByBannerType(@RequestParam String bannerType) {
         return BaseResponse.<List<BannerResponse>>ok("Get all banner successfully!")
-                .setPayload(bannerService.getAllBannerByType(bannerType));
+                .setPayload(bannerService.getAllBannerByBannerType(bannerType));
     }
 
 }

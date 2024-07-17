@@ -39,6 +39,12 @@ public record ProductSpecification(ProductFilter productFilter) implements Speci
             predicates.add(discountType);
         }
 
+        if (productFilter.getDiscountTypeSlug() != null) {
+            Predicate discountTypeSlug = criteria.equal(criteria.upper(product.join("discount", JoinType.LEFT).get("discountTypeSlug").get("name")), productFilter.getDiscountTypeSlug().toUpperCase());
+            predicates.add(discountTypeSlug);
+        }
+
+
         if (productFilter.getShop() != null) {
             Predicate shop = criteria.like(criteria.upper(product.join("shop", JoinType.LEFT).get("name")), "%" + productFilter.getShop().toUpperCase() + "%");
             predicates.add(shop);
