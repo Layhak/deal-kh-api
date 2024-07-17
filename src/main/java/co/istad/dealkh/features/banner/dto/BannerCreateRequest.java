@@ -14,9 +14,13 @@ public record BannerCreateRequest(
         String image,
 
         @NotNull(message = "Url is required")
-        String url,
+        String shopLink,
 
-        LocalDate expiredAt
+        @NotNull(message = "Expired At is required")
+        LocalDate expiredAt,
+
+        @NotNull(message = "Banner Type is required")
+        String bannerType
 
 ) {
 

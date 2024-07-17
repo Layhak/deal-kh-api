@@ -12,4 +12,6 @@ public interface BannerService {
     List<BannerResponse> getAllBanner();
 
     void deleteBanner(String uuid);
+
+    List<BannerResponse> getAllBannerByType(String bannerType);
 }

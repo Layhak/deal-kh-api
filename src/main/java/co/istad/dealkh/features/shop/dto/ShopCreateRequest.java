@@ -31,8 +31,7 @@ import java.util.List;
 public record ShopCreateRequest(
 
         @NotBlank(message = "Name is required")
-        @ValidName(message = "Name must be properly formatted and can contain letters, numbers, single spaces, and single dashes")
-        @Size(max = 100, message = "Name must be less than 100 characters")
+        @Size(max = 50, message = "Name must be less than 50 characters")
         String name,
 
         @NotNull(message = "address is required")

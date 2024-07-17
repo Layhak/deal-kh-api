@@ -10,8 +10,9 @@ public record BannerResponse(
         String name,
         String description,
         String image,
-        String url,
+        String shopLink,
         LocalDate expiredAt,
-        Boolean isExpired
+        Boolean isExpired,
+        String bannerType
 ) {
 }
