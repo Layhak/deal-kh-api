@@ -210,8 +210,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse updateProductBySlug(String username, String slug, ProductUpdateRequest productUpdateRequest) {
 
-        Product product = productRepository.findBySlug(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found! ", slug)));
-
+        Product product = productRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Product with slug %s not found!", slug)));
 
         boolean isUserAssociatedWithShop = product.getShop().getUsers().stream()
                 .anyMatch(user -> user.getUsername().equals(username));
@@ -219,10 +219,24 @@ public class ProductServiceImpl implements ProductService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not this resource owner!");
         }
 
-
+        // Set update metadata
         product.setUpdatedAt(LocalDateTime.now());
         product.setUpdatedBy(username);
+
+        // Map basic fields using the mapper
         productMapper.mapProductToUpdateRequest(product, productUpdateRequest);
+
+        // Fetch and set the category if categorySlug is provided
+        if (productUpdateRequest.categorySlug() != null) {
+            Category category = categoryRepository.findBySlug(productUpdateRequest.categorySlug())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+            product.setCategory(category);
+        }
+        if (productUpdateRequest.discountUuid() != null) {
+            Discount discount = discountRepository.findByUuid(productUpdateRequest.discountUuid())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Discount not found"));
+            product.setDiscount(discount);
+        }
         productRepository.save(product);
 
         return productMapper.mapProductToProductResponseDetail(product);
