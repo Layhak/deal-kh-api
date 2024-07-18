@@ -162,7 +162,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/coupons/**").hasAuthority("ROLE_SELLER")
 
                         // banners
-                        .requestMatchers("/api/v1/banners/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/api/v1/banners/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/v1/banners/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/banners/**").permitAll()
 
                         // images
                         .requestMatchers("/api/v1/images/**").permitAll()
