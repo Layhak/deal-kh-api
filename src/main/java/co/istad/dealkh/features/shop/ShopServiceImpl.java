@@ -261,7 +261,7 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public List<ShopResponse> getNearbyShop(double latitude, double longitude) {
-        double radiusInKilometers = 1;
+        double radiusInKilometers = 10;
         final int R = 6371; // Radius of the earth in km
 
         List<Shop> allShops = shopRepository.findAll();
