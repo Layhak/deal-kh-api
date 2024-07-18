@@ -177,14 +177,10 @@ public class ProductServiceImpl implements ProductService {
             productFilter.setRatingAvg(Double.parseDouble(ratingAvg));
         }
 
-        List<String> validFields = List.of("name", "price", "ratingAvg", "discountPrice", "shop", "discountValue", "category", "createdAt", "updatedAt", "createdBy", "updateBy");
+        List<String> validFields = List.of("name", "price", "discountPrice", "description", "shop", "discountValue", "category", "createdAt", "updatedAt", "createdBy", "updateBy");
 
         if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be name, price, discountPrice, shop, discountValue, category, createdAt, updatedAt, createdBy, updateBy, ratingAvg");
-        }
-
-        if (order != null && !order.equals("asc") && !order.equals("desc")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must be asc or desc");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, name, price, discountPrice, description, shop, discountValue, category, createdAt, updatedAt, createdBy, updateBy");
         }
 
         size = PageFilter.DEFAULT_PAGE_LIMIT;
