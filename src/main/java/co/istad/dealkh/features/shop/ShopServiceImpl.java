@@ -264,7 +264,10 @@ public class ShopServiceImpl implements ShopService {
         double radiusInKilometers = 10;
         final int R = 6371; // Radius of the earth in km
 
-        List<Shop> allShops = shopRepository.findAll();
+        List<Shop> allShops = shopRepository.findAll()
+                .stream()
+                .filter(shop -> shop.getIsVerified().equals(ShopVerify.APPROVED))
+                .toList();
         List<Shop> nearbyShops = new ArrayList<>();
 
         for (Shop shop : allShops) {
