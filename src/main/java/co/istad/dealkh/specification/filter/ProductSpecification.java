@@ -29,11 +29,6 @@ public record ProductSpecification(ProductFilter productFilter) implements Speci
         }
 
 
-        if (productFilter.getRatingAvg() >= 0 && productFilter.getRatingAvg() <= 5) {
-            Predicate ratingAvg = criteria.equal(product.get("ratingAvg"), productFilter.getRatingAvg());
-            predicates.add(ratingAvg);
-        }
-
         if (productFilter.getDiscountType() != null) {
             Predicate discountType = criteria.equal(criteria.upper(product.join("discount", JoinType.LEFT).get("discountType").get("name")), productFilter.getDiscountType().toUpperCase());
             predicates.add(discountType);

@@ -172,10 +172,6 @@ public class ProductServiceImpl implements ProductService {
             productFilter.setShop(shop);
         }
 
-        if (params.containsKey("ratingAvg")) {
-            String ratingAvg = params.get("ratingAvg");
-            productFilter.setRatingAvg(Double.parseDouble(ratingAvg));
-        }
 
         List<String> validFields = List.of("name", "price", "discountPrice", "description", "shop", "discountValue", "category", "createdAt", "updatedAt", "createdBy", "updateBy");
 
