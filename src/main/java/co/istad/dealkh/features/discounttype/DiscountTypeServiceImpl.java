@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class DiscountTypeServiceImpl implements DiscountTypeService{
+public class DiscountTypeServiceImpl implements DiscountTypeService {
 
     private final DiscountTypeRepository discountTypeRepository;
     private final DiscountTypeMapper discountTypeMapper;
@@ -26,8 +26,8 @@ public class DiscountTypeServiceImpl implements DiscountTypeService{
     @Override
     public DiscountTypeResponse createDiscountType(DiscountTypeRequest discountTypeRequest) {
 
-        if(discountTypeRepository.existsByName(discountTypeRequest.name())){
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Discount type with name %s already exists", discountTypeRequest.name()));
+        if (discountTypeRepository.existsByName(discountTypeRequest.name())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Discount type with name %s already exists", discountTypeRequest.name()));
         }
 
         String slug = SlugFormatter.formatSlug(discountTypeRequest.name());
@@ -41,7 +41,7 @@ public class DiscountTypeServiceImpl implements DiscountTypeService{
 
     @Override
     public List<DiscountTypeResponse> getAllDiscountType() {
-        return discountTypeRepository.findAll()
+        return discountTypeRepository.findAllByOrderBySortOrderAsc()
                 .stream()
                 .map(discountTypeMapper::mapToDiscountTypeResponse)
                 .toList();

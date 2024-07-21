@@ -3,6 +3,7 @@ package co.istad.dealkh.features.discounttype;
 import co.istad.dealkh.domain.DiscountType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface DiscountTypeRepository extends JpaRepository<DiscountType, Long> {
@@ -14,4 +15,6 @@ public interface DiscountTypeRepository extends JpaRepository<DiscountType, Long
 
     Optional<DiscountType> findBySlug(String slug);
 
+
+    List<DiscountType> findAllByOrderBySortOrderAsc();
 }

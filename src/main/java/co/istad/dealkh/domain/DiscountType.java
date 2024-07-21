@@ -24,6 +24,9 @@ public class DiscountType {
     @Column(nullable = false, unique = true)
     private String slug;
 
+    @Column(columnDefinition = "INT DEFAULT 0")
+    private Integer sortOrder;
+
     @OneToMany(mappedBy = "discountType")
     private List<Discount> discounts;
 

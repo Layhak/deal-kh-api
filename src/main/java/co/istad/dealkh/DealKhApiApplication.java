@@ -3,8 +3,6 @@ package co.istad.dealkh;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
@@ -15,20 +13,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 @EnableJpaAuditing
 @OpenAPIDefinition(
-//        info = @Info(
-//                title = "Deal Kh API",
-//                version = "1.0",
-//                description = "Deal Kh Api for final project",
-//                contact = @Contact(
-//                        name = "Deal kh",
-//                        email = "dealkh@gmail.com"
-//                ),
-//                termsOfService = "http://swagger.io/terms/",
-//                license = @io.swagger.v3.oas.annotations.info.License(
-//                        name = "Apache 2.0",
-//                        url = "http://www.apache.org/licenses/LICENSE-2.0.html"
-//                )
-//        ),
         security = @SecurityRequirement(name = "bearerAuth"),
         servers = {
                 @Server(url = "https://dealkh-api.istad.co", description = "")
