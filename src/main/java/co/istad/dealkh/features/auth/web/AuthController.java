@@ -11,12 +11,6 @@ import co.istad.dealkh.features.resetpassword.dto.ResetPasswordRequest;
 import co.istad.dealkh.features.resetpassword.dto.SentOtpRequest;
 import co.istad.dealkh.features.user.UserService;
 import co.istad.dealkh.features.user.dto.UserCreateRequest;
-import co.istad.dealkh.features.user.dto.UserResponse;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,14 +25,12 @@ import org.springframework.web.bind.annotation.*;
  * <li>{@link RestController} - Indicates that this class is a REST controller.</li>
  * <li>{@link RequiredArgsConstructor} - Generates a constructor with required arguments (final fields).</li>
  * <li>{@link RequestMapping} - Maps HTTP requests to handler methods of MVC and REST controllers.</li>
- * <li>{@link SecurityRequirements} - Disables security requirements for the endpoints in this controller.</li>
  * </ul>
  * </p>
  */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/auth")
-@SecurityRequirements(value = {})
 public class AuthController {
     private final AuthService authService;
     private final UserService userService;
@@ -76,27 +68,6 @@ public class AuthController {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(
-            summary = "Register new user",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = @Content(schema = @Schema(implementation = UserCreateRequest.class),
-                            examples = @ExampleObject(value = """
-                            {
-                                 "firstName": "panda",
-                                 "lastName": "panda",
-                                 "username": "panda",
-                                 "email": "panda@gmail.com",
-                                 "password": "Panda@123",
-                                 "confirmedPassword": "Panda@123",
-                                 "gender": "male",
-                                 "phoneNumber": "0987654321",
-                                 "dob": "2001-01-01",
-                                 "location": "phnom penh"
-                            }
-                        """)
-                    )
-            )
-    )
     public BaseResponse<?> registerUser(
             @Valid @RequestBody UserCreateRequest userRequest) {
         userService.createUser(userRequest);

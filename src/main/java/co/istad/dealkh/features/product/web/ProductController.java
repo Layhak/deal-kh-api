@@ -7,7 +7,6 @@ import co.istad.dealkh.features.product.dto.ProductResponse;
 import co.istad.dealkh.features.product.dto.ProductUpdateRequest;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.security.CustomUserDetails;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -75,7 +74,7 @@ public class ProductController {
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get all products")
+
     BaseResponse<PageResponse<ProductResponse>> filterProduct(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int size,
@@ -129,7 +128,7 @@ public class ProductController {
      */
     @GetMapping("/shop/{slug}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get all products shop owner")
+
     BaseResponse<PageResponse<ProductResponse>> getProductShopOwner(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int size,
@@ -155,8 +154,7 @@ public class ProductController {
      */
     @GetMapping("/shop/owner")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get all products")
-    BaseResponse<PageResponse<ProductResponse>> getAllProductByShopOwner(
+        BaseResponse<PageResponse<ProductResponse>> getAllProductByShopOwner(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int size,

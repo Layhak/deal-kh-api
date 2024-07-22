@@ -1,13 +1,11 @@
 package co.istad.dealkh.features.wishlist.web;
 
 import co.istad.dealkh.base.BaseResponse;
-import co.istad.dealkh.domain.Product;
 import co.istad.dealkh.features.wishlist.WishListService;
 import co.istad.dealkh.features.wishlist.dto.WishListRequest;
 import co.istad.dealkh.features.wishlist.dto.WishListResponse;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.security.CustomUserDetails;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,14 +34,12 @@ public class WishListController {
     private final WishListService wishListService;
 
     @PostMapping
-    @Operation(summary = "Create new wish list")
-    public BaseResponse<WishListResponse> createWishList(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody @Valid WishListRequest wishListRequest) {
+        public BaseResponse<WishListResponse> createWishList(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody @Valid WishListRequest wishListRequest) {
         return BaseResponse.<WishListResponse>ok("Successfully create new wish list!!").setPayload(wishListService.addWishList(customUserDetails.getUsername(), wishListRequest));
     }
 
     @GetMapping
-    @Operation(summary = "Get all wish lists")
-    PageResponse<WishListResponse> getAllWishList(
+        PageResponse<WishListResponse> getAllWishList(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int size,
             @RequestParam(defaultValue = "discountPercentage") String field,
@@ -55,14 +51,12 @@ public class WishListController {
 
 
     @PutMapping("/{uuid}")
-    @Operation(summary = "Update wish list")
-    public BaseResponse<WishListResponse> updateWishList(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String uuid, @RequestBody WishListRequest wishListRequest) {
+        public BaseResponse<WishListResponse> updateWishList(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String uuid, @RequestBody WishListRequest wishListRequest) {
         return BaseResponse.<WishListResponse>ok("Update wish list successfully!").setPayload(wishListService.updateWishList(uuid, customUserDetails.getUsername(), wishListRequest));
     }
 
     @DeleteMapping("/{uuid}")
-    @Operation(summary = "Delete wish list")
-    BaseResponse<?> deleteWishList(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String uuid) {
+        BaseResponse<?> deleteWishList(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String uuid) {
         wishListService.deleteWishList(customUserDetails.getUsername(), uuid);
         return BaseResponse.ok("Successfully delete wish list with uuid:" + uuid)
                 .setPayload("Delete Wishlist");
@@ -76,24 +70,21 @@ public class WishListController {
     }
 
     @PostMapping("/{uuid}/deny")
-    @Operation(summary = "Deny wish list")
-    BaseResponse<WishListResponse> denyWishList(@PathVariable String uuid) {
+        BaseResponse<WishListResponse> denyWishList(@PathVariable String uuid) {
         return BaseResponse.<WishListResponse>ok("Successfully grant wish list with uuid:" + uuid).setPayload(
                 wishListService.denyWishListByUuid(uuid)
         );
     }
 
     @GetMapping("/{uuid}")
-    @Operation(summary = "Get wish list by uuid")
-    BaseResponse<WishListResponse> getWishListByUuid(@PathVariable String uuid) {
+        BaseResponse<WishListResponse> getWishListByUuid(@PathVariable String uuid) {
         return BaseResponse.<WishListResponse>ok("Successfully get wish list with uuid:" + uuid).setPayload(
                 wishListService.getWishListByUuid(uuid)
         );
     }
 
     @GetMapping("/me")
-    @Operation(summary = "Get wish list by username")
-    BaseResponse<PageResponse<WishListResponse>> getWishListByUsername(
+        BaseResponse<PageResponse<WishListResponse>> getWishListByUsername(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int size,
             @RequestParam(defaultValue = "id") String field,
@@ -104,8 +95,7 @@ public class WishListController {
     }
 
     @GetMapping("/{slug}/shop")
-    @Operation(summary = "Get wish list by username")
-    BaseResponse<List<WishListResponse>> getWishListByUsername(
+        BaseResponse<List<WishListResponse>> getWishListByUsername(
             @PathVariable String slug) {
         return BaseResponse.<List<WishListResponse>>ok("Successfully get all wish list!").setPayload(wishListService.getWishListByShop(slug));
     }

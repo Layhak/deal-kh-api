@@ -4,11 +4,8 @@ package co.istad.dealkh.features.shop.web;
 import co.istad.dealkh.base.BaseResponse;
 import co.istad.dealkh.features.shop.ShopService;
 import co.istad.dealkh.features.shop.dto.*;
-import co.istad.dealkh.features.user.dto.UserProfileRequest;
-import co.istad.dealkh.features.user.dto.UserProfileResponse;
 import co.istad.dealkh.paging.PageResponse;
 import co.istad.dealkh.security.CustomUserDetails;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,7 +34,6 @@ public class ShopController {
     private final ShopService shopService;
 
     @GetMapping
-    @Operation(summary = "Get all shops")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<PageResponse<ShopResponse>> getAllShop(
             @RequestParam(defaultValue = "1") int page,
@@ -50,7 +46,6 @@ public class ShopController {
     }
 
     @PostMapping
-    @Operation(summary = "Create new shop")
     @ResponseStatus(HttpStatus.CREATED)
     public BaseResponse<ShopResponse> createShop(@RequestBody @Valid ShopCreateRequest shopRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return BaseResponse.<ShopResponse>createSuccess("Waiting for approval!")
@@ -59,7 +54,6 @@ public class ShopController {
 
 
     @PatchMapping("/{slug}")
-    @Operation(summary = "Update shop")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<ShopResponse> updateShop(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug, @RequestBody ShopUpdateRequest shopRequest) {
         return BaseResponse.<ShopResponse>ok("Successfully updated shop!")
@@ -67,7 +61,6 @@ public class ShopController {
     }
 
     @GetMapping("/{slug}")
-    @Operation(summary = "Get shop by slug")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<ShopResponse> getShopById(@PathVariable String slug) {
         return BaseResponse.<ShopResponse>ok("Successfully retrieved shop!")
@@ -75,7 +68,6 @@ public class ShopController {
     }
 
     @DeleteMapping("/{slug}")
-    @Operation(summary = "Delete shop")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<?> deleteShop(@PathVariable String slug, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         shopService.deleteShop(slug, customUserDetails.getUsername());
@@ -84,7 +76,6 @@ public class ShopController {
 
     @GetMapping("/nearby")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get nearby shops")
     public BaseResponse<List<ShopResponse>> getNearbyShop(@RequestParam double latitude, @RequestParam double longitude) {
         return BaseResponse.<List<ShopResponse>>ok("Successfully retrieved nearby shops!")
                 .setPayload(shopService.getNearbyShop(latitude, longitude));
@@ -92,7 +83,6 @@ public class ShopController {
 
     @GetMapping("/shop-type")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get shops by shop type")
     public BaseResponse<List<ShopResponse>> getShopByShopType(@RequestParam String shopType) {
         return BaseResponse.<List<ShopResponse>>ok("Successfully retrieved shops by shop type!")
                 .setPayload(shopService.getShopByShopType(shopType));
@@ -101,14 +91,12 @@ public class ShopController {
 
     @PatchMapping("/{slug}/disable")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Disable shop")
     public BaseResponse<ShopResponse> disableShop(@PathVariable String slug, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return BaseResponse.<ShopResponse>ok("Successfully disabled shop!")
                 .setPayload(shopService.disableShop(slug, customUserDetails.getUsername()));
     }
 
     @PatchMapping("/{slug}/enable")
-    @Operation(summary = "Enable shop")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<ShopResponse> enableShop(@PathVariable String slug, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return BaseResponse.<ShopResponse>ok("Successfully enabled shop!")
@@ -116,7 +104,6 @@ public class ShopController {
     }
 
     @GetMapping("/owner")
-    @Operation(summary = "Get all shops created by the logged-in user")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<PageResponse<ShopResponse>> getAllOwnerShops(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -130,7 +117,6 @@ public class ShopController {
     }
 
     @GetMapping("/{slug}/owner")
-    @Operation(summary = "Get all shops created by the logged-in user")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<ShopResponse> getOwnerShops(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -141,7 +127,6 @@ public class ShopController {
     }
 
     @PostMapping("/{slug}/owner")
-    @Operation(summary = "Add owner to shop")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<ShopResponse> addOwnerToShop(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -153,7 +138,6 @@ public class ShopController {
     }
 
     @DeleteMapping("/{slug}/owner")
-    @Operation(summary = "Remove owner from shop")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<ShopResponse> removeOwnerFromShop(
             @PathVariable String slug,
@@ -165,21 +149,18 @@ public class ShopController {
     }
 
     @GetMapping("/{slug}/profile")
-    @Operation(summary = "Get shop profile")
     public BaseResponse<ShopProfileResponse> getShopProfile(@PathVariable String slug) {
         return BaseResponse.<ShopProfileResponse>ok("Successfully get shop profile!")
                 .setPayload(shopService.getShopProfile(slug));
     }
 
     @PostMapping("/{slug}/profile")
-    @Operation(summary = "Upload shop profile")
     public BaseResponse<ShopProfileResponse> uploadShopProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug,  @RequestBody ShopProfileRequest shopProfileRequest) {
         return BaseResponse.<ShopProfileResponse>ok("Successfully upload shop profile!")
                 .setPayload(shopService.uploadShopProfile(customUserDetails.getUsername(), slug, shopProfileRequest));
     }
 
     @DeleteMapping("/{slug}/profile")
-    @Operation(summary = "Delete shop profile")
     public BaseResponse<?> deleteShopProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug, @RequestBody String profile) {
         shopService.deleteShopProfile(customUserDetails.getUsername(),slug, profile);
         return BaseResponse.ok("Profile has been remove!");
@@ -187,28 +168,24 @@ public class ShopController {
 
 
     @GetMapping("/{slug}/cover")
-    @Operation(summary = "Get shop cover")
     public BaseResponse<ShopCoverResponse> getShopCover(@PathVariable String slug) {
         return BaseResponse.<ShopCoverResponse>ok("Successfully get shop profile!")
                 .setPayload(shopService.getAllShopCover(slug));
     }
 
     @PostMapping("/{slug}/cover")
-    @Operation(summary = "Upload shop cover")
     public BaseResponse<ShopCoverResponse> uploadShopCover(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug,  @RequestBody ShopCoverRequest shopCoverRequest) {
         return BaseResponse.<ShopCoverResponse>ok("Successfully upload shop profile!")
                 .setPayload(shopService.uploadShopCover(customUserDetails.getUsername(), slug, shopCoverRequest));
     }
 
     @DeleteMapping("/{slug}/cover")
-    @Operation(summary = "Delete shop cover")
     public BaseResponse<?> deleteShopCover(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug, @RequestBody ShopCoverRequest shopCoverRequest) {
         shopService.deleteShopCover(customUserDetails.getUsername(),slug, shopCoverRequest);
         return BaseResponse.ok("Cover has been remove!");
     }
 
     @PostMapping("/{slug}/approve")
-    @Operation(summary = "Approve shop")
     public BaseResponse<?> approveShop(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug,  @RequestParam Boolean isApproved) {
         shopService.verifyShop(slug, customUserDetails.getUsername(), isApproved);
         if(isApproved){
@@ -218,7 +195,6 @@ public class ShopController {
     }
 
     @GetMapping("/requesting")
-    @Operation(summary = "Get all shops requesting")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<PageResponse<ShopResponse>> getAllShopRequesting(
             @RequestParam(defaultValue = "1") int page,
@@ -231,7 +207,6 @@ public class ShopController {
     }
 
     @GetMapping("/approved")
-    @Operation(summary = "Get all shops approved")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<PageResponse<ShopResponse>> getAllShopApproved(
             @RequestParam(defaultValue = "1") int page,
@@ -244,7 +219,6 @@ public class ShopController {
     }
 
     @GetMapping("/rejected")
-    @Operation(summary = "Get all shops rejected")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<PageResponse<ShopResponse>> getAllShopRejected(
             @RequestParam(defaultValue = "1") int page,
@@ -257,7 +231,6 @@ public class ShopController {
     }
 
     @PostMapping("/{slug}/social")
-    @Operation(summary = "Upload social media")
     @ResponseStatus(HttpStatus.OK)
     BaseResponse<?> uploadSocialMedia(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String slug, @RequestBody @Valid ShopSocialMediaRequest shopSocialMediaRequest) {
         shopService.uploadSocialMedia(customUserDetails.getUsername(), slug, shopSocialMediaRequest);

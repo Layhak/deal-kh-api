@@ -5,7 +5,6 @@ import co.istad.dealkh.features.order.OrderService;
 import co.istad.dealkh.features.order.dto.OrderRequest;
 import co.istad.dealkh.features.order.dto.OrderResponse;
 import co.istad.dealkh.security.CustomUserDetails;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,8 +38,7 @@ public class OrderController {
      * @return
      */
     @GetMapping("/{username}")
-    @Operation(summary = "Get all orders")
-    public BaseResponse<List<OrderResponse>> getOrdersByUsername(@PathVariable String username) {
+        public BaseResponse<List<OrderResponse>> getOrdersByUsername(@PathVariable String username) {
         return BaseResponse.<List<OrderResponse>>ok("Success get all order").setPayload(orderService.getOrderByUsername(username));
     }
 
@@ -51,8 +49,7 @@ public class OrderController {
      * @return
      */
     @PostMapping
-    @Operation(summary = "Create order")
-    public BaseResponse<OrderResponse> createOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody @Valid OrderRequest orderRequest) {
+        public BaseResponse<OrderResponse> createOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody @Valid OrderRequest orderRequest) {
         return BaseResponse.<OrderResponse>createSuccess("Success create order").setPayload(orderService.createOrder(customUserDetails.getUsername(), orderRequest));
     }
 
@@ -63,8 +60,7 @@ public class OrderController {
      * @return
      */
     @DeleteMapping("/{uuid}")
-    @Operation(summary = "Delete order")
-    public BaseResponse<?> deleteOrder(@PathVariable String uuid) {
+        public BaseResponse<?> deleteOrder(@PathVariable String uuid) {
         orderService.deleteOrder(uuid);
         return BaseResponse.ok("Success delete order").setPayload(new ArrayList<>());
     }
