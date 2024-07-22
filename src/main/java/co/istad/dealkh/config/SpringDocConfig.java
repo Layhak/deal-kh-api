@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * </ul>
  * </p>
  */
-@Configuration
+//@Configuration
 public class SpringDocConfig {
 
     /**
@@ -25,10 +25,10 @@ public class SpringDocConfig {
      *
      * @return a {@link GroupedOpenApi} instance for the public API group
      */
-    @Bean
+//    @Bean
     public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
-                .group("public")
+                .group("private")
                 .pathsToMatch("/api/**")
                 .build();
     }

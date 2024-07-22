@@ -12,20 +12,20 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing
-@OpenAPIDefinition(
-        security = @SecurityRequirement(name = "bearerAuth"),
-        servers = {
-                @Server(url = "https://dealkh-api.istad.co", description = "")
-        }
-)
+//@OpenAPIDefinition(
+//        security = @SecurityRequirement(name = "bearerAuth"),
+//        servers = {
+//                @Server(url = "https://dealkh-api.istad.co", description = "")
+//        }
+//)
 
-@SecurityScheme(
-        name = "bearerAuth",
-        type = SecuritySchemeType.HTTP,
-        scheme = "bearer",
-        bearerFormat = "JWT",
-        in = SecuritySchemeIn.HEADER
-)
+//@SecurityScheme(
+//        name = "bearerAuth",
+//        type = SecuritySchemeType.HTTP,
+//        scheme = "bearer",
+//        bearerFormat = "JWT",
+//        in = SecuritySchemeIn.HEADER
+//)
 public class DealKhApiApplication {
 
     public static void main(String[] args) {
