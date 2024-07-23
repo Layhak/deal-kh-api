@@ -36,8 +36,14 @@ public class UserController {
 
     @GetMapping
 
-    public BaseResponse<PageResponse<UserResponse>> getAllUsers(int page, int size, String field,String order, @RequestParam Map<String,
-                    String> params) {
+    public BaseResponse<PageResponse<UserResponse>> getAllUsers(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "25") int size,
+            @RequestParam(defaultValue = "id") String field,
+            @RequestParam(defaultValue = "asc") String order,
+            @RequestParam Map<String,
+                    String> params
+    ) {
         // Add default parameters if not present
         params.putIfAbsent("status", "enable");
 
@@ -143,21 +149,33 @@ public class UserController {
     }
 
     @GetMapping("/buyers")
-        public BaseResponse<PageResponse<UserResponse>> getAllBuyer(int page, int size, String field, String order
+        public BaseResponse<PageResponse<UserResponse>> getAllBuyer(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "25") int size,
+            @RequestParam(defaultValue = "id") String field,
+            @RequestParam(defaultValue = "asc") String order
     ) {
         return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieve all buyers!")
                 .setPayload(userService.getAllBuyer(page, size, field, order));
     }
 
     @GetMapping("/sellers")
-        public BaseResponse<PageResponse<UserResponse>> getAllSeller(int page, int size, String field, String order
+        public BaseResponse<PageResponse<UserResponse>> getAllSeller(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "25") int size,
+            @RequestParam(defaultValue = "id") String field,
+            @RequestParam(defaultValue = "asc") String order
     ) {
         return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieve all sellers!")
                 .setPayload(userService.getAllSeller(page, size, field, order));
     }
 
     @GetMapping("/admins")
-        public BaseResponse<PageResponse<UserResponse>> getAllAdmin(int page, int size, String field, String order
+        public BaseResponse<PageResponse<UserResponse>> getAllAdmin(
+                @RequestParam(defaultValue = "1") int page,
+                @RequestParam(defaultValue = "25") int size,
+                @RequestParam(defaultValue = "id") String field,
+                @RequestParam(defaultValue = "asc") String order
     ) {
         return BaseResponse.<PageResponse<UserResponse>>ok("Successfully retrieve all admins!")
                 .setPayload(userService.getAllAdmin(page, size, field, order));
