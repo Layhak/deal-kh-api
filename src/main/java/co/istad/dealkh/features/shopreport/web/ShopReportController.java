@@ -41,7 +41,7 @@ public class ShopReportController {
     }
 
 
-    @GetMapping("/{uuid}")
+    @PutMapping("/{uuid}")
     public BaseResponse<ShopReportResponse> updateShopReport(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String uuid, @RequestBody @Valid ShopReportUpdateRequest shopReportUpdateRequest) {
         return BaseResponse.<ShopReportResponse>ok("Successfully updated shop report!")
                 .setPayload(shopReportService.updateShopReport(customUserDetails.getUsername(), uuid, shopReportUpdateRequest));
