@@ -188,7 +188,7 @@ public class WishListServiceImpl implements WishListService {
                 "Thank you for using our service!";
 
         mailService.sendEmail(userEmail, "Unfortunately! Wishlist Item Denied.", userEmailContent, "deny");
-
+        wishListRepository.delete(wishList);
         wishListRepository.save(wishList);
 
         return wishListMapper.mapToWishListResponse(wishList);
