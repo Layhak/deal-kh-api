@@ -248,15 +248,6 @@ public class WishListServiceImpl implements WishListService {
     @Override
     public List<WishListResponse> getWishListByShop(String slug) {
 
-        // Check if there are products for the given shop slug to avoid returning multiple results error.
-        List<Product> products = productRepository.findAllByShopSlug(slug);
-        if (products.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    String.format("No products found for shop slug %s!", slug)
-            );
-        }
-
         return wishListRepository.findAllByProduct_Shop_Slug(slug)
                 .stream()
                 .map(wishListMapper::mapToWishListResponse)
