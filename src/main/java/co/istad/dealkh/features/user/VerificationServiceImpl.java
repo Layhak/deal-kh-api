@@ -26,12 +26,4 @@ public class VerificationServiceImpl implements VerificationService {
         // Use MailService to send the email
         mailService.sendEmail(recipientAddress, subject, confirmationUrl, "verify");
     }
-
-    @Override
-    @Scheduled(cron = "0 0 0 * * ?") // Runs daily at midnight
-    public void removeUnverifiedUsers() {
-        LocalDateTime now = LocalDateTime.now();
-        List<User> unverifiedUsers = userRepository.findUnverifiedUsersWithExpiredToken(now);
-        userRepository.deleteAll(unverifiedUsers);
-    }
 }

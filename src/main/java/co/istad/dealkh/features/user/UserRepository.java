@@ -43,7 +43,4 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     @Query(value = "DELETE FROM dk_user_shops WHERE user_id = ?1", nativeQuery = true)
     void deleteUserShopsByUserId(Long userId);
 
-    @Query("SELECT u FROM User u WHERE u.isVerified = false AND u.tokenExpiryDate < :now")
-
-    List<User> findUnverifiedUsersWithExpiredToken(LocalDateTime now);
 }
