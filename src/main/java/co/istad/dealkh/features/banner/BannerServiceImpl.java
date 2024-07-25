@@ -43,6 +43,7 @@ public class BannerServiceImpl implements BannerService {
     public List<BannerResponse> getAllBanner() {
         return bannerRepository.findAll()
                 .stream()
+                .filter(banner -> !banner.getIsExpired())
                 .map(bannerMapper::mapBannerToBannerResponse)
                 .toList();
     }

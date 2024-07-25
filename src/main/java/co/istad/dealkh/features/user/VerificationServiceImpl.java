@@ -3,12 +3,17 @@ package co.istad.dealkh.features.user;
 import co.istad.dealkh.domain.User;
 import co.istad.dealkh.features.mail.MailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class VerificationServiceImpl implements VerificationService {
 
+    private final UserRepository userRepository;
     private final MailService mailService;
 
     @Override
@@ -20,5 +25,13 @@ public class VerificationServiceImpl implements VerificationService {
 
         // Use MailService to send the email
         mailService.sendEmail(recipientAddress, subject, confirmationUrl, "verify");
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 0 * * ?") // Runs daily at midnight
+    public void removeUnverifiedUsers() {
+        LocalDateTime now = LocalDateTime.now();
+        List<User> unverifiedUsers = userRepository.findUnverifiedUsersWithExpiredToken(now);
+        userRepository.deleteAll(unverifiedUsers);
     }
 }

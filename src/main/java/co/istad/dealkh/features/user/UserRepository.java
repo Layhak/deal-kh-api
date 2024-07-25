@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,4 +42,8 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     @Modifying
     @Query(value = "DELETE FROM dk_user_shops WHERE user_id = ?1", nativeQuery = true)
     void deleteUserShopsByUserId(Long userId);
+
+    @Query("SELECT u FROM User u WHERE u.isVerified = false AND u.tokenExpiryDate < :now")
+
+    List<User> findUnverifiedUsersWithExpiredToken(LocalDateTime now);
 }
