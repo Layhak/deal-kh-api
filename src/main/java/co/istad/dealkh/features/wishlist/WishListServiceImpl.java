@@ -147,7 +147,7 @@ public class WishListServiceImpl implements WishListService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "User not found!"));
 
-        if(!product.getShop().getCreatedBy().equals(user.getUsername())){
+        if(product.getShop().getUsers().stream().noneMatch(u -> u.getUsername().equals(user.getUsername()))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You're not the shop owner!");
         }
 
