@@ -2,11 +2,7 @@ package co.istad.dealkh.features.shop.dto;
 
 
 import co.istad.dealkh.domain.json.SocialMedia;
-import co.istad.dealkh.features.image.dto.ImageRequest;
-import co.istad.dealkh.features.image.dto.ImageResponse;
-import co.istad.dealkh.validator.email.ValidEmail;
 import co.istad.dealkh.validator.localtime.ValidLocalTime;
-import co.istad.dealkh.validator.name.ValidName;
 import co.istad.dealkh.validator.phonenumber.ValidPhoneNumber;
 import co.istad.dealkh.validator.slug.ValidSlug;
 import jakarta.validation.constraints.NotBlank;
@@ -64,6 +60,8 @@ public record ShopCreateRequest(
 
         List<SocialMedia> socialMedias,
 
-        String profile
+        String profile,
+
+        String cover
 ) {
 }

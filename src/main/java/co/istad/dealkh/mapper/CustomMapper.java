@@ -1,6 +1,7 @@
 package co.istad.dealkh.mapper;
 
 import co.istad.dealkh.domain.*;
+import co.istad.dealkh.domain.json.Image;
 import co.istad.dealkh.features.discounttype.DiscountTypeRepository;
 import co.istad.dealkh.features.productrating.ProductRatingRepository;
 import co.istad.dealkh.features.role.RoleRepository;
@@ -15,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,4 +87,15 @@ public class CustomMapper {
         return shopRatingRepository.countByShop(shop);
     }
 
+    @Named("mapListImageToString")
+    public String mapListImageToString(List<Image> images) {
+        return images == null ? null : images.stream().map(Image::getUrl).collect(Collectors.joining(","));
+    }
+
+    @Named("mapStringToListImage")
+    public List<Image> mapStringToListImage(String value) {
+        return value == null || value.isEmpty() ? null : Arrays.stream(value.split(","))
+                .map(url -> new Image(url))
+                .collect(Collectors.toList());
+    }
 }

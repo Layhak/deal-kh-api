@@ -1,13 +1,8 @@
 package co.istad.dealkh.mapper;
 
 import co.istad.dealkh.domain.Shop;
-import co.istad.dealkh.domain.User;
-import co.istad.dealkh.domain.enumType.GrantStatus;
 import co.istad.dealkh.domain.enumType.ShopVerify;
 import co.istad.dealkh.features.shop.dto.*;
-import co.istad.dealkh.features.user.dto.SellerResponse;
-import co.istad.dealkh.features.user.dto.UserCoverResponse;
-import co.istad.dealkh.features.user.dto.UserProfileResponse;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", uses = {CustomMapper.class})
@@ -25,6 +20,7 @@ public interface ShopMapper {
     @Mapping(source = "closeAt", target = "closeAt", qualifiedByName = "stringToLocalTime")
     @Mapping(source = "shopType", target = "shopType", qualifiedByName = "stringToShopTypeSlug")
     @Mapping(source = "profile", target = "profile")
+    @Mapping(source = "cover", target = "covers", qualifiedByName = "mapStringToListImage")
     Shop toShop(ShopCreateRequest shopRequest);
 
     @Mapping(target = "id", ignore = true)
