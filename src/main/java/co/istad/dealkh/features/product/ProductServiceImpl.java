@@ -139,63 +139,64 @@ public class ProductServiceImpl implements ProductService {
      * @param params
      * @return
      */
-    @Override
-    public PageResponse<ProductResponse> getAllProducts(int page, int size, String field, String order, Map<String, String> params) {
-        ProductFilter productFilter = new ProductFilter();
-        if (params.containsKey("name")) {
-            String name = params.get("name");
-            productFilter.setName(name);
-        }
+@Override
+public PageResponse<ProductResponse> getAllProducts(int page, int size, String field, String order, Map<String, String> params) {
+    ProductFilter productFilter = new ProductFilter();
 
-        if (params.containsKey("discountValue")) {
-            String discountValue = params.get("discountValue");
-            productFilter.setDiscountValue(Double.parseDouble(discountValue));
-        }
-
-        if (params.containsKey("discountType")) {
-            String discountType = params.get("discountType");
-            productFilter.setDiscountType(discountType);
-        }
-
-        if (params.containsKey("discountTypeSlug")) {
-            String discountTypeSlug = params.get("discountTypeSlug");
-            productFilter.setDiscountType(discountTypeSlug);
-        }
-
-        if (params.containsKey("categorySlug")) {
-            String category = params.get("categorySlug");
-            productFilter.setCategorySlug(category);
-        }
-
-        if (params.containsKey("shop")) {
-            String shop = params.get("shop");
-            productFilter.setShop(shop);
-        }
-
-
-        List<String> validFields = List.of("name", "price", "discountPrice", "description", "shop", "discountValue", "category", "createdAt", "updatedAt", "createdBy", "updateBy");
-
-        if (field == null || field.isEmpty() || !validFields.contains(field)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Field must be id, name, price, discountPrice, description, shop, discountValue, category, createdAt, updatedAt, createdBy, updateBy");
-        }
-
-        size = PageFilter.DEFAULT_PAGE_LIMIT;
-        if (params.containsKey(PageFilter.PAGE_LIMIT)) {
-            size = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
-        }
-
-        page = PageFilter.DEFAULT_PAGE_NUMBER;
-        if (params.containsKey(PageFilter.PAGE_NUMBER)) {
-            page = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
-        }
-
-        ProductSpecification specification = new ProductSpecification(productFilter);
-
-        Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
-
-        Page<ProductResponse> products = productRepository.findAll(specification, pageable).map(productMapper::mapProductToProductResponseDetail);
-        return new PageResponse<>(products);
+    if (params.containsKey("name")) {
+        productFilter.setName(params.get("name"));
     }
+
+    if (params.containsKey("discountValue")) {
+        productFilter.setDiscountValue(Double.parseDouble(params.get("discountValue")));
+    }
+
+    if (params.containsKey("discountType")) {
+        productFilter.setDiscountType(params.get("discountType"));
+    }
+
+    if (params.containsKey("discountTypeSlug")) {
+        productFilter.setDiscountTypeSlug(params.get("discountTypeSlug"));
+    }
+
+    if (params.containsKey("categorySlug")) {
+        productFilter.setCategorySlug(params.get("categorySlug"));
+    }
+
+    if (params.containsKey("shop")) {
+        productFilter.setShop(params.get("shop"));
+    }
+
+    List<String> validFields = List.of(
+        "name", "price", "discountPrice", "description", "shop",
+        "discountValue", "category", "createdAt", "updatedAt",
+        "createdBy", "updateBy"
+    );
+
+    if (field == null || field.isEmpty() || !validFields.contains(field)) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid field name");
+    }
+
+    size = PageFilter.DEFAULT_PAGE_LIMIT;
+    if (params.containsKey(PageFilter.PAGE_LIMIT)) {
+        size = Integer.parseInt(params.get(PageFilter.PAGE_LIMIT));
+    }
+
+    page = PageFilter.DEFAULT_PAGE_NUMBER;
+    if (params.containsKey(PageFilter.PAGE_NUMBER)) {
+        page = Integer.parseInt(params.get(PageFilter.PAGE_NUMBER));
+    }
+
+    ProductSpecification specification = new ProductSpecification(productFilter);
+
+    Pageable pageable = Pagination.getPageable(page, size, Sort.by(Sort.Direction.fromString(order), field));
+
+    Page<ProductResponse> products = productRepository.findAll(specification, pageable)
+        .map(productMapper::mapProductToProductResponseDetail);
+
+    return new PageResponse<>(products);
+}
+
 
 
     /**
@@ -333,7 +334,6 @@ public class ProductServiceImpl implements ProductService {
 
         return new PageResponse<>(new PageImpl<>(productResponses, pageable, productsPage.getTotalElements()));
     }
-
 
 
     @Override
